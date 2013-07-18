@@ -1129,7 +1129,7 @@ jhyicevg.heroku.com
 1. <http://railsforzombies.org/>
 1. <http://railstutorial.org/screencasts>
 1. 阅读本书时你会发现内部章节之间的链接很有用，你可以查看引用的内容然后快速的回到之前的位置。在浏览器中阅读时这种操作很简单，直接点击浏览器的后退按钮就可以了，不过 Adobe Reader 和 OS X 的预览程序也为 PDF 提供了这种功能。在 Reader 中，在文档中点击鼠标右键，然后选择“上一个视图”就可以返回了。在预览程序中要使用“浏览（Go）”菜单：浏览->返回（Back）。
-1. 很多人都错误地认为 `sudo` 的全称是“superuser do”，因为它以超级用户（root）的身份执行命令。其实，`sudo` 结合了 `su` 命令和英语单词“do”，而 `su` 的全称是“substitute user”，不信你可以执行 `man su` 命令验证一下。
+1. 很多人都错误地认为 `sudo` 的全称是“superuser do”，因为它已超级用户（root）的身份执行命令。其实，`sudo` 结合了 `su` 命令和英语单词“do”，而 `su` 的全称是“substitute user”，不信你可以执行 `man su` 命令验证一下。
 1. <http://railstutorial.org/help>
 1. <https://github.com/perfectionist/sample_project/wiki>
 1. vi 编辑器是 Unix 中古老而强大的强力工具，Vim 是 vi 的增强版（vi improved）。

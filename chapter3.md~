@@ -1165,7 +1165,7 @@ $ git push heroku
 2. 你可能已经发现 StaticPages 测试文件（代码 3.18）中有重复的地方，“Ruby on Rails Tutorial Sample App”在每个标题测试中都出现了。使用 RSpec 的 `let` 函数，将值赋给变量，确保代码 3.30 中的测试仍然是通过的。代码 3.30 中使用了字符串插值（interpolation），会在 [4.2.2 节](chapter4.html#sec-4-2-2)中介绍。
 3. （附加题）Heroku 网站中一篇[介绍如何在开发环境中使用 sqlite3 的文章](http://devcenter.heroku.com/articles/how-do-i-use-sqlite3-for-development)提到，最好在开发环境、测试环境和生产环境中使用相同类型的数据库。按照 Heroku 网站上介绍[如何在本地环境中安装 PostgreSQL 的文章](http://devcenter.heroku.com/articles/local-postgresql)内容，在你的电脑上安装 PostgreSQL 数据库。修改 `Gemfile`，删掉 `sqlite3`，换上 `pg`，如代码 3.31 所示。你还要知道如何修改 `config/database.yml` 文件，以及如何在本地运行 PostgreSQL 数据库。这个练习的目标是使用 PostgreSQL 数据库创建并设置开发环境和测试环境中用到的数据库。**注意：**你会发现本题还是有点难度的，我只推荐高级用户做这一题。如果你在某个地方卡住了，不要坚持不放。前面我已经说过了，本教程开发的示例程序完全兼容 SQLite 和 PostgreSQL。
 
-**代码 3.29** “联系”页面的内容 <br />`app/views/static_pages/contact.html.erb`
+**代码 3.29** “练习”页面的内容 <br />`app/views/static_pages/contact.html.erb`
 
 ```erb
 <% provide(:title, 'Contact') %>
