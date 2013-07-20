@@ -12,8 +12,8 @@
 <body>
 	<div class="wrapper">
 		<div class="header">
-            <h1 class="logo"><a class="ir" href="">Ruby on Rails 教程</a></h1>
-            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版</p>
+            <h1 class="logo"><a class="ir" href="http://railstutorial-china.org">Ruby on Rails 教程</a></h1>
+            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版（涵盖 Rails 4）</p>
         </div>
         <div class="content">
 			
@@ -26,7 +26,7 @@
             <a href="#section-10-1-1">10.1.1 基本模型</a>
           </li>
           <li class="level-3">
-            <a href="#section-10-1-2">10.1.2 可访问的属性和第一个数据验证</a>
+            <a href="#section-10-1-2">10.1.2 第一个数据验证</a>
           </li>
           <li class="level-3">
             <a href="#section-10-1-3">10.1.3 用户和微博之间的关联</a>
@@ -89,7 +89,12 @@
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate model Micropost content:string user_id:integer
 </pre></div>
 </div>
-<p>这个命令会生成一个迁移文件，在数据库中生成一个名为 <code>microposts</code> 的表（参见代码 10.1）。读者朋友可以和生成 <code>users</code> 表的迁移文件对照一下（参见代码 6.2）。</p>
+<p>这个命令有可能会生成一个微博预构件，你应该把它删掉，因为后面我们会自己编写所需的预构件（参见<a href="chapter10.html#section-10-1-4">10.1.4 节</a>）：</p>
+
+<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rm -f spec/factories/microposts.rb
+</pre></div>
+</div>
+<p>上述命令会生成一个迁移文件，在数据库中生成一个名为 <code>microposts</code> 的表（参见代码 10.1）。读者朋友可以和生成 <code>users</code> 表的迁移文件对照一下（参见代码 6.2）。</p>
 
 <div class="codeblock has-caption" id="codeblock-10-1"><p class="caption"><span>代码 10.1：</span>创建微博模型的迁移文件（注意：为 <code>user_id</code> 和 <code>created_at</code> 列加入了索引）</p><p class="file"><code>db/migrate/[timestamp]_create_microposts.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateMicroposts</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
@@ -111,7 +116,7 @@
 </div>
 <p>我们把 <code>user_id</code> 和 <code>created_at</code> 放在一个数组中，告诉 Rails 我们要创建的是“多键索引（multiple key index）”，Active Record 便会同时使用这两个键。还要注意 <code>t.timestamps</code> 这行，我们在 <a href="chapter6.html#section-6-1-1">6.1.1 节</a>中介绍过，它会自动创建 <code>created_at</code> 和 <code>updated_at</code> 两个属性。在 <a href="chapter10.html#section-10-1-4">10.1.4 节</a> 和 <a href="chapter10.html#section-10-2-1">10.2.1 节</a> 中才会用到 <code>created_at</code>。</p>
 
-<p>我们先参照 User 模型的测试（参照代码 6.8），为 Micropost 模型编写一些基本的测试。我们要测试微博对象是否可以响应 <code>content</code> 和 <code>user_id</code> 方法，如代码 10.2 所示。</p>
+<p>我们先参照 User 模型的测试（参照代码 6.5），为 Micropost 模型编写一些基本的测试。我们要测试微博对象是否可以响应 <code>content</code> 和 <code>user_id</code> 方法，如代码 10.2 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-10-2"><p class="caption"><span>代码 10.2：</span>Micropost 模型测试（初始版）</p><p class="file"><code>spec/models/micropost_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
@@ -119,7 +124,7 @@
 
   <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">before</span> <span class="k">do</span>
-    <span class="c1"># This code is wrong!</span>
+    <span class="c1"># This code is not idiomatically correct.</span>
     <span class="vi">@micropost</span> <span class="o">=</span> <span class="no">Micropost</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="s2">"Lorem ipsum"</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
   <span class="k">end</span>
 
@@ -133,7 +138,7 @@
 <p>若要这个测试通过，我们先要执行数据库迁移，再准备好“测试数据库”：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:test:prepare
+<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <p>执行上面两个命令之后，会生成 Micropost 模型，结构如图 10.1 所示。</p>
@@ -150,17 +155,19 @@
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 <span class="n">before</span> <span class="k">do</span>
-  <span class="c1"># This code is wrong!</span>
+  <span class="c1"># This code is not idiomatically correct.</span>
   <span class="vi">@micropost</span> <span class="o">=</span> <span class="no">Micropost</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="s2">"Lorem ipsum"</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>就像其中的注释所说，<code>before</code> 块中的代码是错误的。你可以想一下为什么，我们会在下一小节中告诉你答案。</p>
+<p>就像其中的注释所说，<code>before</code> 块中的代码并不完全正确。你可以想一下为什么，我们会在 <a href="chapter10.html#section-10-1-3">10.1.3 节</a>中告诉你答案。</p>
 
-<h3 id='section-10-1-2'><span>10.1.2</span> 可访问的属性和第一个数据验证</h3>
+<h3 id='section-10-1-2'><span>10.1.2</span> 第一个数据验证</h3>
 
 
-<p>要知道为什么 <code>before</code> 块中的代码是错误的，我们先要为 Micropost 模型编写一个数据验证测试，如代码 10.3 所示。（读者朋友可以和代码 6.11 中针对 User 模型的测试对比一下。）</p>
+<p>Micropost 模型必须要有一个属性表明用户的 ID，这样才能知道是哪个用户发布的微博。要加入这个属性，最好的方法是使用 Active Record 关联，会在 <a href="chapter10.html#section-10-1-3">10.1.3 节</a>实现。实现的过程需要一点重构，本节我们就编写一个测试捕获可能出现的错误。</p>
+
+<p>测试如代码 10.3 所示，我们先把用户 ID 设为 <code>nil</code>，然后检测对应的微博是否不合法。（可以和代码 6.8 中针对 User 模型的测试对比一下。）</p>
 
 <div class="codeblock has-caption" id="codeblock-10-3"><p class="caption"><span>代码 10.3：</span>测试微博能否通过验证</p><p class="file"><code>spec/models/micropost_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
@@ -168,7 +175,7 @@
 
   <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">before</span> <span class="k">do</span>
-    <span class="c1"># This code is wrong!</span>
+    <span class="c1"># This code is not idiomatically correct.</span>
     <span class="vi">@micropost</span> <span class="o">=</span> <span class="no">Micropost</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="s2">"Lorem ipsum"</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
   <span class="k">end</span>
 
@@ -189,19 +196,14 @@
 <p>这段代码测试了微博是否能够通过验证，以及是否指定了 <code>user_id</code> 的值。要想让上述测试通过，我们要按照代码 10.4 所示，加入一个简单的存在性验证。</p>
 
 <div class="codeblock has-caption" id="codeblock-10-4"><p class="caption"><span>代码 10.4：</span>对微博 <code>user_id</code> 属性的验证</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-  <span class="n">attr_accessible</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">:user_id</span>
   <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>现在我就来告诉你为什么 <code>@micropost = Micropost.new(content: "Lorem ipsum", user_id: user.id)</code> 是错的。</p>
-
-<p>在 Rails 3.2.3 之前，默认情况下 Micropost 模型的所有属性都是可访问的，我们在 <a href="chapter6.html#section-6-1-2-2">6.1.2.2 节</a>和 <a href="chapter9.html#section-9-4-1">9.4.1 节</a> 中做过介绍，可访问就意味着任何人都可以篡改微博对象的属性值，然后通过命令行发送非法请求。例如，某非法用户可以篡改微博的 <code>user_id</code> 属性，把该微博的作者设定为错误的用户。所以，我们要把 <code>user_id</code> 从 <code>attr_accessible</code> 定义的可访问属性列表中删除。如果你真的删除了，上面的测试也就会失败了。我们会在 <a href="chapter10.html#section-10-1-3">10.1.3 节</a>中再次让这个测试通过。</p>
-
 <h3 id='section-10-1-3'><span>10.1.3</span> 用户和微博之间的关联</h3>
 
 
-<p>在为 Web 程序构建数据模型时，最基本的考虑要素是要能够在不同的模型之间建立关联。在我们这个程序中，每篇微博都关联着一个用户，而每个用户一般都会关联多篇微博。用户和微博之间的关系在 <a href="chapter2.html#section-2-3-3">2.3.3 节</a>中简单的介绍过，二者之间的关系如图 10.2 和图 10.3 所示。在实现这种关联的时候，我们会编写针对 Micropost 模型的测试，和代码 10.2 不同的是，测试的代码会顾及代码 10.7 中使用的 <code>attr_accessible</code>。</p>
+<p>在为 Web 程序构建数据模型时，最基本的考虑要素是要能够在不同的模型之间建立关联。在我们这个程序中，每篇微博都关联着一个用户，而每个用户一般都会关联多篇微博。用户和微博之间的关系在 <a href="chapter2.html#section-2-3-3">2.3.3 节</a>中简单的介绍过，二者之间的关系如图 10.2 和图 10.3 所示。在实现这种关联的时候，我们会编写针对 Micropost 模型的测试，还会编写针对 User 模型的测试。</p>
 
 <div class="figure" id="figure-10-2">
   <img src="figures/micropost_belongs_to_user.png" alt="micropost_belongs_to_user" /><p class="caption"><span>图 10.2：</span>微博和用户之间的“属于（<code>belongs_to</code>）”关系</p>
@@ -240,11 +242,11 @@
 <span class="n">user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span>
 </pre></div>
 </div>
-<p>后者才是创建微博的正确方式，即通过相关联的用户对象创建。通过这种方式创建的微博，其 <code>user_id</code> 属性会自动设为正确的值，从而解决了 <a href="chapter10.html#section-10-1-2">10.1.2 节</a>中提出的问题。所以，我们可以把代码 10.3 中的下述代码</p>
+<p>后者才是创建微博的正确方式，即通过相关联的用户对象创建。通过这种方式创建的微博，其 <code>user_id</code> 属性会自动设为正确的值。所以，我们可以把代码 10.3 中的下述代码</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 <span class="n">before</span> <span class="k">do</span>
-  <span class="c1"># This code is wrong!</span>
+  <span class="c1"># This code is not idiomatically correct.</span>
   <span class="vi">@micropost</span> <span class="o">=</span> <span class="no">Micropost</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="s2">"Lorem ipsum"</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
@@ -257,65 +259,15 @@
 </div>
 <p>只要正确定义了用户和微博之间的关联关系，<code>@micropost</code> 变量的 <code>user_id</code> 属性就会自动设为相对应用户的 id。</p>
 
-<p>通过用户对象来创建微博并没有消除 <code>user_id</code> 是可访问属性这一安全隐患，而这一隐患又是如此危险，所以我们要添加一个测试来捕获它，如代码 10.5 所示。</p>
-
-<div class="codeblock has-caption" id="codeblock-10-5"><p class="caption"><span>代码 10.5：</span>确保 <code>user_id</code> 不可访问的测试</p><p class="file"><code>spec/models/micropost_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
-
-<span class="n">describe</span> <span class="no">Micropost</span> <span class="k">do</span>
-
-  <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">before</span> <span class="p">{</span> <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="s2">"Lorem ipsum"</span><span class="p">)</span> <span class="p">}</span>
-
-  <span class="n">subject</span> <span class="p">{</span> <span class="vi">@micropost</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"accessible attributes"</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="s2">"should not allow access to user_id"</span> <span class="k">do</span>
-      <span class="n">expect</span> <span class="k">do</span>
-        <span class="no">Micropost</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-      <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">raise_error</span><span class="p">(</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:MassAssignmentSecurity</span><span class="o">::</span><span class="no">Error</span><span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</pre></div>
-</div>
-<p>如果调用 <code>Micropost.new</code> 方法时指定了非空的 <code>user_id</code>，这段测试会检测程序是否抛出了 <code>MassAssignmentSecurity</code> 异常。这种处理方式在 Rails 3.2.3 中默认是开启的，但是在之前的版本中却是关闭的，所以你要查看一下你的程序设置是否正确，如代码 10.6 所示。</p>
-
-<div class="codeblock has-caption" id="codeblock-10-6"><p class="caption"><span>代码 10.6：</span>确保没有正确指定 mass assignment 的属性时 Rails 会抛出异常</p><p class="file"><code>config/application.rb</code></p><div class="highlight type-ruby"><pre><span class="o">.</span>
-<span class="o">.</span>
-<span class="o">.</span>
-<span class="k">module</span> <span class="nn">SampleApp</span>
-  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="ss">Rails</span><span class="p">:</span><span class="ss">:Application</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">whitelist_attributes</span> <span class="o">=</span> <span class="kp">true</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</pre></div>
-</div>
-<p>对 Micropost 模型而言，只有一个属性是需要通过网页修改的，那就是 <code>content</code>，所以我们要把 <code>user_id</code> 从可访问的属性列表中删掉，如代码 10.7 所示。</p>
-
-<div class="codeblock has-caption" id="codeblock-10-7"><p class="caption"><span>代码 10.7：</span>有且只有 <code>content</code> 属性是可访问的</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-  <span class="n">attr_accessible</span> <span class="ss">:content</span>
-
-  <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
-<span class="k">end</span>
-</pre></div>
-</div>
 <p>如<a href="chapter10.html#table-10-1">表格 10.1</a> 所示，用户和微博建立关联之后，还会生成 <code>micropost.user</code> 方法，返回该微博的用户对象。对此，我们可以使用 <code>it</code> 和 <code>its</code> 做个测试：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-<span class="n">its</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="n">user</span> <span class="p">}</span>
+<span class="n">its</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="n">user</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>以上对 Micropost 模型的测试结合在一起后如代码 10.8 所示。</p>
+<p>以上对 Micropost 模型的测试结合在一起后如代码 10.5 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-8"><p class="caption"><span>代码 10.8：</span>测试微博和用户之间的关联</p><p class="file"><code>spec/models/micropost_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-5"><p class="caption"><span>代码 10.5：</span>测试微博和用户之间的关联</p><p class="file"><code>spec/models/micropost_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">Micropost</span> <span class="k">do</span>
 
@@ -327,17 +279,9 @@
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">its</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="n">user</span> <span class="p">}</span>
+  <span class="n">its</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="n">user</span> <span class="p">}</span>
 
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_valid</span> <span class="p">}</span>
-
-  <span class="n">describe</span> <span class="s2">"accessible attributes"</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="s2">"should not allow access to user_id"</span> <span class="k">do</span>
-      <span class="n">expect</span> <span class="k">do</span>
-        <span class="no">Micropost</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-      <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">raise_error</span><span class="p">(</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:MassAssignmentSecurity</span><span class="o">::</span><span class="no">Error</span><span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"when user_id is not present"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="vi">@micropost</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="kp">nil</span> <span class="p">}</span>
@@ -346,9 +290,9 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>在用户和微博关联关系的 User 模型一边，我们会在 <a href="chapter10.html#section-10-1-4">10.1.4 节</a>做详细的测试，现在我们只是简单的测试下是否可以响应 <code>microposts</code> 方法，如代码 10.9 所示。</p>
+<p>在用户和微博关联关系的 User 模型一边，我们会在 <a href="chapter10.html#section-10-1-4">10.1.4 节</a>做详细的测试，现在我们只是简单的测试下是否可以响应 <code>microposts</code> 方法，如代码 10.6 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-9"><p class="caption"><span>代码 10.9：</span>测试用户对象是否可以响应 <code>microposts</code> 方法</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-6"><p class="caption"><span>代码 10.6：</span>测试用户对象是否可以响应 <code>microposts</code> 方法</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
@@ -361,7 +305,7 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
-  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:authenticate</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:microposts</span><span class="p">)</span> <span class="p">}</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -369,19 +313,15 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>写好了上面的测试，实现用户和微博之间关联就简单了：只需分别加入下面这两行代码，代码 10.8 和代码 10.9 中的测试就可以通过了：<code>belongs_to :user</code>（如代码 10.10 所示）和 <code>has_many :microposts</code>（如代码 10.11 所示）。</p>
+<p>写好了上面的测试，实现用户和微博之间关联就简单了：只需分别加入下面这两行代码，代码 10.5 和代码 10.6 中的测试就可以通过了：<code>belongs_to :user</code>（如代码 10.7 所示）和 <code>has_many :microposts</code>（如代码 10.8 所示）。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-10"><p class="caption"><span>代码 10.10：</span>微博“属于（<code>belongs_to</code>）”用户</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-  <span class="n">attr_accessible</span> <span class="ss">:content</span>
+<div class="codeblock has-caption" id="codeblock-10-7"><p class="caption"><span>代码 10.7：</span>微博“属于（<code>belongs_to</code>）”用户</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
-
   <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-10-11"><p class="caption"><span>代码 10.11：</span>用户“拥有多篇（<code>has_many</code>）”微博</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-  <span class="n">attr_accessible</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">:password_confirmation</span>
-  <span class="n">has_secure_password</span>
+<div class="codeblock has-caption" id="codeblock-10-8"><p class="caption"><span>代码 10.8：</span>用户“拥有多篇（<code>has_many</code>）”微博</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="n">has_many</span> <span class="ss">:microposts</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -389,7 +329,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>现在，你应该结合<a href="chapter10.html#table-10-1">表格 10.1</a>和代码 10.8、代码 10.9，确保你理解了关联的基本知识点。你还应该检查一下测试是否可以通过：</p>
+<p>现在，你应该结合<a href="chapter10.html#table-10-1">表格 10.1</a>和代码 10.5、代码 10.6，确保你理解了关联的基本知识点。你还应该检查一下测试是否可以通过：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/models
 </pre></div>
@@ -397,11 +337,11 @@
 <h3 id='section-10-1-4'><span>10.1.4</span> 改进 Micropost 模型</h3>
 
 
-<p>代码 10.9 中的代码并没有深入测试通过 <code>has_many</code> 实现的关联，仅仅检测了是否可以响应 <code>microposts</code> 方法。本小节，我们会为 Micropost 模型加入排序方法和依属关系，还会测试 <code>user.microposts</code> 方法的返回结果是否为数组。</p>
+<p>代码 10.6 中的代码并没有深入测试通过 <code>has_many</code> 实现的关联，仅仅检测了是否可以响应 <code>microposts</code> 方法。本小节，我们会为 Micropost 模型加入排序方法和依属关系，还会测试 <code>user.microposts</code> 方法的返回结果是否为数组。</p>
 
-<p>我们需要在 User 模型的测试中生成一些微博，所以现在我们先要创建一个生成微博的预构件。在所创建的预构件中我们要找到一种方法把微博和用户关联起来，幸运的是，在 FactoryGirl 中实现关联是很容易的，如代码 10.12 所示。</p>
+<p>我们需要在 User 模型的测试中生成一些微博，所以现在我们先要创建一个生成微博的预构件。在所创建的预构件中我们要找到一种方法把微博和用户关联起来，幸运的是，在 FactoryGirl 中实现关联是很容易的，如代码 10.9 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-12"><p class="caption"><span>代码 10.12：</span>完整的预构件文件，包含了创建微博的新预构件</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-10-9"><p class="caption"><span>代码 10.9：</span>完整的预构件文件，包含了创建微博的新预构件</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
   <span class="n">factory</span> <span class="ss">:user</span> <span class="k">do</span>
     <span class="n">sequence</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>  <span class="p">{</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="s2">"Person </span><span class="si">#{</span><span class="n">n</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span>
     <span class="n">sequence</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="s2">"person_</span><span class="si">#{</span><span class="n">n</span><span class="si">}</span><span class="s2">@example.com"</span><span class="p">}</span>
@@ -444,9 +384,9 @@
 </div>
 <p>我们把第二篇微博的创建时间设的晚一些，即 <code>1.hour.ago</code>（利用了<a href="chapter8.html#aside-8-1">旁注 8.1</a>中介绍的帮助函数），第一篇微博的创建时间要早一些，是 <code>1.day.ago</code>。请注意一下使用 FactoryGirl 创建微博是多么方便：我们不仅可以直接指定微博所属的用户（FactoryGirl 会逃过 <code>attr_accessible</code> 限制），还可以设定通常情况下不能自由设定的 <code>created_at</code> 属性（因为在 Active Record 做了限制）。（再次说明一下，<code>created_at</code> 和 <code>updated_at</code> 两个属性是“魔法”列，会被自动设为相应的创建时间戳和更新时间戳，即使手动指定了值也会被覆盖。）</p>
 
-<p>大多数数据库适配器（包括 SQLite 的适配器）读取的微博都是按照 ID 来排序的，因此代码 10.13 中的测试肯定不会通过。在这段测试代码中没有使用 <code>let</code>，而用了 <code>let!</code>（读作“let bang”），因为 <code>let</code> 方法指定的变量是“惰性”的，只有当后续有引用时才会被创建。而我们希望这两个微博变量立即被创建，这样才能保证两篇微博时间戳的顺序是正确的，也保证了 <code>@user.microposts</code> 数组不是空的。所以我们才用了 <code>let!</code> 方法，强制相应的变量立即被创建。</p>
+<p>大多数数据库适配器（包括 SQLite 的适配器）读取的微博都是按照 ID 来排序的，因此代码 10.10 中的测试肯定不会通过。在这段测试代码中没有使用 <code>let</code>，而用了 <code>let!</code>（读作“let bang”），因为 <code>let</code> 方法指定的变量是“惰性”的，只有当后续有引用时才会被创建。而我们希望这两个微博变量立即被创建，这样才能保证两篇微博时间戳的顺序是正确的，也保证了 <code>@user.microposts</code> 数组不是空的。所以我们才用了 <code>let!</code> 方法，强制相应的变量立即被创建。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-13"><p class="caption"><span>代码 10.13：</span>测试用户微博的次序</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-10"><p class="caption"><span>代码 10.10：</span>测试用户微博的次序</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -463,7 +403,7 @@
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the right microposts in the right order"</span> <span class="k">do</span>
-      <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="o">[</span><span class="n">newer_micropost</span><span class="p">,</span> <span class="n">older_micropost</span><span class="o">]</span>
+      <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">to_a</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="o">[</span><span class="n">newer_micropost</span><span class="p">,</span> <span class="n">older_micropost</span><span class="o">]</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -471,22 +411,37 @@
 </div>
 <p>这个测试中最关键的一行是：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="o">[</span><span class="n">newer_micropost</span><span class="p">,</span> <span class="n">older_micropost</span><span class="o">]</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">to_a</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="o">[</span><span class="n">newer_micropost</span><span class="p">,</span> <span class="n">older_micropost</span><span class="o">]</span>
 </pre></div>
 </div>
-<p>这行代码表明所创建的微博应该按照创建时间倒序排列，即最新创建的微博排在最前面。这个测试注定是无法通过的，因为微博默认是按照 ID 排序的，即 <code>[older_micropost, newer_micropost]</code>。这个测试同时也验证了 <code>has_many</code> 关联最基本的效果是否正确，即检测 <code>user.microposts</code> 返回的结果是否是数组。</p>
+<p>这行代码表明所创建的微博应该按照创建时间倒序排列，即最新创建的微博排在最前面。这个测试注定是无法通过的，因为微博默认是按照 ID 排序的，即 <code>[older_micropost, newer_micropost]</code>。这个测试同时也验证了 <code>has_many</code> 关联最基本的效果是否正确，即检测 <code>user.microposts</code> 返回的结果是否是数组。其中用到的 <code>to_a</code> 方法，在 <a href="chapter4.html#section-4-3-1">4.3.1 节</a>中介绍过，会把 <code>@user.microposts</code> 从初始状态（Active Record 的“集合代理（collection proxy）”）转换成一个数组，以便和我们手动编写的数组比较。</p>
 
-<p>要让这个测试通过，我们要使用 Rails 中的 <code>default_scope</code> 方法，还要设定它的 <code>:order</code> 参数，如代码 10.14 所示。（这是我们第一次接触作用域的概念，在<a href="chapter11.html">第 11 章</a>中会介绍作用域更一般的用法。）</p>
+<p>要让这个测试通过，我们要使用 Rails 中的 <code>default_scope</code> 方法，还要设定它的 <code>:order</code> 参数，如代码 10.11 所示。（这是我们第一次接触作用域的概念，在<a href="chapter11.html">第 11 章</a>中会介绍作用域更一般的用法。）</p>
 
-<div class="codeblock has-caption" id="codeblock-10-14"><p class="caption"><span>代码 10.14：</span>通过 <code>default_scope</code> 设定微博的排序</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">default_scope</span> <span class="ss">order</span><span class="p">:</span> <span class="s1">'microposts.created_at DESC'</span>
+<div class="codeblock has-caption" id="codeblock-10-11"><p class="caption"><span>代码 10.11：</span>通过 <code>default_scope</code> 设定微博的排序</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">default_scope</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">'created_at DESC'</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>我们通过 <code>microposts.created_at DESC</code> 设定了所需的排序，其中 <code>DESC</code> 在 SQL 中是“倒序”的意思，即按照由新到旧这种顺序排序。</p>
+
+<p>从 Rails 4.0 开始，所有的作用域都需要通过匿名函数的方式定义，函数的返回值为所需的条件。这么做主要的好处是，作用域的条件不用立即计算，只在需要时才执行（所以叫做“惰性计算”）。本例所用的匿名函数是</p>
+
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">'created_at DESC'</span><span class="p">)</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>这种对象叫 Proc 或 lambda，以 <code>-&gt;</code> 开头，后面跟着一个代码块，调用 <code>call</code> 方法时才执行块中的代码。我们可以在控制台中看一下：</p>
+
+<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; -&gt; <span class="o">{</span> puts <span class="s2">"foo"</span> <span class="o">}</span>
+<span class="o">=</span>&gt; <span class="c">#&lt;Proc:0x007fab938d0108@(irb):1 (lambda)&gt;</span>
+&gt;&gt; -&gt; <span class="o">{</span> puts <span class="s2">"foo"</span> <span class="o">}</span>.call
+<span class="nv">foo</span>
+<span class="o">=</span>&gt; nil
+</pre></div>
+</div>
+<p>（Proc 属于 Ruby 语言的高级功能，所以如果没有立刻理解也不用担心。）</p>
 
 <h4 id='section-10-1-4-2'><span></span>依属关系：destroy</h4>
 
@@ -495,75 +450,45 @@
 
 <p>为了能够正确的测试微博是否被删除了，我们先要把用户的一篇微博赋值给一个局部变量，然后再删除这个用户。对此，一种比较直观的实现方式如下所示：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">microposts</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">microposts</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">to_a</span>
 <span class="vi">@user</span><span class="o">.</span><span class="n">destroy</span>
+<span class="n">expect</span><span class="p">(</span><span class="n">microposts</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_empty</span>
 <span class="n">microposts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">micropost</span><span class="o">|</span>
   <span class="c1"># Make sure the micropost doesn't appear in the database.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>可是上述方式并不凑效，这涉及到 Ruby 中数组的一个诡异表现。在 Ruby 中把数组赋值给变量时，只是获取了该数组的引用，而不是数组的值本身，所以如果修改了原始的数组，它的引用也会改变。举个例子，我们新建一个数组，再把它赋值给另一个变量，然后调用 <code>reverse!</code> 反转第一个数组：</p>
+<p>我们调用了 <code>to_a</code> 方法，高效地复制了一份微薄列表。我们还加入了下面这行</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; <span class="nv">a</span> <span class="o">=</span> <span class="o">[</span>1, 2, 3<span class="o">]</span>
-<span class="o">=</span>&gt; <span class="o">[</span>1, 2, 3<span class="o">]</span>
-&gt;&gt; <span class="nv">b</span> <span class="o">=</span> <span class="nv">a</span>
-<span class="o">=</span>&gt; <span class="o">[</span>1, 2, 3<span class="o">]</span>
-&gt;&gt; a.reverse!
-<span class="o">=</span>&gt; <span class="o">[</span>3, 2, 1<span class="o">]</span>
-&gt;&gt; <span class="nv">a</span>
-<span class="o">=</span>&gt; <span class="o">[</span>3, 2, 1<span class="o">]</span>
-&gt;&gt; <span class="nv">b</span>
-<span class="o">=</span>&gt; <span class="o">[</span>3, 2, 1<span class="o">]</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span><span class="p">(</span><span class="n">microposts</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_empty</span>
 </pre></div>
 </div>
-<p>可能有点奇怪，<code>b</code> 的值和 <code>a</code> 一样也反转了，因为 <code>a</code> 和 <code>b</code> 指向的是同一个数组。（类似的表现也可以推广到 Ruby 中其他的数据类型，例如字符串和 Hash。）</p>
+<p>这是一份双保险，避免不小心漏掉了 <code>to_a</code>。如果没有 <code>to_a</code> 的话，一旦删除了用户就会删掉 <code>microposts</code> 变量中的该用户的微博，那么</p>
 
-<p>再来看用户的微博，结果如下：</p>
-
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console --sandbox
-&gt;&gt; @user <span class="o">=</span> User.first
-&gt;&gt; <span class="nv">microposts</span> <span class="o">=</span> @user.microposts
-&gt;&gt; @user.destroy
-&gt;&gt; <span class="nv">microposts</span>
-<span class="o">=</span>&gt; <span class="o">[]</span>
-</pre></div>
-</div>
-<p>（因为我们还没有实现销毁所关联微博的方法，所以上述的操作是无效的，在这里列出来只是要演示这种表现。）我们可以看到，删除用户后，<code>microposts</code> 变量的值也为空了，即空的数组 <code>[]</code>。</p>
-
-<p>鉴于此，在复制 Ruby 对象时要格外的小心。在赋值一些相对简单的对象时，例如数组，我们可以调用 <code>dup</code> 方法：</p>
-
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; <span class="nv">a</span> <span class="o">=</span> <span class="o">[</span>1, 2, 3<span class="o">]</span>
-<span class="o">=</span>&gt; <span class="o">[</span>1, 2, 3<span class="o">]</span>
-&gt;&gt; <span class="nv">b</span> <span class="o">=</span> a.dup
-<span class="o">=</span>&gt; <span class="o">[</span>1, 2, 3<span class="o">]</span>
-&gt;&gt; a.reverse!
-<span class="o">=</span>&gt; <span class="o">[</span>3, 2, 1<span class="o">]</span>
-&gt;&gt; <span class="nv">a</span>
-<span class="o">=</span>&gt; <span class="o">[</span>3, 2, 1<span class="o">]</span>
-&gt;&gt; <span class="nv">b</span>
-<span class="o">=</span>&gt; <span class="o">[</span>1, 2, 3<span class="o">]</span>
-</pre></div>
-</div>
-<p>（上面展示的是“浅拷贝（shallow copy）”。“深拷贝（deep copy）”是很复杂的，也没用通用的方法，如果你要赋值复杂的数据结构，例如嵌套的数组，可以搜索一下“ruby deep copy”，应该可以找到一些方法。）使用 <code>dup</code> 方法后的代码如下：</p>
-
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">microposts</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">dup</span>
-<span class="vi">@user</span><span class="o">.</span><span class="n">destroy</span>
-<span class="n">microposts</span><span class="o">.</span><span class="n">should_not</span> <span class="n">be_empty</span>
-<span class="n">microposts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">micropost</span><span class="o">|</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">microposts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">micropost</span><span class="o">|</span>
   <span class="c1"># Make sure the micropost doesn't appear in the database.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>我们还加入了下面这行：</p>
+<p>就什么也测试不了，因为 <code>microposts</code> 是空的。</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">microposts</span><span class="o">.</span><span class="n">should_not</span> <span class="n">be_empty</span>
+<p>我们可以通过下面的代码确认微博不在数据库中：</p>
+
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">microposts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">micropost</span><span class="o">|</span>
+  <span class="n">expect</span><span class="p">(</span><span class="no">Micropost</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">micropost</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">be_empty</span>
+<span class="k">end</span>
 </pre></div>
 </div>
-<p>这才能确保测试可以扑捉到因为失手删除 <code>dup</code> 导致的错误。<sup class="footnote" id="fnref-10-3"><a href="#fn-10-3" rel="footnote">3</a></sup>完整的测试代码如代码 10.15 所示。</p>
+<p>这里我们用的是 <code>Micropost.where</code>，二没用 <code>Micropost.find</code>，因为如果没有查询到记录 <code>where</code> 会返回一个空值对象，而 <code>find</code> 会抛出异常。测试空值对象要更容易。如果你好奇想知道如何测试异常，可以使用下面的代码：</p>
 
-<div class="codeblock has-caption" id="codeblock-10-15"><p class="caption"><span>代码 10.15：</span>测试用户删除后，所发布的微博是否也被删除了</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span> <span class="k">do</span>
+  <span class="no">Micropost</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">micropost</span><span class="p">)</span>
+<span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">raise_error</span><span class="p">(</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:RecordNotFound</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>完整的测试代码如代码 10.12 所示。</p>
+
+<div class="codeblock has-caption" id="codeblock-10-12"><p class="caption"><span>代码 10.12：</span>测试用户删除后，所发布的微博是否也被删除了</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -582,32 +507,20 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">it</span> <span class="s2">"should destroy associated microposts"</span> <span class="k">do</span>
-      <span class="n">microposts</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">dup</span>
+      <span class="n">microposts</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">to_a</span>
       <span class="vi">@user</span><span class="o">.</span><span class="n">destroy</span>
-      <span class="n">microposts</span><span class="o">.</span><span class="n">should_not</span> <span class="n">be_empty</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">microposts</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_empty</span>
       <span class="n">microposts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">micropost</span><span class="o">|</span>
-        <span class="no">Micropost</span><span class="o">.</span><span class="n">find_by_id</span><span class="p">(</span><span class="n">micropost</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">should</span> <span class="n">be_nil</span>
+        <span class="n">expect</span><span class="p">(</span><span class="no">Micropost</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">micropost</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">be_empty</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>在这个测试中，我们调用的是 <code>Micropost.find_by_id</code> 方法，如果没有找到相应的记录这个方法会返回 <code>nil</code>。而 <code>Micropost.find</code> 方法在没有找到记录时直接抛出异常，比较难测试。（如果你好奇如何测试 <code>Micropost.find</code> 抛出的异常，可以使用下面这段代码。）</p>
+<p>要让代码 10.12 中的测试通过，我们甚至不需要加入一行完整的代码，只需在 <code>has_many</code> 方法中设定一个参数即可，如代码 10.13 所示。</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">lambda</span> <span class="k">do</span>
-  <span class="no">Micropost</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">micropost</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-<span class="k">end</span><span class="o">.</span><span class="n">should</span> <span class="n">raise_error</span><span class="p">(</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:RecordNotFound</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>要让代码 10.15 中的测试通过，我们甚至不需要加入一行完整的代码，只需在 <code>has_many</code> 方法中设定一个参数即可，如代码 10.16 所示。</p>
-
-<div class="codeblock has-caption" id="codeblock-10-16"><p class="caption"><span>代码 10.16：</span>保证用户的微博在删除用户的同时也会被删除</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-  <span class="n">attr_accessible</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">:password_confirmation</span>
-  <span class="n">has_secure_password</span>
+<div class="codeblock has-caption" id="codeblock-10-13"><p class="caption"><span>代码 10.13：</span>保证用户的微博在删除用户的同时也会被删除</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="n">has_many</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -630,9 +543,9 @@
 <h3 id='section-10-1-5'><span>10.1.5</span> 验证微博内容</h3>
 
 
-<p>在结束讨论 Micropost 模型之前，我们还要为微博的内容加上数据验证（参照 <a href="chapter2.html#section-2-3-2">2.3.2 节</a>）。和 <code>user_id</code> 一样，<code>content</code> 属性不能为空，而且还要限制内容的长度不能多于 140 个字符，这才是真正的“微”博。我们要编写的测试和 <a href="chapter6.html#section-6-2">6.2 节</a>中对用户模型的验证测试类似，如代码 10.17 所示。</p>
+<p>在结束讨论 Micropost 模型之前，我们还要为微博的内容加上数据验证（参照 <a href="chapter2.html#section-2-3-2">2.3.2 节</a>）。和 <code>user_id</code> 一样，<code>content</code> 属性不能为空，而且还要限制内容的长度不能多于 140 个字符，这才是真正的“微”博。我们要编写的测试和 <a href="chapter6.html#section-6-2">6.2 节</a>中对用户模型的验证测试类似，如代码 10.14 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-17"><p class="caption"><span>代码 10.17：</span>测试 Micropost 模型的数据验证</p><p class="file"><code>spec/models/micropost_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-14"><p class="caption"><span>代码 10.14：</span>测试 Micropost 模型的数据验证</p><p class="file"><code>spec/models/micropost_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">Micropost</span> <span class="k">do</span>
 
@@ -658,7 +571,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>和 <a href="chapter6.html#section-6-2">6.2 节</a>一样，在代码 10.17 中我们用到了字符串乘积来测试微博内容长度的验证：</p>
+<p>和 <a href="chapter6.html#section-6-2">6.2 节</a>一样，在代码 10.14 中我们用到了字符串乘积来测试微博内容长度的验证：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
 &gt;&gt; <span class="s2">"a"</span> * <span class="nv">10</span>
@@ -673,17 +586,13 @@
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>Micropost 模型的最终代码如代码 10.18 所示。</p>
+<p>Micropost 模型的最终代码如代码 10.15 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-18"><p class="caption"><span>代码 10.18：</span>Micropost 模型的数据验证</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-  <span class="n">attr_accessible</span> <span class="ss">:content</span>
-
+<div class="codeblock has-caption" id="codeblock-10-15"><p class="caption"><span>代码 10.15：</span>Micropost 模型的数据验证</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
-
+  <span class="n">default_scope</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">'created_at DESC'</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
-
-  <span class="n">default_scope</span> <span class="ss">order</span><span class="p">:</span> <span class="s1">'microposts.created_at DESC'</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -694,15 +603,12 @@
 
 <p>和 <a href="chapter8.html#section-8-2-1">8.2.1 节</a>中对登录机制的介绍类似，<a href="chapter10.html#section-10-2-1">10.2.1 节</a>也会经常将一些元素推送到<a href="http://en.wikipedia.org/wiki/Stack\_\(data_structure\)">堆栈</a>里，然后再一个一个的从栈尾取出来。如果理解起来有点困难，多点耐心，你的付出会在 <a href="chapter10.html#section-10-2-2">10.2.2 节</a>得到回报。</p>
 
-<div class="figure" id="figure-10-4">
-  <img src="figures/user_microposts_mockup_bootstrap.png" alt="user microposts mockup bootstrap" /><p class="caption"><span>图 10.4：</span>显示了微博的资料页面构思图</p>
-</div>
 <h3 id='section-10-2-1'><span>10.2.1</span> 充实用户资料页面</h3>
 
 
 <p>我们先在用户的 request spec 中加入对显示微博的测试。我们采用的方法是，先通过预构件创建几篇微博，然后检查用户资料页面是否显示了这几篇微博，同时我们还要验证是否显示了如图 10.4 中所示的总的微博数量。</p>
 
-<p>我们可以使用 <code>let</code> 方法创建微博，不过如代码 10.13 所示，我们希望用户和微博的关联立即生效，这样微博才能显示在用户的资料页面中。所以，我们要使用 <code>let!</code> 方法：</p>
+<p>我们可以使用 <code>let</code> 方法创建微博，不过如代码 10.10 所示，我们希望用户和微博的关联立即生效，这样微博才能显示在用户的资料页面中。所以，我们要使用 <code>let!</code> 方法：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 <span class="n">let!</span><span class="p">(</span><span class="ss">:m1</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="ss">content</span><span class="p">:</span> <span class="s2">"Foo"</span><span class="p">)</span> <span class="p">}</span>
@@ -711,9 +617,12 @@
 <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>按照上面这种方式定义了微博后，我们就可以使用代码 10.19 中的代码测试用户资料页面中是否显示了这些微博。</p>
+<div class="figure" id="figure-10-4">
+  <img src="figures/user_microposts_mockup_bootstrap.png" alt="user microposts mockup bootstrap" /><p class="caption"><span>图 10.4：</span>显示了微博的资料页面构思图</p>
+</div>
+<p>按照上面这种方式定义了微博后，我们就可以使用代码 10.16 中的代码测试用户资料页面中是否显示了这些微博。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-19"><p class="caption"><span>代码 10.19：</span>检测用户资料页面是否显示了微博的测试</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-16"><p class="caption"><span>代码 10.16：</span>检测用户资料页面是否显示了微博的测试</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"User pages"</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -726,8 +635,8 @@
 
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">describe</span> <span class="s2">"microposts"</span> <span class="k">do</span>
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="n">m1</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="p">}</span>
@@ -748,9 +657,9 @@
 </div>
 <p>这个 <code>count</code> 方法是很聪明的，可以直接在数据库层统计数量。也就是说，<code>count</code> 的计数过程不是把微博从数据库中取出来，然后再在所得的数组上调用 <code>length</code> 方法，如果这样做的话，微博数量一旦很多的话，效率就会很低。其实，<code>count</code> 方法会直接在数据库层中统计用户的微博数量。如果统计数量仍然是程序的性能瓶颈的话，你可以使用“<a href="http://railscasts.com/episodes/23-counter-cache-column">计数缓存</a>”进一步提速。</p>
 
-<p>在加入代码 10.21 之前，代码 10.19 中的测试是无法通过的，不过现在我们可以先在用户的资料页面中加入一些微博，如代码 10.20 所示。</p>
+<p>在加入代码 10.18 之前，代码 10.16 中的测试是无法通过的，不过现在我们可以先在用户的资料页面中加入一些微博，如代码 10.17 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-20"><p class="caption"><span>代码 10.20：</span>在用户资料页面中加入微博</p><p class="file"><code>app/views/users/show.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-17"><p class="caption"><span>代码 10.17：</span>在用户资料页面中加入微博</p><p class="file"><code>app/views/users/show.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;div class="row"&gt;</span>
 <span class="x">  .</span>
 <span class="x">  .</span>
@@ -772,9 +681,9 @@
 <span class="x">&lt;/div&gt;</span>
 </pre></div>
 </div>
-<p>微博列表稍后分析，现在先看看其他部分。在这段代码中，<code>if @user.microposts.any?</code>（在代码 7.23 中见过类似的用法）的作用是，如果用户没有发布微博的话，就不会显示后面的列表。</p>
+<p>微博列表稍后分析，现在先看看其他部分。在这段代码中，<code>if @user.microposts.any?</code>（在代码 7.24 中见过类似的用法）的作用是，如果用户没有发布微博的话，就不会显示后面的列表。</p>
 
-<p>还要注意一下，在代码 10.20 中我们也加入了微博的分页显示功能：</p>
+<p>还要注意一下，在代码 10.17 中我们也加入了微博的分页显示功能：</p>
 
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="vi">@microposts</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
@@ -784,7 +693,7 @@
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>之前之所以可以直接调用，是因为在 Users 控制器中，<code>will_paginate</code> 默认程序中存在一个名为 <code>@users</code> 的变量（在 <a href="chapter9.html#section-9-3-3">9.3.3 节</a>中介绍过，该变量的值必须是 <code>AvtiveRecord::Relation</code> 的实例）。现在，虽然我们还在 Users 控制器中，但是我们要对<strong>微博</strong>分页，所以 <code>will_paginate</code> 方法要指定 <code>@microposts</code> 变量作为参数。当然了，我们还要在 <code>show</code> 动作中定义 <code>@microposts</code> 变量（参见代码 10.22）。</p>
+<p>之前之所以可以直接调用，是因为在 Users 控制器中，<code>will_paginate</code> 默认程序中存在一个名为 <code>@users</code> 的变量（在 <a href="chapter9.html#section-9-3-3">9.3.3 节</a>中介绍过，该变量的值必须是 <code>AvtiveRecord::Relation</code> 的实例）。现在，虽然我们还在 Users 控制器中，但是我们要对<strong>微博</strong>分页，所以 <code>will_paginate</code> 方法要指定 <code>@microposts</code> 变量作为参数。当然了，我们还要在 <code>show</code> 动作中定义 <code>@microposts</code> 变量（参见代码 10.19）。</p>
 
 <p>接着，还显示了当前微博的数量：</p>
 
@@ -810,9 +719,9 @@
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="vi">@microposts</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>会对微博做同样的渲染操作。所以，我们要创建名为 <code>_micropost.html.erb</code> 的局部视图（存放在微博对应的视图文件夹中），如代码 10.21 所示。</p>
+<p>会对微博做同样的渲染操作。所以，我们要创建名为 <code>_micropost.html.erb</code> 的局部视图（存放在微博对应的视图文件夹中），如代码 10.18 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-21"><p class="caption"><span>代码 10.21：</span>显示单篇微博的局部视图</p><p class="file"><code>app/views/microposts/_micropost.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li&gt;</span>
+<div class="codeblock has-caption" id="codeblock-10-18"><p class="caption"><span>代码 10.18：</span>显示单篇微博的局部视图</p><p class="file"><code>app/views/microposts/_micropost.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li&gt;</span>
 <span class="x">  &lt;span class="content"&gt;</span><span class="cp">&lt;%=</span> <span class="n">micropost</span><span class="o">.</span><span class="n">content</span> <span class="cp">%&gt;</span><span class="x">&lt;/span&gt;</span>
 <span class="x">  &lt;span class="timestamp"&gt;</span>
 <span class="x">    Posted </span><span class="cp">&lt;%=</span> <span class="n">time_ago_in_words</span><span class="p">(</span><span class="n">micropost</span><span class="o">.</span><span class="n">created_at</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> ago.</span>
@@ -822,9 +731,12 @@
 </div>
 <p>这段代码使用了 <code>time_ago_in_words</code> 帮助方法，会在 <a href="chapter10.html#section-10-2-2">10.2.2 节</a>中介绍。</p>
 
-<p>至此，尽管定义了所需的全部视图，但是代码 10.19 中的测试仍旧无法通过，提示未定义 <code>@microposts</code> 变量。加入代码 10.22 中的代码后，测试就可以通过了。</p>
+<div class="figure" id="figure-10-5">
+  <img src="figures/user_profile_no_microposts_bootstrap.png" alt="user profile no microposts bootstrap" /><p class="caption"><span>图 10.5：</span>添加了显示微博代码后的用户资料页面，不过还没有微博可显示</p>
+</div>
+<p>至此，尽管定义了所需的全部视图，但是代码 10.16 中的测试仍旧无法通过，提示未定义 <code>@microposts</code> 变量。加入代码 10.19 中的代码后，测试就可以通过了。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-22"><p class="caption"><span>代码 10.22：</span>在 Users 控制器的 <code>show</code> 动作中加入 <code>@microposts</code> 实例变量</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="codeblock has-caption" id="codeblock-10-19"><p class="caption"><span>代码 10.19：</span>在 Users 控制器的 <code>show</code> 动作中加入 <code>@microposts</code> 实例变量</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -832,6 +744,9 @@
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
     <span class="vi">@microposts</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">page</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
   <span class="k">end</span>
+  <span class="o">.</span>
+  <span class="o">.</span>
+  <span class="o">.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -839,20 +754,17 @@
 
 <p>现在，我们可以查看一下刚编好的用户资料页面了，如图 10.5 所示，可能会出乎你的意料，这也是理所当然的，因为我们还没有发布微博呢。下面我们就来发布微博。</p>
 
-<div class="figure" id="figure-10-5">
-  <img src="figures/user_profile_no_microposts_bootstrap.png" alt="user profile no microposts bootstrap" /><p class="caption"><span>图 10.5：</span>添加了显示微博代码后的用户资料页面，不过还没有微博可显示</p>
-</div>
 <h3 id='section-10-2-2'><span>10.2.2</span> 示例微博</h3>
 
 
-<p>在 <a href="chapter10.html#section-10-2-1">10.2.1 节</a>中为了显示微博，创建了几个视图，但是结果有点不给力。为了改变这个悲剧，我们要在 <a href="chapter9.html#section-9-3-2">9.3.2 节</a>中用到的示例数据生成器中加入生成微博数据的代码。如果给所有的用户都生成一些微博的话要用很长的时间，所以我们暂且只给前六个用户<sup class="footnote" id="fnref-10-4"><a href="#fn-10-4" rel="footnote">4</a></sup>生成微博数据，这要用到 <code>User.all</code> 方法的 <code>:limit</code> 选项：<sup class="footnote" id="fnref-10-5"><a href="#fn-10-5" rel="footnote">5</a></sup></p>
+<p>在 <a href="chapter10.html#section-10-2-1">10.2.1 节</a>中为了显示微博，创建了几个视图，但是结果有点不给力。为了改变这个悲剧，我们要在 <a href="chapter9.html#section-9-3-2">9.3.2 节</a>中用到的示例数据生成器中加入生成微博数据的代码。如果给所有的用户都生成一些微博的话要用很长的时间，所以我们暂且只给前六个用户<sup class="footnote" id="fnref-10-3"><a href="#fn-10-3" rel="footnote">3</a></sup>生成微博数据，这要用到 <code>User.all</code> 方法的 <code>:limit</code> 选项：<sup class="footnote" id="fnref-10-4"><a href="#fn-10-4" rel="footnote">4</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="ss">limit</span><span class="p">:</span> <span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>我们要为每个用户生成 50 篇微博（这个数量大于单页显示的 30 篇限制），使用 Faker gem 中简便的 <code>Lorem.sentence</code> 方法生成每篇微博的内容。（<code>Faker::Lorem.sentence</code> 生成的是 lorem ipsum 示例文字，我们在<a href="chapter6.html">第 6 章</a>中介绍过，lorem ipsum 背后有一段<a href="http://www.straightdope.com/columns/read/2290/what-does-the-filler-text-lorem-ipsum-mean">有趣的故事</a>。）代码 10.23 中显示的是修改后的示例数据生成器。</p>
+<p>我们要为每个用户生成 50 篇微博（这个数量大于单页显示的 30 篇限制），使用 Faker gem 中简便的 <code>Lorem.sentence</code> 方法生成每篇微博的内容。（<code>Faker::Lorem.sentence</code> 生成的是 lorem ipsum 示例文字，我们在<a href="chapter6.html">第 6 章</a>中介绍过，lorem ipsum 背后有一段<a href="http://www.straightdope.com/columns/read/2290/what-does-the-filler-text-lorem-ipsum-mean">有趣的故事</a>。）代码 10.20 中显示的是修改后的示例数据生成器。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-23"><p class="caption"><span>代码 10.23：</span>在示例数据生成器中加入生成微博的代码</p><p class="file"><code>lib/tasks/sample_data.rake</code></p><div class="highlight type-ruby"><pre><span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-10-20"><p class="caption"><span>代码 10.20：</span>在示例数据生成器中加入生成微博的代码</p><p class="file"><code>lib/tasks/sample_data.rake</code></p><div class="highlight type-ruby"><pre><span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
   <span class="n">desc</span> <span class="s2">"Fill database with sample data"</span>
   <span class="n">task</span> <span class="ss">populate</span><span class="p">:</span> <span class="ss">:environment</span> <span class="k">do</span>
     <span class="o">.</span>
@@ -871,20 +783,20 @@
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:reset
 <span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:populate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:test:prepare
+<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
-<p>然后，我们就能看到 <a href="chapter10.html#section-10-2-1">10.2.1 节</a>中劳动的果实了，在用户资料页面显示了生成的微博。<sup class="footnote" id="fnref-10-6"><a href="#fn-10-6" rel="footnote">6</a></sup>初步结果如图 10.6 所示。</p>
+<p>然后，我们就能看到 <a href="chapter10.html#section-10-2-1">10.2.1 节</a>中劳动的果实了，在用户资料页面显示了生成的微博。<sup class="footnote" id="fnref-10-5"><a href="#fn-10-5" rel="footnote">5</a></sup>初步结果如图 10.6 所示。</p>
 
 <div class="figure" id="figure-10-6">
   <img src="figures/user_profile_microposts_no_styling_bootstrap.png" alt="user profile microposts no styling bootstrap" /><p class="caption"><span>图 10.6：</span>用户资料页面（<a href="http://localhost/users/1">/users/1</a>）中显示的尚未样式化的微博列表</p>
 </div>
-<p>图 10.6 中显示的微博列表还没有加入样式，那我们就加入一些样式（参见代码 10.24）<sup class="footnote" id="fnref-10-7"><a href="#fn-10-7" rel="footnote">7</a></sup>，再看一下页面显示的效果。图 10.7 显示的是第一个用户（当前登录用户）的资料页面，图 10.8 显示的是另一个用户的资料页面，图 10.9 显示的是第一个用户资料页面的第 2 页，页面底部还显示了分页链接。注意观察这三幅图，我们可以看到微博后面显示了距离发布的时间（例如，“Posted 1 minute ago.”），这个效果是通过代码 10.21 中的 <code>time_ago_in_words</code> 方法实现的。过一会再刷新页面，你会发现这些文字依据当前时间自动更新了。</p>
+<p>图 10.6 中显示的微博列表还没有加入样式，那我们就加入一些样式（参见代码 10.21）<sup class="footnote" id="fnref-10-6"><a href="#fn-10-6" rel="footnote">6</a></sup>，再看一下页面显示的效果。图 10.7 显示的是第一个用户（当前登录用户）的资料页面，图 10.8 显示的是另一个用户的资料页面，图 10.9 显示的是第一个用户资料页面的第 2 页，页面底部还显示了分页链接。注意观察这三幅图，我们可以看到微博后面显示了距离发布的时间（例如，“Posted 1 minute ago.”），这个效果是通过代码 10.18 中的 <code>time_ago_in_words</code> 方法实现的。过一会再刷新页面，你会发现这些文字依据当前时间自动更新了。</p>
 
 <div class="figure" id="figure-10-7">
   <img src="figures/user_profile_with_microposts_bootstrap.png" alt="user profile with microposts bootstrap" /><p class="caption"><span>图 10.7：</span>显示了微博的用户资料页面（<a href="http://localhost:3000/users/1">/users/1</a>）</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-10-24"><p class="caption"><span>代码 10.24：</span>微博列表的样式（包含了本章用到的所有样式）</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="nc">.</span>
+<div class="codeblock has-caption" id="codeblock-10-21"><p class="caption"><span>代码 10.21：</span>微博列表的样式（包含了本章用到的所有样式）</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 
@@ -926,11 +838,11 @@
 <h2 id='section-10-3'><span>10.3</span> 微博相关的操作</h2>
 
 
-<p>微博的数据模型构建好了，也编写了相关的视图文件，接下来我们的开发重点是，通过网页发布微博。在实现的过程中，我们会第三次用到表单来创建资源，这一次创建的是 Microposts 资源<sup class="footnote" id="fnref-10-8"><a href="#fn-10-8" rel="footnote">8</a></sup>。本节，我们还会初步实现动态列表（status feed），在<a href="chapter11.html">第 11 章</a>再完善。最后，和 Users 资源类似，我们还要实现在网页中删除微博的功能。</p>
+<p>微博的数据模型构建好了，也编写了相关的视图文件，接下来我们的开发重点是，通过网页发布微博。在实现的过程中，我们会第三次用到表单来创建资源，这一次创建的是 Microposts 资源<sup class="footnote" id="fnref-10-7"><a href="#fn-10-7" rel="footnote">7</a></sup>。本节，我们还会初步实现动态列表（status feed），在<a href="chapter11.html">第 11 章</a>再完善。最后，和 Users 资源类似，我们还要实现在网页中删除微博的功能。</p>
 
-<p>上述功能的实现和之前的惯例有一点是不一样的地方，需要特别注意，那就是，Microposts 资源相关的页面不是通过 Microposts 控制器实现的，而是依赖于 Users 和 StaticPages 控制器。这也就意味着，Microposts 资源的路由设置是很简单的，如代码 10.25 所示。代码 10.25 中的代码所代表的符合 REST 结构的路由如<a href="chapter10.html#table-10-2">表格 10.2</a> 所示，表中的路由只是<a href="chapter2.html#table-2-3">表格 2.3</a> 的一部分。不过，路由虽然简化了，但预示着实现的过程需要更高级的技术，而不会减小代码的复杂度。从<a href="chapter2.html">第 2 章</a>起我们就十分依赖脚手架，不过现在我们将舍弃脚手架的大部分功能。</p>
+<p>上述功能的实现和之前的惯例有一点是不一样的地方，需要特别注意，那就是，Microposts 资源相关的页面不是通过 Microposts 控制器实现的，而是依赖于 Users 和 StaticPages 控制器。这也就意味着，Microposts 资源的路由设置是很简单的，如代码 10.22 所示。代码 10.22 中的代码所代表的符合 REST 结构的路由如<a href="chapter10.html#table-10-2">表格 10.2</a> 所示，表中的路由只是<a href="chapter2.html#table-2-3">表格 2.3</a> 的一部分。不过，路由虽然简化了，但预示着实现的过程需要更高级的技术，而不会减小代码的复杂度。从<a href="chapter2.html">第 2 章</a>起我们就十分依赖脚手架，不过现在我们将舍弃脚手架的大部分功能。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-25"><p class="caption"><span>代码 10.25：</span>Microposts 资源的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-10-22"><p class="caption"><span>代码 10.22：</span>Microposts 资源的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
   <span class="n">resources</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
@@ -943,7 +855,7 @@
 <div class="table has-caption" id="table-10-2">
   <p class="caption"><span>表格 10.2：</span>代码 10.25 设置的 Microposts 资源路由</p>
   <table><thead><tr><th>HTTP 请求</th>
-      <th>URI</th>
+      <th>URL</th>
       <th>动作</th>
       <th>作用</th>
     </tr></thead><tbody><tr><td>POST</td>
@@ -958,9 +870,9 @@
 <h3 id='section-10-3-1'><span>10.3.1</span> 访问限制</h3>
 
 
-<p>开发 Microposts 资源的第一步，我们要在 Microposts 控制器中实现访问限制。我们要实现的效果很简单：若要访问 <code>create</code> 和 <code>destroy</code> 动作就要先登录。针对访问限制的 RSpec 测试如代码 10.26 所示。（在 <a href="chapter10.html#section-10-3-4">10.3.4 节</a>中，我们还会测试并加入第三层保护措施，确保只有微博的发布者才能删除该微博。）</p>
+<p>开发 Microposts 资源的第一步，我们要在 Microposts 控制器中实现访问限制。我们要实现的效果很简单：若要访问 <code>create</code> 和 <code>destroy</code> 动作就要先登录。针对访问限制的 RSpec 测试如代码 10.23 所示。（在 <a href="chapter10.html#section-10-3-4">10.3.4 节</a>中，我们还会测试并加入第三层保护措施，确保只有微博的发布者才能删除该微博。）</p>
 
-<div class="codeblock has-caption" id="codeblock-10-26"><p class="caption"><span>代码 10.26：</span>限制访问 Microposts 资源的测试</p><p class="file"><code>spec/requests/authentication_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-23"><p class="caption"><span>代码 10.23：</span>限制访问 Microposts 资源的测试</p><p class="file"><code>spec/requests/authentication_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Authentication"</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -977,12 +889,12 @@
 
         <span class="n">describe</span> <span class="s2">"submitting to the create action"</span> <span class="k">do</span>
           <span class="n">before</span> <span class="p">{</span> <span class="n">post</span> <span class="n">microposts_path</span> <span class="p">}</span>
-          <span class="n">specify</span> <span class="p">{</span> <span class="n">response</span><span class="o">.</span><span class="n">should</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">end</span>
 
         <span class="n">describe</span> <span class="s2">"submitting to the destroy action"</span> <span class="k">do</span>
           <span class="n">before</span> <span class="p">{</span> <span class="n">delete</span> <span class="n">micropost_path</span><span class="p">(</span><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">))</span> <span class="p">}</span>
-          <span class="n">specify</span> <span class="p">{</span> <span class="n">response</span><span class="o">.</span><span class="n">should</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">end</span>
       <span class="k">end</span>
       <span class="o">.</span>
@@ -995,9 +907,9 @@
 </div>
 <p>上述代码没有使用即将实现的网页界面，而是直接在 Microposts 控制器层面操作：如果向 /microposts 发送 POST 请求（<code>POST microposts_path</code> 访问的是 <code>create</code> 动作），或者向 /microposts/1 发送 DELETE 请求（<code>delete micropost_path(micropost)</code> 访问的是 <code>destroy</code> 动作），则会转向登录页面——我们在代码 9.14 中就用过这种方法。</p>
 
-<p>我们要先对程序的代码做点重构，然后再加入程序中，让代码 10.26 中的测试通过。在 <a href="chapter9.html#section-9-2-1">9.2.1 节</a>中，我们定义了一个名为 <code>signed_in_user</code> 的事前过滤器（参见代码 9.12），确保访问相关的动作之前用户要先登录。那时，我们只需要在 Users 控制器中使用这个事前过滤器，但是现在我们在 Microposts 控制器中也要用到，那么我们就把它移到 Sessions 的帮助方法中，如代码 10.27 所示。<sup class="footnote" id="fnref-10-9"><a href="#fn-10-9" rel="footnote">9</a></sup></p>
+<p>我们要先对程序的代码做点重构，然后再加入程序中，让代码 10.23 中的测试通过。在 <a href="chapter9.html#section-9-2-1">9.2.1 节</a>中，我们定义了一个名为 <code>signed_in_user</code> 的事前过滤器（参见代码 9.12），确保访问相关的动作之前用户要先登录。那时，我们只需要在 Users 控制器中使用这个事前过滤器，但是现在我们在 Microposts 控制器中也要用到，那么我们就把它移到 Sessions 的帮助方法中，如代码 10.24 所示。<sup class="footnote" id="fnref-10-8"><a href="#fn-10-8" rel="footnote">8</a></sup></p>
 
-<div class="codeblock has-caption" id="codeblock-10-27"><p class="caption"><span>代码 10.27：</span>把 <code>signed_in_user</code> 方法移到 Sessions 帮助方法中</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
+<div class="codeblock has-caption" id="codeblock-10-24"><p class="caption"><span>代码 10.24：</span>把 <code>signed_in_user</code> 方法移到 Sessions 帮助方法中</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1019,10 +931,10 @@
 </div>
 <p>为了避免代码重复，同时还要把 <code>signed_in_user</code> 从 Users 控制器中删掉。</p>
 
-<p>加入了代码 10.27 之后，我们就可以在 Microposts 控制器中使用 <code>signed_in_user</code> 方法了，因此我们就可以使用代码 10.28 中的事前过滤器来限制访问 <code>create</code> 和 <code>destroy</code> 动作了。（因为我们没有使用命令行生成 Microposts 控制器文件，因此需要手动创建。）</p>
+<p>加入了代码 10.24 之后，我们就可以在 Microposts 控制器中使用 <code>signed_in_user</code> 方法了，因此我们就可以使用代码 10.25 中的事前过滤器来限制访问 <code>create</code> 和 <code>destroy</code> 动作了。（因为我们没有使用命令行生成 Microposts 控制器文件，因此需要手动创建。）</p>
 
-<div class="codeblock has-caption" id="codeblock-10-28"><p class="caption"><span>代码 10.28：</span>在 Microposts 控制器中加入访问限制功能</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_filter</span> <span class="ss">:signed_in_user</span>
+<div class="codeblock has-caption" id="codeblock-10-25"><p class="caption"><span>代码 10.25：</span>在 Microposts 控制器中加入访问限制功能</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span>
 
   <span class="k">def</span> <span class="nf">create</span>
   <span class="k">end</span>
@@ -1035,7 +947,7 @@
 <p>注意，我们没有明确指定事前过滤器要限制的动作有哪几个，因为默认情况下仅有的两个动作都会被限制。如果我们要加入第三个动作，例如 <code>index</code> 动作，未登录的用户可以访问，那么我们就要明确的指定要限制的动作了：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_filter</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
 
   <span class="k">def</span> <span class="nf">index</span>
   <span class="k">end</span>
@@ -1058,7 +970,7 @@
 
 <p>在<a href="chapter7.html">第 7 章</a>中，我们实现了用户注册功能，方法是使用 HTML 表单向 Users 控制器的 <code>create</code> 动作发送 POST 请求。创建微博的功能实现起来是类似的，最大的不同点在于，表单不是放在单独的页面 /microposts/new 中，而是在网站的首页（模仿 Twitter，在根地址 <a href="http://localhost:3000">/</a>），构思图如图 10.10 所示。</p>
 
-<p>上一次接触首页时，是图 5.6 那个样子，在页面中部有个“Sign up now!”链接按钮。因为创建微博的表单只对登录后的用户有用，所以本节的目标之一就是根据用户的登录状态显示不同的首页内容，如代码 10.31 所示，不过在此之前，我们可以先编写测试。和用户资源一样，我们要使用集成测试：</p>
+<p>上一次接触首页时，是图 5.6 那个样子，在页面中部有个“Sign up now!”链接按钮。因为创建微博的表单只对登录后的用户有用，所以本节的目标之一就是根据用户的登录状态显示不同的首页内容，如代码 10.28 所示，不过在此之前，我们可以先编写测试。和用户资源一样，我们要使用集成测试：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate integration_test micropost_page
 </pre></div>
@@ -1066,9 +978,9 @@
 <div class="figure" id="figure-10-10">
   <img src="figures/home_page_with_micropost_form_mockup_bootstrap.png" alt="home page with micropost form mockup bootstrap" /><p class="caption"><span>图 10.10：</span>包含创建微博表单的首页构思图</p>
 </div>
-<p>对创建微博功能的测试和对创建用户功能的测试（参见代码 7.16）类似，如代码 10.29 所示：</p>
+<p>对创建微博功能的测试和对创建用户功能的测试（参见代码 7.16）类似，如代码 10.26 所示：</p>
 
-<div class="codeblock has-caption" id="codeblock-10-29"><p class="caption"><span>代码 10.29：</span>对创建微博功能的测试</p><p class="file"><code>spec/requests/micropost_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-26"><p class="caption"><span>代码 10.26：</span>对创建微博功能的测试</p><p class="file"><code>spec/requests/micropost_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Micropost pages"</span> <span class="k">do</span>
 
@@ -1103,13 +1015,13 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>下面我们来编写 Microposts 控制器 <code>create</code> 动作的代码，和 Users 控制器的有点类似（参见代码 7.25），主要的区别是，创建微博时，要使用用户和微博的关联关系来构建微博对象，如代码 10.30 所示。</p>
+<p>下面我们来编写 Microposts 控制器 <code>create</code> 动作的代码，和 Users 控制器的有点类似（参见代码 7.26），主要的区别是，创建微博时，要使用用户和微博的关联关系来构建微博对象，如代码 10.27 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-30"><p class="caption"><span>代码 10.30：</span>Microposts 控制器的 <code>create</code> 动作</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_filter</span> <span class="ss">:signed_in_user</span>
+<div class="codeblock has-caption" id="codeblock-10-27"><p class="caption"><span>代码 10.27：</span>Microposts 控制器的 <code>create</code> 动作</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span>
 
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:micropost</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">micropost_params</span><span class="p">)</span>
     <span class="k">if</span> <span class="vi">@micropost</span><span class="o">.</span><span class="n">save</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Micropost created!"</span>
       <span class="n">redirect_to</span> <span class="n">root_url</span>
@@ -1120,12 +1032,18 @@
 
   <span class="k">def</span> <span class="nf">destroy</span>
   <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+    <span class="k">def</span> <span class="nf">micropost_params</span>
+      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span>
+    <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>我们使用代码 10.31 来构建创建微博所需的表单，这个视图会根据用户的登录状态显示不同的 HTML 内容。</p>
+<p>我们使用代码 10.28 来构建创建微博所需的表单，这个视图会根据用户的登录状态显示不同的 HTML 内容。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-31"><p class="caption"><span>代码 10.31：</span>在首页中加入创建微博所需的表单</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-28"><p class="caption"><span>代码 10.28：</span>在首页中加入创建微博所需的表单</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;div class="row"&gt;</span>
 <span class="x">    &lt;aside class="span4"&gt;</span>
 <span class="x">      &lt;section&gt;</span>
@@ -1154,9 +1072,9 @@
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>上述代码中 <code>if-else</code> 条件语句的各分支包含的代码太多，有点乱，在练习中（<a href="chapter10.html#section-10-5">10.5 节</a>）我们会进行优化，把分支中的代码放入局部视图中。不过代码 10.31 中用到的局部视图不会留作练习，现在就来创建：用户信息侧边栏局部视图如代码 10.32 所示，创建微博的表单局部视图如代码 10.33 所示。</p>
+<p>上述代码中 <code>if-else</code> 条件语句的各分支包含的代码太多，有点乱，在练习中（<a href="chapter10.html#section-10-5">10.5 节</a>）我们会进行优化，把分支中的代码放入局部视图中。不过代码 10.28 中用到的局部视图不会留作练习，现在就来创建：用户信息侧边栏局部视图如代码 10.29 所示，创建微博的表单局部视图如代码 10.30 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-32"><p class="caption"><span>代码 10.32：</span>用户信息侧边栏局部视图</p><p class="file"><code>app/views/shared/_user_info.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;a href="</span><span class="cp">&lt;%=</span> <span class="n">user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-10-29"><p class="caption"><span>代码 10.29：</span>用户信息侧边栏局部视图</p><p class="file"><code>app/views/shared/_user_info.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;a href="</span><span class="cp">&lt;%=</span> <span class="n">user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
 <span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">current_user</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">52</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;/a&gt;</span>
 <span class="x">&lt;h1&gt;</span>
@@ -1170,13 +1088,13 @@
 <span class="x">&lt;/span&gt;</span>
 </pre></div>
 </div>
-<p>和代码 9.25 一样，代码 10.32 使用了代码 7.29 中定义的 <code>gravatar_for</code> 帮助方法。</p>
+<p>和代码 9.25 一样，代码 10.29 使用了代码 7.30 中定义的 <code>gravatar_for</code> 帮助方法。</p>
 
-<p>注意，和用户资料页面的侧边栏类似（参见代码 10.20），代码 10.32 中的用户信息也显示了用户发布的微博数量。不过显示上有细微的差别，在用户资料页面的侧边栏中，“Microposts” 是作为标签使用的，所以“Microposts (1)”这样的用法是合理的。而在本例中，如果说“1 microposts”的话就有点不合语法了，所以我们调用了 <code>pluralize</code> 方法，显示成“1 micropost”，“2 microposts”等。</p>
+<p>注意，和用户资料页面的侧边栏类似（参见代码 10.20），代码 10.29 中的用户信息也显示了用户发布的微博数量。不过显示上有细微的差别，在用户资料页面的侧边栏中，“Microposts” 是作为标签使用的，所以“Microposts (1)”这样的用法是合理的。而在本例中，如果说“1 microposts”的话就有点不合语法了，所以我们调用了 <code>pluralize</code> 方法，显示成“1 micropost”，“2 microposts”等。</p>
 
-<p>下面我们来编写创建微博表单的局部视图，如代码 10.33 所示，和代码 7.17 中的注册表单是类似的。</p>
+<p>下面我们来编写创建微博表单的局部视图，如代码 10.30 所示，和代码 7.17 中的注册表单是类似的。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-33"><p class="caption"><span>代码 10.33：</span>创建微博表单局部视图</p><p class="file"><code>app/views/shared/_micropost_form.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@micropost</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-30"><p class="caption"><span>代码 10.30：</span>创建微博表单局部视图</p><p class="file"><code>app/views/shared/_micropost_form.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@micropost</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/error_messages'</span><span class="p">,</span> <span class="ss">object</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">object</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;div class="field"&gt;</span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_area</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">placeholder</span><span class="p">:</span> <span class="s2">"Compose new micropost..."</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -1185,14 +1103,14 @@
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>如果要代码 10.33 中的表单可用，我们还要做两件事。第一，（和之前一样）我们要通过关联关系定义 <code>@micropost</code> 变量：</p>
+<p>如果要代码 10.30 中的表单可用，我们还要做两件事。第一，（和之前一样）我们要通过关联关系定义 <code>@micropost</code> 变量：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span>
 </pre></div>
 </div>
-<p>写入控制器后如代码 10.34 所示。</p>
+<p>写入控制器后如代码 10.31 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-34"><p class="caption"><span>代码 10.34：</span>在 <code>home</code> 动作中定义 <code>@micropost</code> 实例变量</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="codeblock has-caption" id="codeblock-10-31"><p class="caption"><span>代码 10.31：</span>在 <code>home</code> 动作中定义 <code>@micropost</code> 实例变量</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
   <span class="k">def</span> <span class="nf">home</span>
     <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span> <span class="k">if</span> <span class="n">signed_in?</span>
@@ -1203,18 +1121,18 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>代码 10.34 中的代码有一个好处，如果我们忘记加入要求用户登录的限制，相应的测试会失败。</p>
+<p>代码 10.31 中的代码有一个好处，如果我们忘记加入要求用户登录的限制，相应的测试会失败。</p>
 
-<p>我们要做的第二件事是，重写错误提示信息局部视图，让 <code>&lt;%= render 'shared/error_messages', object: f.object %&gt;</code> 这行代码能正确运行。你可能还记得，在代码 7.22 中，错误提示信息的局部视图代码直接引用了 <code>@user</code> 变量，但现在我们提供的变量却是 <code>@micropost</code>。因此，我们要编写一个新的错误提示信息局部视图，不管传入的是什么变量，都能正常使用。幸好，表单的块变量 <code>f</code> 可以通过 <code>f.object</code> 获取当前的对象，因此，在 <code>form_for(@user) do |f|</code> 中，<code>f.object</code> 的返回值是 <code>@user</code>；在 <code>form_for(@micropost) do |f|</code> 中，<code>f.object</code> 的返回值是 <code>@micropost</code>。</p>
+<p>我们要做的第二件事是，重写错误提示信息局部视图，让 <code>&lt;%= render 'shared/error_messages', object: f.object %&gt;</code> 这行代码能正确运行。你可能还记得，在代码 7.23 中，错误提示信息的局部视图代码直接引用了 <code>@user</code> 变量，但现在我们提供的变量却是 <code>@micropost</code>。因此，我们要编写一个新的错误提示信息局部视图，不管传入的是什么变量，都能正常使用。幸好，表单的块变量 <code>f</code> 可以通过 <code>f.object</code> 获取当前的对象，因此，在 <code>form_for(@user) do |f|</code> 中，<code>f.object</code> 的返回值是 <code>@user</code>；在 <code>form_for(@micropost) do |f|</code> 中，<code>f.object</code> 的返回值是 <code>@micropost</code>。</p>
 
 <p>我们要通过一个 Hash 把对象传入局部视图，其值是该对象，键是局部视图中所需的变量名称，如下面的代码所示：</p>
 
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/error_messages'</span><span class="p">,</span> <span class="ss">object</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">object</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>换句话说，<code>object: f.object</code> 会创建一个名为 <code>object</code> 的变量，供 <code>error_messages</code> 局部视图使用。利用这个对象，我们就可以编写不同的错误提示信息，如代码 10.35 所示。</p>
+<p>换句话说，<code>object: f.object</code> 会创建一个名为 <code>object</code> 的变量，供 <code>error_messages</code> 局部视图使用。利用这个对象，我们就可以编写不同的错误提示信息，如代码 10.32 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-35"><p class="caption"><span>代码 10.35：</span>修改代码 7.23 中的错误提示信息局部视图，如果传入其他对象也可以使用</p><p class="file"><code>app/views/shared/_error_messages.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">object</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-32"><p class="caption"><span>代码 10.32：</span>修改代码 7.23 中的错误提示信息局部视图，如果传入其他对象也可以使用</p><p class="file"><code>app/views/shared/_error_messages.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">object</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;div id="error_explanation"&gt;</span>
 <span class="x">    &lt;div class="alert alert-error"&gt;</span>
 <span class="x">      The form contains </span><span class="cp">&lt;%=</span> <span class="n">pluralize</span><span class="p">(</span><span class="n">object</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">.</span>
@@ -1228,14 +1146,14 @@
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>现在，代码 10.29 中的测试应该可以通过了：</p>
+<p>现在，代码 10.26 中的测试应该可以通过了：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/micropost_pages_spec.rb
 </pre></div>
 </div>
-<p>不过，Users 资源相关视图的 request spec 测试却失败了，因为注册和编辑用户的表单使用的仍是旧的错误提示信息局部视图。要想修正这个错误，就要换用新的局部视图，如代码 10.36 和代码 10.37 所示。（注意：如果你加入了 <a href="chapter9.html#section-9-6">9.6 节</a>练习中的代码 9.50 和代码 9.51，那么要修改的代码有点不一样，需要做适当的修改。）</p>
+<p>不过，Users 资源相关视图的 request spec 测试却失败了，因为注册和编辑用户的表单使用的仍是旧的错误提示信息局部视图。要想修正这个错误，就要换用新的局部视图，如代码 10.33 和代码 10.34 所示。（注意：如果你加入了 <a href="chapter9.html#section-9-6">9.6 节</a>练习中的代码 9.50 和代码 9.51，那么要修改的代码有点不一样，需要做适当的修改。）</p>
 
-<div class="codeblock has-caption" id="codeblock-10-36"><p class="caption"><span>代码 10.36：</span>修改用户注册表单的错误提示信息局部视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-33"><p class="caption"><span>代码 10.33：</span>修改用户注册表单的错误提示信息局部视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Sign up&lt;/h1&gt;</span>
 
 <span class="x">&lt;div class="row"&gt;</span>
@@ -1253,7 +1171,7 @@
 <div class="figure" id="figure-10-11">
   <img src="figures/home_with_form_bootstrap.png" alt="home with form bootstrap" /><p class="caption"><span>图 10.11：</span>显示有创建微博表单的首页（<a href="http://localhost:3000/">/</a>）</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-10-37"><p class="caption"><span>代码 10.37：</span>修改编辑用户表单的错误提示信息局部视图</p><p class="file"><code>app/views/users/edit.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Edit user"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-34"><p class="caption"><span>代码 10.34：</span>修改编辑用户表单的错误提示信息局部视图</p><p class="file"><code>app/views/users/edit.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Edit user"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Update your profile&lt;/h1&gt;</span>
 
 <span class="x">&lt;div class="row"&gt;</span>
@@ -1289,9 +1207,9 @@
 <div class="figure" id="figure-10-13">
   <img src="figures/proto_feed_mockup_bootstrap.png" alt="proto feed mockup bootstrap" /><p class="caption"><span>图 10.13：</span>显示有临时动态列表的首页构思图</p>
 </div>
-<p>因为每个用户都应该有一个动态列表，因此我们可以在 User 模型中定义一个名为 <code>feed</code> 的方法。等功能全部实现后，我们会测试微博列表中是否包含了所关注用户的微博，不过现在我们只需要测试 <code>feed</code> 方法的返回值是否只有当前登入用户的微博，而没有其他用户的微博。测试所需的代码如代码 10.38 所示。</p>
+<p>因为每个用户都应该有一个动态列表，因此我们可以在 User 模型中定义一个名为 <code>feed</code> 的方法。等功能全部实现后，我们会测试微博列表中是否包含了所关注用户的微博，不过现在我们只需要测试 <code>feed</code> 方法的返回值是否只有当前登入用户的微博，而没有其他用户的微博。测试所需的代码如代码 10.35 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-38"><p class="caption"><span>代码 10.38：</span>对临时动态列表的测试</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-35"><p class="caption"><span>代码 10.35：</span>对临时动态列表的测试</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -1327,7 +1245,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>上述代码，在数组上调用了 <code>include?</code> 方法（基于 RSpec 对布尔值方法的约定），该方法的作用是检查数组中是否包含指定的元素：<sup class="footnote" id="fnref-10-10"><a href="#fn-10-10" rel="footnote">10</a></sup></p>
+<p>上述代码，在数组上调用了 <code>include?</code> 方法（基于 RSpec 对布尔值方法的约定），该方法的作用是检查数组中是否包含指定的元素：<sup class="footnote" id="fnref-10-9"><a href="#fn-10-9" rel="footnote">9</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
 &gt;&gt; <span class="nv">a</span> <span class="o">=</span> <span class="o">[</span>1, <span class="s2">"foo"</span>, :bar<span class="o">]</span>
@@ -1341,9 +1259,9 @@
 </div>
 <p>这段代码说明了 RSpec 对布尔值方法的约定是多么的灵活，虽然 <code>include</code> 是 Ruby 语言的关键字（用来引入模块，在代码 8.14 中有用到），但在当前语境中，RSpec 依然能正确的识别我们的意图是要测试数组是否包含了指定的元素。</p>
 
-<p>在编写 <code>feed</code> 方法时，我们需要从数据库中取出所有 <code>user_id</code> 等于当前用户 id 的微博，要在 <code>Micropost</code> 对象上调用 <code>where</code> 方法，如代码 10.39 所示。<sup class="footnote" id="fnref-10-11"><a href="#fn-10-11" rel="footnote">11</a></sup></p>
+<p>在编写 <code>feed</code> 方法时，我们需要从数据库中取出所有 <code>user_id</code> 等于当前用户 id 的微博，要在 <code>Micropost</code> 对象上调用 <code>where</code> 方法，如代码 10.36 所示。<sup class="footnote" id="fnref-10-10"><a href="#fn-10-10" rel="footnote">10</a></sup></p>
 
-<div class="codeblock has-caption" id="codeblock-10-39"><p class="caption"><span>代码 10.39：</span>动态列表的初步实现</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-36"><p class="caption"><span>代码 10.36：</span>动态列表的初步实现</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1359,7 +1277,7 @@
 </div>
 <p><code>Micropost.where("user_id = ?", id)</code> 中的问号可以确保 <code>id</code> 的值在传入底层的 SQL 查询语句之前做了适当的转义，避免“SQL 注入”这种严重的安全隐患。这里用到的 <code>id</code> 属性是个整数，没什么危险，不过在 SQL 语句中引入变量之前做转义是个好习惯。</p>
 
-<p>细心的读者可能已经注意到了，现阶段代码 10.39 中的代码和下面的定义作用是一样的：</p>
+<p>细心的读者可能已经注意到了，现阶段代码 10.36 中的代码和下面的定义作用是一样的：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">feed</span>
   <span class="n">microposts</span>
@@ -1368,9 +1286,9 @@
 </div>
 <p>我们之所以使用了代码 10.39 的版本，是因为它能更好的服务于<a href="chapter11.html">第 11 章</a>中实现的完整的动态列表。</p>
 
-<p>要测试动态列表的显示，我们首先要创建一些微博，然后检测各微博在页面中是否均包含在列表元素 <code>li</code> 中，如代码 10.40 所示。</p>
+<p>要测试动态列表的显示，我们首先要创建一些微博，然后检测各微博在页面中是否均包含在列表元素 <code>li</code> 中，如代码 10.37 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-40"><p class="caption"><span>代码 10.40：</span>测试首页显示的微博列表</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-37"><p class="caption"><span>代码 10.37：</span>测试首页显示的微博列表</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -1391,7 +1309,7 @@
 
       <span class="n">it</span> <span class="s2">"should render the user's feed"</span> <span class="k">do</span>
         <span class="n">user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
-          <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s2">"li#</span><span class="si">#{</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+          <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s2">"li#</span><span class="si">#{</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="k">end</span>
       <span class="k">end</span>
     <span class="k">end</span>
@@ -1402,16 +1320,16 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>代码 10.40 假设所显示的每篇微博都有唯一的 CSS id，所以如下代码</p>
+<p>代码 10.37 假设所显示的每篇微博都有唯一的 CSS id，所以如下代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s2">"li#</span><span class="si">#{</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s2">"li#</span><span class="si">#{</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>会为每个微博生成一个匹配器。（注意，<code>li##{item.id}</code> 中的第一个 <code>#</code> 是 Capybara 中的对应 CSS id 的句法，而第二个 <code>#</code> 则代表 Ruby 字符串插值操作 <code>#{}</code> 的开始。）</p>
 
-<p>要在示例程序中使用动态列表，我们可以在 <code>home</code> 动作中定义一个 <code>@feed_items</code> 实例变量，如代码 10.41 所示。然后再在首页中（参见代码 10.44）加入一个动态列表局部视图（参见代码 10.42）。（对分页的测试会留作练习，参见 <a href="chapter10.html#section-10-5">10.5 节</a>。）</p>
+<p>要在示例程序中使用动态列表，我们可以在 <code>home</code> 动作中定义一个 <code>@feed_items</code> 实例变量，如代码 10.38 所示。然后再在首页（参见代码 10.41）中加入一个动态列表局部视图（参见代码 10.39）。（对分页的测试会留作练习，参见 <a href="chapter10.html#section-10-5">10.5 节</a>。）</p>
 
-<div class="codeblock has-caption" id="codeblock-10-41"><p class="caption"><span>代码 10.41：</span>在 <code>home</code> 动作中加入一个实例变量</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="codeblock has-caption" id="codeblock-10-38"><p class="caption"><span>代码 10.38：</span>在 <code>home</code> 动作中加入一个实例变量</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
   <span class="k">def</span> <span class="nf">home</span>
     <span class="k">if</span> <span class="n">signed_in?</span>
@@ -1425,7 +1343,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-10-42"><p class="caption"><span>代码 10.42：</span>动态列表局部视图</p><p class="file"><code>app/views/shared/_feed.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@feed_items</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-39"><p class="caption"><span>代码 10.39：</span>动态列表局部视图</p><p class="file"><code>app/views/shared/_feed.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@feed_items</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;ol class="microposts"&gt;</span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="ss">partial</span><span class="p">:</span> <span class="s1">'shared/feed_item'</span><span class="p">,</span> <span class="ss">collection</span><span class="p">:</span> <span class="vi">@feed_items</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;/ol&gt;</span>
@@ -1438,9 +1356,9 @@
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="ss">partial</span><span class="p">:</span> <span class="s1">'shared/feed_item'</span><span class="p">,</span> <span class="ss">collection</span><span class="p">:</span> <span class="vi">@feed_items</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>我们传入了一个名为 <code>:collection</code> 的参数，其值为 <code>@feed_items</code>，这样 <code>render</code> 方法就会在指定的局部视图中（本例中的 <code>feed_item</code>）使用这个集合中的数据渲染各项目。（之前，在渲染局部视图时，我们都省略了 <code>:partial</code> 参数，例如 <code>render 'shared/micropost'</code>，不过如果指定了 <code>:collection</code> 参数，这种省略的用法就是错误的。）列表项目局部视图的代码如代码 10.43 所示。</p>
+<p>我们传入了一个名为 <code>:collection</code> 的参数，其值为 <code>@feed_items</code>，这样 <code>render</code> 方法就会在指定的局部视图中（本例中的 <code>feed_item</code>）使用这个集合中的数据渲染各项目。（之前，在渲染局部视图时，我们都省略了 <code>:partial</code> 参数，例如 <code>render 'shared/micropost'</code>，不过如果指定了 <code>:collection</code> 参数，这种省略的用法就是错误的。）列表项目局部视图的代码如代码 10.40 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-43"><p class="caption"><span>代码 10.43：</span>渲染单个动态列表项目的局部视图</p><p class="file"><code>app/views/shared/_feed_item.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li id="</span><span class="cp">&lt;%=</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">id</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-10-40"><p class="caption"><span>代码 10.40：</span>渲染单个动态列表项目的局部视图</p><p class="file"><code>app/views/shared/_feed_item.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li id="</span><span class="cp">&lt;%=</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">id</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
 <span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">gravatar_for</span><span class="p">(</span><span class="n">feed_item</span><span class="o">.</span><span class="n">user</span><span class="p">),</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;span class="user"&gt;</span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -1452,16 +1370,16 @@
 <span class="x">&lt;/li&gt;</span>
 </pre></div>
 </div>
-<p>代码 10.43 还使用如下的代码为每个动态项目指定了 CSS id：</p>
+<p>代码 10.40 还使用如下的代码为每个动态项目指定了 CSS id：</p>
 
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;li id="</span><span class="cp">&lt;%=</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">id</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
 </pre></div>
 </div>
-<p>这正是代码 10.40 中的测试所要检测的。</p>
+<p>这正是代码 10.37 中的测试所要检测的。</p>
 
-<p>和之前一样，我们可以把动态列表局部视图加入首页来显示动态，如代码 10.44 所示。加入后的效果就是在首页显示了动态列表，和预期一样，如图 10.14 所示。</p>
+<p>和之前一样，我们可以把动态列表局部视图加入首页来显示动态，如代码 10.41 所示。加入后的效果就是在首页显示了动态列表，和预期一样，如图 10.14 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-44"><p class="caption"><span>代码 10.44：</span>在首页中加入动态列表</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-10-41"><p class="caption"><span>代码 10.41：</span>在首页中加入动态列表</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;div class="row"&gt;</span>
 <span class="x">    .</span>
 <span class="x">    .</span>
@@ -1481,17 +1399,17 @@
 <div class="figure" id="figure-10-14">
   <img src="figures/home_with_proto_feed_bootstrap.png" alt="home with proto feed bootstrap" /><p class="caption"><span>图 10.14：</span>显示了临时动态列表的首页（<a href="http://localhost:3000/">/</a>）</p>
 </div>
-<p>现在，发布新微博的功能可以按照预期正常工作了，如图 10.15 所示。不过还有个小小不足：如果发布微博失败，首页还会需要一个名为 <code>@feed_items</code> 的实例变量，所以提交失败时网站就无法正常运行了（你也可以运行测试来验证一下）。最简单的解决方法是，如果提交失败就把 <code>@feed_items</code> 设为空数组，如代码 10.45 所示。<sup class="footnote" id="fnref-10-12"><a href="#fn-10-12" rel="footnote">12</a></sup></p>
+<p>现在，发布新微博的功能可以按照预期正常工作了，如图 10.15 所示。不过还有个小小不足：如果发布微博失败，首页还会需要一个名为 <code>@feed_items</code> 的实例变量，所以提交失败时网站就无法正常运行了（你也可以运行测试来验证一下）。最简单的解决方法是，如果提交失败就把 <code>@feed_items</code> 设为空数组，如代码 10.42 所示。<sup class="footnote" id="fnref-10-11"><a href="#fn-10-11" rel="footnote">11</a></sup></p>
 
 <div class="figure" id="figure-10-15">
   <img src="figures/micropost_created_bootstrap.png" alt="micropost created bootstrap" /><p class="caption"><span>图 10.15：</span>发布新微博后的首页</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-10-45"><p class="caption"><span>代码 10.45：</span>在 <code>create</code> 动作加入一个空的 <code>@feed_items</code> 实例变量</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="codeblock has-caption" id="codeblock-10-42"><p class="caption"><span>代码 10.42：</span>在 <code>create</code> 动作加入一个空的 <code>@feed_items</code> 实例变量</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:micropost</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">micropost_params</span><span class="p">)</span>
     <span class="k">if</span> <span class="vi">@micropost</span><span class="o">.</span><span class="n">save</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Micropost created!"</span>
       <span class="n">redirect_to</span> <span class="n">root_url</span>
@@ -1519,9 +1437,9 @@
 <div class="figure" id="figure-10-16">
   <img src="figures/micropost_delete_links_mockup_bootstrap.png" alt="micropost delete links mockup bootstrap" /><p class="caption"><span>图 10.16：</span>显示有删除链接的临时动态列表构思图</p>
 </div>
-<p>第一步，我们要在微博局部视图（代码 10.21）中加入删除链接，同时还要在动态列表项目的局部视图（代码 10.43）中加入类似的链接，结果如代码 10.46 和代码 10.47 所示。（这两个局部视图基本上是一样的，消除代码重复会留作练习，参见 <a href="chapter10.html#section-10-5">10.5 节</a>。）</p>
+<p>第一步，我们要在微博局部视图（代码 10.21）中加入删除链接，同时还要在动态列表项目的局部视图（代码 10.40）中加入类似的链接，结果如代码 10.43 和代码 10.44 所示。（这两个局部视图基本上是一样的，消除代码重复会留作练习，参见 <a href="chapter10.html#section-10-5">10.5 节</a>。）</p>
 
-<div class="codeblock has-caption" id="codeblock-10-46"><p class="caption"><span>代码 10.46：</span>在微博局部视图中加入删除链接</p><p class="file"><code>app/views/microposts/_micropost.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li&gt;</span>
+<div class="codeblock has-caption" id="codeblock-10-43"><p class="caption"><span>代码 10.43：</span>在微博局部视图中加入删除链接</p><p class="file"><code>app/views/microposts/_micropost.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li&gt;</span>
 <span class="x">  &lt;span class="content"&gt;</span><span class="cp">&lt;%=</span> <span class="n">micropost</span><span class="o">.</span><span class="n">content</span> <span class="cp">%&gt;</span><span class="x">&lt;/span&gt;</span>
 <span class="x">  &lt;span class="timestamp"&gt;</span>
 <span class="x">    Posted </span><span class="cp">&lt;%=</span> <span class="n">time_ago_in_words</span><span class="p">(</span><span class="n">micropost</span><span class="o">.</span><span class="n">created_at</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> ago.</span>
@@ -1534,7 +1452,7 @@
 <span class="x">&lt;/li&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-10-47"><p class="caption"><span>代码 10.47：</span>在动态列表项目局部视图中加入删除链接</p><p class="file"><code>app/views/shared/_feed_item.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li id="</span><span class="cp">&lt;%=</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">id</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-10-44"><p class="caption"><span>代码 10.44：</span>在动态列表项目局部视图中加入删除链接</p><p class="file"><code>app/views/shared/_feed_item.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li id="</span><span class="cp">&lt;%=</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">id</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
 <span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">gravatar_for</span><span class="p">(</span><span class="n">feed_item</span><span class="o">.</span><span class="n">user</span><span class="p">),</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    &lt;span class="user"&gt;</span>
 <span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">feed_item</span><span class="o">.</span><span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -1551,9 +1469,9 @@
 <span class="x">&lt;/li&gt;</span>
 </pre></div>
 </div>
-<p>对删除微博的测试要用 Capybara 来点击“delete”链接，然后检测微博的数量是否减少了一个，如代码 10.48 所示。</p>
+<p>对删除微博的测试要用 Capybara 来点击“delete”链接，然后检测微博的数量是否减少了一个，如代码 10.45 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-48"><p class="caption"><span>代码 10.48：</span>针对 Microposts 控制器 <code>destroy</code> 动作的测试</p><p class="file"><code>spec/requests/micropost_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-10-45"><p class="caption"><span>代码 10.45：</span>针对 Microposts 控制器 <code>destroy</code> 动作的测试</p><p class="file"><code>spec/requests/micropost_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Micropost pages"</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -1573,11 +1491,11 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>程序所需的代码还是和代码 9.48 中删除用户时类似，两种情况的主要不同之处是，删除微博不使用 <code>admin_user</code> 事前过滤器了，而是用 <code>correct_user</code> 事前过滤器，检查当前用户是否发布了指定 id 的微博，如代码 10.49 所示。图 10.17 显示的是删除了倒数第二个微博后的页面。</p>
+<p>程序所需的代码还是和代码 9.47 中删除用户时类似，两种情况的主要不同之处是，删除微博不使用 <code>admin_user</code> 事前过滤器了，而是用 <code>correct_user</code> 事前过滤器，检查当前用户是否发布了指定 id 的微博，如代码 10.46 所示。图 10.17 显示的是删除了倒数第二个微博后的页面。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-49"><p class="caption"><span>代码 10.49：</span>Microposts 控制器的 <code>destroy</code> 动作</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_filter</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
-  <span class="n">before_filter</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="ss">:destroy</span>
+<div class="codeblock has-caption" id="codeblock-10-46"><p class="caption"><span>代码 10.46：</span>Microposts 控制器的 <code>destroy</code> 动作</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="ss">:destroy</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1588,8 +1506,12 @@
 
   <span class="kp">private</span>
 
+    <span class="k">def</span> <span class="nf">micropost_params</span>
+      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span>
+    <span class="k">end</span>
+
     <span class="k">def</span> <span class="nf">correct_user</span>
-      <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">find_by_id</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+      <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
       <span class="n">redirect_to</span> <span class="n">root_url</span> <span class="k">if</span> <span class="vi">@micropost</span><span class="o">.</span><span class="n">nil?</span>
     <span class="k">end</span>
 <span class="k">end</span>
@@ -1600,7 +1522,7 @@
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">find_by_id</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>这行代码可以自行确保只在当前用户发布的微博中查询。这里，我们使用的是 <code>find_by_id</code>，而没用 <code>find</code>，因为如果没有找到微博 <code>find</code> 会抛出异常，而不会返回 <code>nil</code>。顺便说一下，如果你习惯处理 Ruby 异常，也可以按照下面的方式定义 <code>correct_user</code> 过滤器：</p>
+<p>这行代码可以自行确保只在当前用户发布的微博中查询。这里，我们使用的是 <code>find_by</code>，而没用 <code>find</code>，因为如果没有找到微博 <code>find</code> 会抛出异常，而不会返回 <code>nil</code>。顺便说一下，如果你习惯处理 Ruby 异常，也可以按照下面的方式定义 <code>correct_user</code> 过滤器：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">correct_user</span>
   <span class="vi">@micropost</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
@@ -1611,11 +1533,11 @@
 </div>
 <p>你可能会说，我们也可以直接使用 <code>Micropost</code> 对象来实现 <code>correct_user</code> 过滤器，就像下面这样：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@micropost</span> <span class="o">=</span> <span class="no">Micropost</span><span class="o">.</span><span class="n">find_by_id</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@micropost</span> <span class="o">=</span> <span class="no">Micropost</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
 <span class="n">redirect_to</span> <span class="n">root_url</span> <span class="k">unless</span> <span class="n">current_user?</span><span class="p">(</span><span class="vi">@micropost</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>这种实现方式基本上和代码 10.49 是一样的，不过，<a href="http://www.rubyfocus.biz/">Wolfram Arnold</a> 在《<a href="http://www.rubyfocus.biz/blog/2011/06/15/access_control_101_in_rails_and_the_citibank-hack.html">Access Control 101 in Rails and the Citibank Hack</a>》一文中解释过，安全起见，最好还是通过关联来查找。</p>
+<p>这种实现方式基本上和代码 10.46 是一样的，不过，<a href="http://www.rubyfocus.biz/">Wolfram Arnold</a> 在《<a href="http://www.rubyfocus.biz/blog/2011/06/15/access_control_101_in_rails_and_the_citibank-hack.html">Access Control 101 in Rails and the Citibank Hack</a>》一文中解释过，安全起见，最好还是通过关联来查找。</p>
 
 <div class="figure" id="figure-10-17">
   <img src="figures/home_post_delete_bootstrap.png" alt="home post delete bootstrap" /><p class="caption"><span>图 10.17：</span>删除了倒数第二篇微博后的首页</p>
@@ -1642,13 +1564,11 @@
 <p>现在你也可以把程序推送到 Heroku 上。因为加入 <code>microposts</code> 表改动了数据模型，因此你需要在“生产数据库”中执行迁移操作：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push heroku
-<span class="nv">$ </span>heroku pg:reset &lt;DATABASE&gt;
+<span class="nv">$ </span>heroku pg:reset DATABASE
 <span class="nv">$ </span>heroku run rake db:migrate
 <span class="nv">$ </span>heroku run rake db:populate
 </pre></div>
 </div>
-<p>按照 <a href="chapter9.html#section-9-5">9.5 节</a>中的说明，把上面第二个命令中的 <code>DATABASE</code> 换成适当的值。</p>
-
 <h2 id='section-10-5'><span>10.5</span> 练习</h2>
 
 
@@ -1667,10 +1587,10 @@
     <p>编写一个测试，确保不是当前用户发布的微博下方不会显示删除链接。</p>
   </li>
   <li>
-    <p>使用局部视图去掉代码 10.46 和代码 10.47 中的重复。</p>
+    <p>使用局部视图去掉代码 10.43 和代码 10.44 中的重复。</p>
   </li>
   <li>
-    <p>现在，特别长的单词会撑破布局，如图 10.18 所示。使用代码 10.50 中定义的 <code>wrap</code> 帮助方法修正这个错误。注意，其中用到的 <code>raw</code> 方法是为了避免 Rails 转义 HTML 代码，<code>sanitize</code> 方法是为了防止跨站脚本攻击。这段代码还用到了看起来很奇怪但是很实用的三元操作符（ternary operator，参见<a href="chapter10.html#aside-10-1">旁注 10.1</a> 的说明）。</p>
+    <p>现在，特别长的单词会撑破布局，如图 10.18 所示。使用代码 10.47 中定义的 <code>wrap</code> 帮助方法修正这个错误。注意，其中用到的 <code>raw</code> 方法是为了避免 Rails 转义 HTML 代码，<code>sanitize</code> 方法是为了防止跨站脚本攻击。这段代码还用到了看起来很奇怪但是很实用的三元操作符（ternary operator，参见<a href="chapter10.html#aside-10-1">旁注 10.1</a> 的说明）。</p>
   </li>
   <li>
     <p>（<strong>附加题</strong>）在首页中添加一段 JavaScript 代码，当在发布微博的表单中输入文字时，显示输入的内容与 140 个字符的差值。</p>
@@ -1716,11 +1636,11 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-  <p>因为 Ruby 函数的默认返回值是定义体中的最后一个表达式，所以 <code>foo</code> 方法的返回值会根据 <code>boolean?</code> 的结果而不同，不是 <code>"bar"</code> 就是 <code>"baz"</code>。代码 10.50 中就用到了这种结构。</p>
+  <p>因为 Ruby 函数的默认返回值是定义体中的最后一个表达式，所以 <code>foo</code> 方法的返回值会根据 <code>boolean?</code> 的结果而不同，不是 <code>"bar"</code> 就是 <code>"baz"</code>。代码 10.47 中就用到了这种结构。</p>
 </div>
 
 
-<div class="codeblock has-caption" id="codeblock-10-50"><p class="caption"><span>代码 10.50：</span>换行显示长单词的帮助方法</p><p class="file"><code>app/helpers/microposts_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">MicropostsHelper</span>
+<div class="codeblock has-caption" id="codeblock-10-47"><p class="caption"><span>代码 10.47：</span>换行显示长单词的帮助方法</p><p class="file"><code>app/helpers/microposts_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">MicropostsHelper</span>
 
   <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
     <span class="n">sanitize</span><span class="p">(</span><span class="n">raw</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="o">.</span><span class="n">map</span><span class="p">{</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span> <span class="n">wrap_long_string</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">' '</span><span class="p">)))</span>
@@ -1748,34 +1668,31 @@
       <p><code>content</code> 属性是字符串（<code>string</code>）类型，不过我们曾在 <a href="chapter2.html#section-2-1-2">2.1.2 节</a>中简要介绍过，较长的文本应该使用 <code>text</code> 类型。<a href="#fnref-10-2" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-3">
-      <p>一开始我忘了复制微博的属性，导致本书第一版中的这个测试有点问题。这里我们加入了安全检查，避免再犯相同的错误。感谢火眼金睛的读者 Jacob Turino 发现了这个错误，让我注意到了这个问题。<a href="#fnref-10-3" rel="reference">↩</a></p>
+      <p>例如自定义了头像的 5 个用户和 使用 Gravatar 默认头像的 1 个用户。<a href="#fnref-10-3" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-4">
-      <p>例如自定义了头像的 5 个用户和 使用 Gravatar 默认头像的 1 个用户。<a href="#fnref-10-4" rel="reference">↩</a></p>
+      <p>如果你对这个方法生成的 SQL 感兴趣，可以查看 <code>log/development.log</code> 文件。<a href="#fnref-10-4" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-5">
-      <p>如果你对这个方法生成的 SQL 感兴趣，可以查看 <code>log/development.log</code> 文件。<a href="#fnref-10-5" rel="reference">↩</a></p>
+      <p>Faker 中的 lorem ipsum 文本是被设计为随机生成的，所以你的示例微博可能和我的不一样。<a href="#fnref-10-5" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-6">
-      <p>Faker 中的 lorem ipsum 文本是被设计为随机生成的，所以你的示例微博可能和我的不一样。<a href="#fnref-10-6" rel="reference">↩</a></p>
+      <p>为了行文方便，代码 10.21 实际上包含了本章用到的所有 CSS。<a href="#fnref-10-6" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-7">
-      <p>为了行文方便，代码 10.24 实际上包含了本章用到的所有 CSS。<a href="#fnref-10-7" rel="reference">↩</a></p>
+      <p>另外两个资源分别是 <a href="chapter7.html#section-7-2">7.2 节</a> 中的 Users 资源和 <a href="chapter8.html#section-8-1">8.1 节</a>中的 Sessions 资源。<a href="#fnref-10-7" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-8">
-      <p>另外两个资源分别是 <a href="chapter7.html#section-7-2">7.2 节</a> 中的 Users 资源和 <a href="chapter8.html#section-8-1">8.1 节</a>中的 Sessions 资源。<a href="#fnref-10-8" rel="reference">↩</a></p>
+      <p>我们在 <a href="chapter8.html#section-8-2-1">8.2.1 节</a>中介绍过，默认情况下帮助方法只能在视图中使用，因此要在控制器中使用 Sessions 帮助方法就要在 Application 控制器中加入代码 <code>include SessionHelper</code>。<a href="#fnref-10-8" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-9">
-      <p>我们在 <a href="chapter8.html#section-8-2-1">8.2.1 节</a>中介绍过，默认情况下帮助方法只能在视图中使用，因此要在控制器中使用 Sessions 帮助方法就要在 Application 控制器中加入代码 <code>include SessionHelper</code>。<a href="#fnref-10-9" rel="reference">↩</a></p>
+      <p>我之所以在 <a href="chapter1.html#section-1-1-1">1.1.1 节</a>中推荐读者在读完本书后阅读一本纯介绍 Ruby 的书，就是为了学习使用类似 <code>include?</code> 这样的方法。<a href="#fnref-10-9" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-10">
-      <p>我之所以在 <a href="chapter1.html#section-1-1-1">1.1.1 节</a>中推荐读者在读完本书后阅读一本纯介绍 Ruby 的书，就是为了学习使用类似 <code>include?</code> 这样的方法。<a href="#fnref-10-10" rel="reference">↩</a></p>
+      <p>阅读 Rails 指南中的《<a href="http://guides.rubyonrails.org/active_record_querying.html">Active Record Query Interface</a>》一文，更深入的学习 <code>where</code> 等方法的用法。<a href="#fnref-10-10" rel="reference">↩</a></p>
     </li>
     <li id="fn-10-11">
-      <p>阅读 Rails 指南中的《<a href="http://guides.rubyonrails.org/active_record_querying.html">Active Record Query Interface</a>》一文，更深入的学习 <code>where</code> 等方法的用法。<a href="#fnref-10-11" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-10-12">
-      <p>很不幸，这样的话分页就不可用了。你可以加入分页，点击分页链接看一下是为什么。<a href="#fnref-10-12" rel="reference">↩</a></p>
+      <p>很不幸，这样的话分页就不可用了。你可以加入分页，点击分页链接看一下是为什么。<a href="#fnref-10-11" rel="reference">↩</a></p>
     </li>
   </ol></div>
   	</div>
@@ -1795,7 +1712,7 @@
 			
 		</div>
 		<div class="footer">
-        	<p>Andor Chen 保留部分权力。基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
+        	<p>&copy;2013 <a href="http://about.ac" title="Andor Chen 的个人网站">Andor Chen</a> 保留部分权力。在线阅读版本基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
 		</div>
 	</div>
 </body>

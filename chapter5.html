@@ -12,8 +12,8 @@
 <body>
 	<div class="wrapper">
 		<div class="header">
-            <h1 class="logo"><a class="ir" href="">Ruby on Rails 教程</a></h1>
-            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版</p>
+            <h1 class="logo"><a class="ir" href="http://railstutorial-china.org">Ruby on Rails 教程</a></h1>
+            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版（涵盖 Rails 4）</p>
         </div>
         <div class="content">
 			
@@ -62,7 +62,7 @@
             <a href="#section-5-4-1">5.4.1 Users 控制器</a>
           </li>
           <li class="level-3">
-            <a href="#section-5-4-2">5.4.2 “注册”页面的 URI 地址</a>
+            <a href="#section-5-4-2">5.4.2 “注册”页面的 URL 地址</a>
           </li>
           <li class="level-2">
             <a href="#section-5-5">5.5 小结</a>
@@ -98,15 +98,16 @@
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    &lt;!--[if lt IE 9]&gt;</span>
 <span class="x">    &lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;</span>
 <span class="x">    &lt;![endif]--&gt;</span>
 <span class="x">  &lt;/head&gt;</span>
 <span class="x">  &lt;body&gt;</span>
-<span class="x">    &lt;header class="navbar navbar-fixed-top"&gt;</span>
+<span class="x">    &lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
 <span class="x">      &lt;div class="navbar-inner"&gt;</span>
 <span class="x">        &lt;div class="container"&gt;</span>
 <span class="x">          </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -127,19 +128,7 @@
 <span class="x">&lt;/html&gt;</span>
 </pre></div>
 </div>
-<p>需要特别注意一下 Hash 风格从 Ruby 1.8 到 Ruby 1.9 的转变（参见 <a href="chapter4.html#section-4-3-3">4.3.3 节</a>）。即把</p>
-
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-<p>换成</p>
-
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
-</pre></div>
-</div>
-<p>有一点很重要需要注意一下，因为旧的 Hash 风格使用范围还很广，所以两种用法你都要能够识别。</p>
-
-<p>我们从上往下看一下代码 5.1 中新添加的元素。<a href="chapter3.html#section-3-1">3.1 节</a>简单的介绍过，Rails 3 默认会使用 HTML5（如 <code>&lt;!DOCTYPE html&gt;</code> 所示），因为 HTML5 标准还很新，有些浏览器（特别是较旧版本的 IE 浏览器）还没有完全支持，所以我们加载了一些 JavaScript 代码（称作“<a href="http://code.google.com/p/html5shim/">HTML5 shim</a>”）来解决这个问题：</p>
+<p>我们从上往下看一下代码 5.1 中新添加的元素。<a href="chapter3.html#section-3-3-2">3.3.2 节</a>简单的介绍过，Rails 4 默认会使用 HTML5（如 <code>&lt;!DOCTYPE html&gt;</code> 所示），因为 HTML5 标准还很新，有些浏览器（特别是较旧版本的 IE 浏览器）还没有完全支持，所以我们加载了一些 JavaScript 代码（称作“<a href="http://code.google.com/p/html5shim/">HTML5 shim</a>”）来解决这个问题：</p>
 
 <div class="codeblock"><div class="highlight type-html"><pre><span class="c">&lt;!--[if lt IE 9]&gt;</span>
 <span class="c">&lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;</span>
@@ -155,7 +144,7 @@
 
 <p>后面的区域是一个 <code>header</code>，包含网站的 LOGO（纯文本）、一些小区域（使用 <code>div</code> 标签）和一个导航列表元素：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top"&gt;</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
 <span class="x">  &lt;div class="navbar-inner"&gt;</span>
 <span class="x">    &lt;div class="container"&gt;</span>
 <span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -171,12 +160,12 @@
 <span class="x">&lt;/header&gt;</span>
 </pre></div>
 </div>
-<p><code>header</code> 标签的意思是放在网页顶部的内容。我们为 <code>header</code> 标签指定了两个 CSS class<sup class="footnote" id="fnref-5-3"><a href="#fn-5-3" rel="footnote">3</a></sup>，<code>navbar</code> 和 <code>navbar-fixed-top</code>，用空格分开：</p>
+<p><code>header</code> 标签的意思是放在网页顶部的内容。我们为 <code>header</code> 标签指定了三个 CSS class<sup class="footnote" id="fnref-5-3"><a href="#fn-5-3" rel="footnote">3</a></sup>，<code>navbar</code>、<code>navbar-fixed-top</code> 和 <code>navbar-inverse</code>，用空格分开：</p>
 
-<div class="codeblock"><div class="highlight type-html"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top"</span><span class="nt">&gt;</span>
+<div class="codeblock"><div class="highlight type-html"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
 </pre></div>
 </div>
-<p>所有的 HTML 元素都可以指定 class 和 id，它们不仅是个标注，在 CSS 样式中也有用（<a href="chapter5.html#section-5-1-2">5.1.2 节</a>）。class 和 id 之间主要的区别是，class 可以在同一个网页中多次使用，而 id 只能使用一次。这里的 <code>navbar</code> 和 <code>navbar-fixed-top</code> 在 Bootstrap 框架中有特殊的意义，我们会在 <a href="chapter5.html#section-5-1-2">5.1.2 节</a>中安装并使用 Bootstrap。<code>header</code> 标签内是一些 <code>div</code> 标签：</p>
+<p>所有的 HTML 元素都可以指定 class 和 id，它们不仅是个标注，在 CSS 样式中也有用（<a href="chapter5.html#section-5-1-2">5.1.2 节</a>）。class 和 id 之间主要的区别是，class 可以在同一个网页中多次使用，而 id 只能使用一次。这里的三个 class 在 Bootstrap 框架中有特殊的意义，我们会在 <a href="chapter5.html#section-5-1-2">5.1.2 节</a>中安装并使用 Bootstrap。<code>header</code> 标签内是一些 <code>div</code> 标签：</p>
 
 <div class="codeblock"><div class="highlight type-html"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
@@ -254,7 +243,7 @@
 <p><code>div</code> 标签中的 <code>hero-unit</code> class 在 Bootstrap 中有特殊的意义，注册按钮的 <code>btn</code>、<code>btn-large</code> 和 <code>btn-primary</code> 也是一样。</p>
 
 <div class="figure" id="figure-5-2">
-  <img src="figures/layout_no_logo_or_custom_css_bootstrap.png" alt="layout no logo or custom css bootstrap" /><p class="caption"><span>图 5.2：</span>没有定义 CSS 的“首页”（<a href="http://localhost:3000/static_pages/home">/static_pages/home</a>）</p>
+  <img src="figures/layout_no_logo_or_custom_css_bootstrap_rails_4.png" alt="layout no logo or custom css bootstrap rails 4" /><p class="caption"><span>图 5.2：</span>没有定义 CSS 的“首页”（<a href="http://localhost:3000/static_pages/home">/static_pages/home</a>）</p>
 </div>
 <p>第二个 <code>link_to</code> 用到了 <code>image_tag</code> 帮助方法，第一个参数是图片的路径；第二个参数是可选的，一个 Hash，本例中这个 Hash 参数使用一个 Symbol 键设置了图片的 <code>alt</code> 属性。为了更好的理解，我们来看一下生成的 HTML：<sup class="footnote" id="fnref-5-4"><a href="#fn-5-4" rel="footnote">4</a></sup></p>
 
@@ -263,9 +252,9 @@
 </div>
 <p><code>alt</code> 属性的内容会在图片无法加载时显示，也会在针对视觉障碍人士的屏幕阅读器中显示。人们有时懒得加上 <code>alt</code> 属性，可是在 HTML 标准中却是必须的。幸运的是，Rails 默认会加上 <code>alt</code> 标签，如果你没有在调用 <code>image_tag</code> 时指定的话，Rails 就会使用图片的文件名（不包括扩展名）。本例中，我们自己设定了 <code>alt</code> 文本，显示一个首字母大写的“Rails”。</p>
 
-<p>现在我们终于可以看到劳动的果实了（如图 5.2）。你可能会说，这并不很美观啊。或许吧。不过也可以小小的高兴一下，我们已经为 HTML 结构指定了合适的 class，可以用来添加 CSS。</p>
+<p>在 Rails 之前的版本中，每个 Rails 应用程序中都有 <code>rails.png</code> 这个图片，但在最新版中这个图片不会在执行 <code>rails new</code> 命令时生成，所以要手动从 Ruby on Rails 官网下载，地址为 <a href="http://rubyonrails.org/images/rails.png">http://rubyonrails.org/images/rails.png</a>，保存到 <code>app/assets/images/</code> 文件夹中。（或许还要新建这个文件夹，可以使用 <code>mkdir</code> 命令或者图形化文件管理工具。）因为在代码 5.2 中我们使用了 <code>image_tag</code> 帮助方法，所以 Rails 会通过 Asset Pipeline（参见 <a href="chapter5.html#section-5-2">5.2 节</a>）自动在这个文件夹中寻找所需的图片。</p>
 
-<p>顺便说一下，你可能会奇怪 <code>rails.png</code> 这个图片为什么可以显示出来，它是怎么来的呢？其实每个 Rails 应用程序中都有这个图片，存放在 <code>app/assets/images/</code> 目录下。因为我们使用的是 <code>image_tag</code> 帮助方法，Rails 会通过 asset pipeline 找到这个图片。（<a href="chapter5.html#section-5-2">5.2 节</a>）</p>
+<p>现在我们终于可以看到劳动的果实了（如图 5.2）。你可能会说，这并不很美观啊。或许吧。不过也可以小小的高兴一下，我们已经为 HTML 结构指定了合适的 class，可以用来添加 CSS。</p>
 
 <h3 id='section-5-1-2'><span>5.1.2</span> Bootstrap 和自定义的 CSS</h3>
 
@@ -275,9 +264,10 @@
 <p>首先要安装 Bootstrap，在 Rails 程序中可以使用 bootstrap-sass 这个 gem，参见代码 5.3。Bootstrap 框架本身使用 LESS 来动态的生成样式表，而 Rails 的 asset pipeline 默认支持的是（非常类似的）Sass，bootstrap-sass 会将 LESS 转换成 Sass 格式，而且 Bootstrap 中必要的文件都可以在当前的应用程序中使用。<sup class="footnote" id="fnref-5-5"><a href="#fn-5-5" rel="footnote">5</a></sup></p>
 
 <div class="codeblock has-caption" id="codeblock-5-3"><p class="caption"><span>代码 5.3：</span>把 bootstrap-sass 加入 <code>Gemfile</code></p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<span class="n">ruby</span> <span class="s1">'2.0.0'</span>
 
-<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'3.2.13'</span>
-<span class="n">gem</span> <span class="s1">'bootstrap-sass'</span><span class="p">,</span> <span class="s1">'2.0.4'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
+<span class="n">gem</span> <span class="s1">'bootstrap-sass'</span><span class="p">,</span> <span class="s1">'2.3.2.0'</span>
 <span class="o">.</span>
 <span class="o">.</span>
 <span class="o">.</span>
@@ -288,34 +278,50 @@
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install
 </pre></div>
 </div>
-<p>然后重启 Web 服务器，改动才能在应用程序中生效。（在大多数系统中可以使用 Ctrl-C 结束服务器，然后再执行 <code>rails server</code> 命令。）</p>
+<p>然后重启 Web 服务器，改动才能在应用程序中生效。（在大多数系统中可以使用 Ctrl-C 结束服务器，然后再执行 <code>rails server</code> 命令。）最后，对 Rails 4 来说，我们还要在 <code>config/application.rb</code> 中添加一行代码，让 <code>bootstrap-sass</code> 这个 gem 和 Asset Pipeline 兼容，如代码 5.4 所示。</p>
 
+<div class="codeblock has-caption" id="codeblock-5-4"><p class="caption"><span>代码 5.4：</span>添加一行代码，兼容 Asset Pipeline</p><p class="file"><code>config/application.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">'../boot'</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+<span class="o">.</span>
+<span class="o">.</span>
+<span class="o">.</span>
+<span class="k">module</span> <span class="nn">SampleApp</span>
+  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="ss">Rails</span><span class="p">:</span><span class="ss">:Application</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w(*.png *.jpg *.jpeg *.gif)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
 <p>要向应用程序中添加自定义的 CSS，首先要创建一个 CSS 文件：</p>
 
 <div class="codeblock"><div class="highlight type-text"><pre>app/assets/stylesheets/custom.css.scss
 </pre></div>
 </div>
-<p>（使用你喜欢的文本编辑器或者 IDE 创建这个文件。）文件存放的目录和文件名都很重要。其中目录</p>
+<p>文件存放的目录和文件名都很重要。其中目录</p>
 
 <div class="codeblock"><div class="highlight type-text"><pre>app/assets/stylesheets
 </pre></div>
 </div>
-<p>是 asset pipeline 的一部分（<a href="chapter5.html#section-5-2">5.2 节</a>），这个目录中的所有样式表都会自动的包含在网站的 <code>application.css</code> 中。<code>custom.css.scss</code> 文件的第一个扩展名是 <code>.css</code>，说明这是个 CSS 文件；第二个扩展名是 <code>.scss</code>，说明这是个“Sassy CSS”文件。asset pipeline 会使用 Sass 处理这个文件。（在 <a href="chapter5.html#section-5-2-2">5.2.2 节</a>中才会使用 Sass，有了它 bootstrap-sass 才能运作。）创建了自定义 CSS 所需的文件后，我们可以使用 <code>@import</code> 引入 Bootstrap，如代码 5.4 所示。</p>
+<div class="figure" id="figure-5-3">
+  <img src="figures/sample_app_only_bootstrap_4_0.png" alt="sample app only bootstrap 40" /><p class="caption"><span>图 5.3：</span>使用 Bootstrap CSS 后的示例程序</p>
+</div>
+<p>是 asset pipeline 的一部分（<a href="chapter5.html#section-5-2">5.2 节</a>），这个目录中的所有样式表都会自动的包含在网站的 <code>application.css</code> 中。<code>custom.css.scss</code> 文件的第一个扩展名是 <code>.css</code>，说明这是个 CSS 文件；第二个扩展名是 <code>.scss</code>，说明这是个“Sassy CSS”文件。asset pipeline 会使用 Sass 处理这个文件。（在 <a href="chapter5.html#section-5-2-2">5.2.2 节</a>中才会使用 Sass，有了它 bootstrap-sass 才能运作。）</p>
 
-<div class="codeblock has-caption" id="codeblock-5-4"><p class="caption"><span>代码 5.4：</span>引入 Bootstrap</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
+<p>在自定义 CSS 文件中，我们可以使用 <code>@import</code> 引入 Bootstrap，如代码 5.5 所示。</p>
+
+<div class="codeblock has-caption" id="codeblock-5-5"><p class="caption"><span>代码 5.5：</span>引入 Bootstrap</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>这行代码会引入整个 Bootstrap CSS 框架，结果如图 5.3 所示。（或许你要通过 Ctrl-C 来重启服务器。）可以看到，文本的位置还不是很合适，LOGO 也没有任何样式，不过颜色搭配和注册按钮看起来还不错。</p>
+<p>这行代码会引入整个 Bootstrap CSS 框架，结果如图 5.3 所示。（或许你要通过 Ctrl-C 来重启服务器。还有一点要注意，截图中使用的是 Bootstrap 2.0，而本教程用的是 Bootstrap 2.3，所以外观可能有所不同，不过无需过分担心。）可以看到，文本的位置还不是很合适，LOGO 也没有任何样式，不过颜色搭配和注册按钮看起来还不错。</p>
 
-<div class="figure" id="figure-5-3">
-  <img src="figures/sample_app_only_bootstrap.png" alt="sample app only bootstrap" /><p class="caption"><span>图 5.3：</span>使用 Bootstrap CSS 后的示例程序</p>
-</div>
-<p>下面我们要加入一些整站都会用到的 CSS，用来样式化网站布局和各单独页面，如代码 5.5 所示。代码 5.5 中定义了很多样式规则。为了说明 CSS 规则的作用，我们经常会加入一些 CSS 注释，放在 <code>/*...*/</code> 之中。代码 5.5 的 CSS 加载后的效果如图 5.4 所示。</p>
+<p>下面我们要加入一些整站都会用到的 CSS，用来样式化网站布局和各单独页面，如代码 5.6 所示。代码 5.6 中定义了很多样式规则。为了说明 CSS 规则的作用，我们经常会加入一些 CSS 注释，放在 <code>/*...*/</code> 之中。代码 5.6 的 CSS 加载后的效果如图 5.4 所示。</p>
 
 <div class="figure" id="figure-5-4">
-  <img src="figures/sample_app_universal.png" alt="sample app universal" /><p class="caption"><span>图 5.4：</span>添加一些空白和其他的全局性样式</p>
+  <img src="figures/sample_app_universal_4_0.png" alt="sample app universal 40" /><p class="caption"><span>图 5.4：</span>添加一些空白和其他的全局性样式</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-5"><p class="caption"><span>代码 5.5：</span>添加全站使用的 CSS</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
+<div class="codeblock has-caption" id="codeblock-5-6"><p class="caption"><span>代码 5.6：</span>添加全站使用的 CSS</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
 
 <span class="cm">/* universal */</span>
 
@@ -344,25 +350,28 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>注意代码 5.5 中的 CSS 格式是很统一的。一般来说，CSS 规则是通过 class、id、HTML 标签或者三者结合在一起来定义的，后面会跟着一些样式声明。例如：</p>
+<p>注意代码 5.6 中的 CSS 格式是很统一的。一般来说，CSS 规则是通过 class、id、HTML 标签或者三者结合在一起来定义的，后面会跟着一些样式声明。例如：</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nt">body</span> <span class="p">{</span>
   <span class="k">padding-top</span><span class="o">:</span> <span class="m">60px</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>把页面的上内边距设为 60 像素。我们在 <code>header</code> 标签上指定了 <code>navbar-fixed-top</code> class，Bootstrap 就把这个导航条固定在页面的顶部。所以页面的上内边距会把主内容区和导航条隔开一段距离。下面的 CSS 规则：</p>
+<p>把页面的上内边距设为 60 像素。我们在 <code>header</code> 标签上指定了 <code>navbar-fixed-top</code> class，Bootstrap 就把这个导航条固定在页面的顶部。所以页面的上内边距会把主内容区和导航条隔开一段距离。（导航条的颜色在 Bootstrap 2.0 和 2.1 之间是不一样的，所以我们要加入 <code>navbar-inverse</code> class，把亮色变暗。）下面的 CSS 规则：</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nc">.center</span> <span class="p">{</span>
   <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>把 <code>.center</code> class 的样式定义为 <code>text-align: center;</code>。<code>.center</code> 中的点号说明这个规则是样式化一个 class。（我们会在代码 5.7 中看到，<code>#</code> 是样式化一个 id。）这个规则的意思是，任何 class 为 <code>.center</code> 的标签（例如 <code>div</code>），其中包含的内容都会在页面中居中显示。（代码 5.2 中有用到这个 class。）</p>
+<p>把 <code>.center</code> class 的样式定义为 <code>text-align: center;</code>。<code>.center</code> 中的点号说明这个规则是样式化一个 class。（我们会在代码 5.8 中看到，<code>#</code> 是样式化一个 id。）这个规则的意思是，任何 class 为 <code>.center</code> 的标签（例如 <code>div</code>），其中包含的内容都会在页面中居中显示。（代码 5.2 中有用到这个 class。）</p>
 
-<p>虽然 Bootstrap 中包含了很精美的文字排版样式，我们还是要为网站添加一些自定义的规则，如代码 5.6 所示。（并不是所有的样式都会应用于“首页”，但所有规则都会在网站中的某个地方用到。）代码 5.6 的效果如图 5.5 所示。</p>
+<p>虽然 Bootstrap 中包含了很精美的文字排版样式，我们还是要为网站添加一些自定义的规则，如代码 5.7 所示。（并不是所有的样式都会应用于“首页”，但所有规则都会在网站中的某个地方用到。）代码 5.7 的效果如图 5.5 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-6"><p class="caption"><span>代码 5.6：</span>添加一些精美的文字排版样式</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
+<div class="figure" id="figure-5-5">
+  <img src="figures/sample_app_typography_4_0.png" alt="sample app typography 40" /><p class="caption"><span>图 5.5：</span>添加了一些文字排版样式</p>
+</div>
+<div class="codeblock has-caption" id="codeblock-5-7"><p class="caption"><span>代码 5.7：</span>添加一些精美的文字排版样式</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
@@ -381,7 +390,7 @@
 <span class="p">}</span>
 
 <span class="nt">h2</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.7</span><span class="kt">em</span><span class="p">;</span>
+  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.2</span><span class="kt">em</span><span class="p">;</span>
   <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
   <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
   <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
@@ -395,15 +404,12 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="figure" id="figure-5-5">
-  <img src="figures/sample_app_typography.png" alt="sample app typography" /><p class="caption"><span>图 5.5：</span>添加了一些文字排版样式</p>
-</div>
-<p>最后，我们还要为只包含文本“sample app”的网站 LOGO 添加一些样式。代码 5.7 中的 CSS 样式会把文字变成全大写字母，还修改了文字大小、颜色和位置。（我们使用的是 id，因为我们希望 LOGO 在页面中只出现一次，不过你也可以使用 class。）</p>
+<p>最后，我们还要为只包含文本“sample app”的网站 LOGO 添加一些样式。代码 5.8 中的 CSS 样式会把文字变成全大写字母，还修改了文字大小、颜色和位置。（我们使用的是 id，因为我们希望 LOGO 在页面中只出现一次，不过你也可以使用 class。）</p>
 
 <div class="figure" id="figure-5-6">
-  <img src="figures/sample_app_logo.png" alt="sample app logo" /><p class="caption"><span>图 5.6：</span>样式化 LOGO 后的示例程序</p>
+  <img src="figures/sample_app_logo_4_0.png" alt="sample app logo 40" /><p class="caption"><span>图 5.6：</span>样式化 LOGO 后的示例程序</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-7"><p class="caption"><span>代码 5.7：</span>添加网站 LOGO 的样式</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
+<div class="codeblock has-caption" id="codeblock-5-8"><p class="caption"><span>代码 5.8：</span>添加网站 LOGO 的样式</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
@@ -428,19 +434,20 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>其中 <code>color: #fff;</code> 会把 LOGO 文字的颜色变成白色。HTML 中的颜色代码是由 3 个 16 进制数组成的，分别代表了三原色中的红、绿、蓝。<code>#ffffff</code> 是 3 种颜色都为最大值的情况，代表了纯白色。<code>#fff</code> 是 <code>#ffffff</code> 的简写形式。CSS 标准中为很多常用的 HTML 颜色定义了别名，例如 <code>white</code> 代表的是 <code>#fff</code>。代码 5.7 中的样式效果如图 5.6 所示。</p>
+<p>其中 <code>color: #fff;</code> 会把 LOGO 文字的颜色变成白色。HTML 中的颜色代码是由 3 个 16 进制数组成的，分别代表了三原色中的红、绿、蓝。<code>#ffffff</code> 是 3 种颜色都为最大值的情况，代表了纯白色。<code>#fff</code> 是 <code>#ffffff</code> 的简写形式。CSS 标准中为很多常用的 HTML 颜色定义了别名，例如 <code>white</code> 代表的是 <code>#fff</code>。代码 5.8 中的样式效果如图 5.6 所示。</p>
 
 <h3 id='section-5-1-3'><span>5.1.3</span> 局部视图</h3>
 
 
-<p>虽然代码 5.1 中的布局达到了目的，但它的内容看起来有点混乱。HTML shim 就占用了三行，而且使用了只针对 IE 的奇怪句法，所以如果能把它打包放在一个单独的地方就好了。头部的 HTML 自成一个逻辑单元，所以也可以把这部分打包放在某个地方。在 Rails 中我们可以使用局部视图来实现这种想法。先来看一下定义了局部视图之后的布局文件（参见代码 5.8）。</p>
+<p>虽然代码 5.1 中的布局达到了目的，但它的内容看起来有点混乱。HTML shim 就占用了三行，而且使用了只针对 IE 的奇怪句法，所以如果能把它打包放在一个单独的地方就好了。头部的 HTML 自成一个逻辑单元，所以也可以把这部分打包放在某个地方。在 Rails 中我们可以使用局部视图来实现这种想法。先来看一下定义了局部视图之后的布局文件（参见代码 5.9）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-8"><p class="caption"><span>代码 5.8：</span>定义了 HTML shim 和头部局部视图之后的网站布局</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-9"><p class="caption"><span>代码 5.9：</span>定义了 HTML shim 和头部局部视图之后的网站布局</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;/head&gt;</span>
@@ -453,23 +460,23 @@
 <span class="x">&lt;/html&gt;</span>
 </pre></div>
 </div>
-<p>代码 5.8 中，我们把加载 HTML shim 的那几行代码换成了对 Rails 帮助函数 <code>render</code> 的调用：</p>
+<p>代码 5.9 中，我们把加载 HTML shim 的那几行代码换成了对 Rails 帮助函数 <code>render</code> 的调用：</p>
 
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 <p>这行代码会寻找一个名为 <code>app/views/layouts/_shim.html.erb</code> 的文件，执行文件中的代码，然后把结果插入视图。<sup class="footnote" id="fnref-5-6"><a href="#fn-5-6" rel="footnote">6</a></sup>（回顾一下，执行 Ruby 表达式并将结果插入模板中要使用 <code>&lt;%=...%&gt;</code>。）注意文件名 <code>_shim.html.erb</code> 的开头是个下划线，这个下划线是局部视图的命名约定，可以在目录中快速定位所有的局部视图。</p>
 
-<p>当然，若要局部视图起作用，我们要写入相应的内容。本例中的 HTML shim 局部视图只包含三行代码，如代码 5.9 所示。</p>
+<p>当然，若要局部视图起作用，我们要写入相应的内容。本例中的 HTML shim 局部视图只包含三行代码，如代码 5.10 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-9"><p class="caption"><span>代码 5.9：</span>HTML shim 局部视图</p><p class="file"><code>app/views/layouts/_shim.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!--[if lt IE 9]&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-10"><p class="caption"><span>代码 5.10：</span>HTML shim 局部视图</p><p class="file"><code>app/views/layouts/_shim.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!--[if lt IE 9]&gt;</span>
 <span class="x">&lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;</span>
 <span class="x">&lt;![endif]--&gt;</span>
 </pre></div>
 </div>
-<p>类似的，我们可以把头部的内容移入局部视图，如代码 5.10 所示，然后再次调用 <code>render</code> 把这个局部视图插入布局中。</p>
+<p>类似的，我们可以把头部的内容移入局部视图，如代码 5.11 所示，然后再次调用 <code>render</code> 把这个局部视图插入布局中。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-10"><p class="caption"><span>代码 5.10：</span>网站头部的局部视图</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-11"><p class="caption"><span>代码 5.11：</span>网站头部的局部视图</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
 <span class="x">  &lt;div class="navbar-inner"&gt;</span>
 <span class="x">    &lt;div class="container"&gt;</span>
 <span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -485,9 +492,9 @@
 <span class="x">&lt;/header&gt;</span>
 </pre></div>
 </div>
-<p>现在我们已经知道怎么创建局部视图了，让我们来加入和头部对应的网站底部吧。你或许已经猜到了，我们会把这个局部视图命名为 <code>_footer.html.erb</code>，放在布局目录中（参见代码 5.11）。<sup class="footnote" id="fnref-5-7"><a href="#fn-5-7" rel="footnote">7</a></sup></p>
+<p>现在我们已经知道怎么创建局部视图了，让我们来加入和头部对应的网站底部吧。你或许已经猜到了，我们会把这个局部视图命名为 <code>_footer.html.erb</code>，放在布局目录中（参见代码 5.12）。<sup class="footnote" id="fnref-5-7"><a href="#fn-5-7" rel="footnote">7</a></sup></p>
 
-<div class="codeblock has-caption" id="codeblock-5-11"><p class="caption"><span>代码 5.11：</span>网站底部的局部视图</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-12"><p class="caption"><span>代码 5.12：</span>网站底部的局部视图</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
 <span class="x">  &lt;small&gt;</span>
 <span class="x">    &lt;a href="http://railstutorial.org/"&gt;Rails Tutorial&lt;/a&gt;</span>
 <span class="x">    by Michael Hartl</span>
@@ -504,14 +511,15 @@
 </div>
 <p>和头部类似，在底部我们使用 <code>link_to</code> 创建到“关于”页面和“联系”页面的链接，地址暂时使用占位符 <code>#</code>。（和 <code>header</code> 一样，<code>footer</code> 标签也是 HTML5 新增加的。）</p>
 
-<p>按照 HTML shim 和头部局部视图采用的方式，我们也可以在布局视图中渲染底部局部视图。（参见代码 5.12。）</p>
+<p>按照 HTML shim 和头部局部视图采用的方式，我们也可以在布局视图中渲染底部局部视图。（参见代码 5.13。）</p>
 
-<div class="codeblock has-caption" id="codeblock-5-12"><p class="caption"><span>代码 5.12：</span>网站的布局，包含底部局部视图</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-13"><p class="caption"><span>代码 5.13：</span>网站的布局，包含底部局部视图</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;/head&gt;</span>
@@ -525,9 +533,9 @@
 <span class="x">&lt;/html&gt;</span>
 </pre></div>
 </div>
-<p>当然，如果没有样式的话，底部还是很丑的（样式参见代码 5.13）。添加样式后的效果如图 5.7 所示。</p>
+<p>当然，如果没有样式的话，底部还是很丑的（样式参见代码 5.14）。添加样式后的效果如图 5.7 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-13"><p class="caption"><span>代码 5.13：</span>添加底部所需的 CSS</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="nc">.</span>
+<div class="codeblock has-caption" id="codeblock-5-14"><p class="caption"><span>代码 5.14：</span>添加底部所需的 CSS</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 
@@ -566,7 +574,7 @@
 <h2 id='section-5-2'><span>5.2</span> Sass 和 asset pipeline</h2>
 
 
-<p>Rails 3.0 与之前版本的主要不同之一是 asset pipeline，这个功能可以明显提高如 CSS、JavaScript和图片等静态资源文件（asset）的生成效率，降低管理成本。本节我们会概览一下 asset pipeline，然后再介绍如何使用 Sass 这个生成 CSS 很强大的工具，Sass 现在是 asset pipeline 默认的一部分。</p>
+<p>在较新版本的 Rails 中，最大的变化是增加了 asset pipeline，这个功能可以明显提高如 CSS、JavaScript和图片等静态资源文件（asset）的生成效率，降低管理成本。本节我们会概览一下 asset pipeline，然后再介绍如何使用 Sass 这个生成 CSS 很强大的工具，Sass 现在是 asset pipeline 默认的一部分。</p>
 
 <h3 id='section-5-2-1'><span>5.2.1</span> Asset pipeline</h3>
 
@@ -574,7 +582,7 @@
 <p>Asset pipeline 对 Rails做了很多改动，但对 Rails 开发者来说只有三个特性需要了解：资源目录，清单文件（manifest file），还有预处理器引擎（preprocessor engine）。<sup class="footnote" id="fnref-5-8"><a href="#fn-5-8" rel="footnote">8</a></sup>我们会一个一个的介绍。</p>
 
 <div class="figure" id="figure-5-7">
-  <img src="figures/site_with_footer_bootstrap.png" alt="site with footer bootstrap" /><p class="caption"><span>图 5.7：</span>添加底部后的“首页”（<a href="http://localhost:3000/static_pages/home">/static_pages/home</a>）</p>
+  <img src="figures/site_with_footer_bootstrap_4_0.png" alt="site with footer bootstrap 40" /><p class="caption"><span>图 5.7：</span>添加底部后的“首页”（<a href="http://localhost:3000/static_pages/home">/static_pages/home</a>）</p>
 </div>
 <h4 id='section-5-2-1-1'><span></span>资源目录</h4>
 
@@ -586,7 +594,7 @@
   <li><code>public/images</code></li>
 </ul><p>这些文件夹中的文件通过请求 http://example.com/stylesheets 等地址直接发送给浏览器。（Rails 3.0 之后的版本也可以这么做。）</p>
 
-<p>从 Rails 3.1 开始，静态文件可以存放在三个标准的目录中，各有各的用途：</p>
+<p>从 Rails 3.1 开始到最新的 Rails 4，静态文件可以存放在三个标准的目录中，各有各的用途：</p>
 
 <ul><li><code>app/assets</code>：存放当前应用程序用到的资源文件</li>
   <li><code>lib/assets</code>：存放开发团队自己开发的代码库用到的资源文件</li>
@@ -602,9 +610,9 @@ images javascripts stylesheets
 <h4 id='section-5-2-1-2'><span></span>清单文件</h4>
 
 
-<p>当你把资源文件存放在适当的目录后，要通过清单文件告诉 Rails怎么把它们合并成一个文件（使用 <a href="https://github.com/sstephenson/sprockets">Sprockets</a> gem。只适用于 CSS 和 JavaScript，而不会处理图片。）举个例子，让我们看一下应用程序默认的样式表清单文件（参见代码 5.14）。</p>
+<p>当你把资源文件存放在适当的目录后，要通过清单文件告诉 Rails怎么把它们合并成一个文件（使用 <a href="https://github.com/sstephenson/sprockets">Sprockets</a> gem。只适用于 CSS 和 JavaScript，而不会处理图片。）举个例子，让我们看一下应用程序默认的样式表清单文件（参见代码 5.15）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-14"><p class="caption"><span>代码 5.14：</span>应用程序的样式表清单文件</p><p class="file"><code>app/assets/stylesheets/application.css</code></p><div class="highlight type-css"><pre><span class="c">/*</span>
+<div class="codeblock has-caption" id="codeblock-5-15"><p class="caption"><span>代码 5.15：</span>应用程序的样式表清单文件</p><p class="file"><code>app/assets/stylesheets/application.css</code></p><div class="highlight type-css"><pre><span class="c">/*</span>
 <span class="c"> * This is a manifest file that'll automatically include all the stylesheets</span>
 <span class="c"> * available in this directory and any sub-directories. You're free to add</span>
 <span class="c"> * application-wide styles to this file and they'll appear at the top of the</span>
@@ -674,7 +682,7 @@ images javascripts stylesheets
 <h4 id='section-5-2-2-1'><span></span>嵌套</h4>
 
 
-<p>样式表中经常会定义嵌套元素的样式，例如，在代码 5.1 中，定义了 <code>.center</code> 和 <code>.centr h1</code> 两个样式：</p>
+<p>样式表中经常会定义嵌套元素的样式，例如，在代码 5.6 中，定义了 <code>.center</code> 和 <code>.centr h1</code> 两个样式：</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nc">.center</span> <span class="p">{</span>
   <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
@@ -697,7 +705,7 @@ images javascripts stylesheets
 </div>
 <p>上面代码中的 <code>h1</code> 会自动嵌入 <code>.center</code> 中。</p>
 
-<p>嵌套还有另一种形式，句法稍有不同。在代码 5.7 中，有如下的代码</p>
+<p>嵌套还有另一种形式，句法稍有不同。在代码 5.8 中，有如下的代码</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nf">#logo</span> <span class="p">{</span>
   <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
@@ -738,7 +746,7 @@ images javascripts stylesheets
 </div>
 <p>把 SCSS 转换成 CSS 时，Sass 会把 <code>&amp;:hover</code> 编译成 <code>#logo:hover</code>。</p>
 
-<p>这两种嵌套方式都可以用于代码 5.13 中的底部样式上，转换后的样式如下：</p>
+<p>这两种嵌套方式都可以用于代码 5.14 中的底部样式上，转换后的样式如下：</p>
 
 <div class="codeblock"><div class="highlight type-scss"><pre><span class="nt">footer</span> <span class="p">{</span>
   <span class="na">margin-top</span><span class="o">:</span> <span class="mi">45</span><span class="kt">px</span><span class="p">;</span>
@@ -765,12 +773,12 @@ images javascripts stylesheets
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>自己动手转换一下代码 5.13 是个不错的练习，转换之后你应该验证一下 CSS 是否还能正常使用。</p>
+<p>自己动手转换一下代码 5.14 是个不错的练习，转换之后你应该验证一下 CSS 是否还能正常使用。</p>
 
 <h4 id='section-5-2-2-2'><span></span>变量</h4>
 
 
-<p>Sass 允许我们自定义变量来避免重复，这样也可以写出更具表现力的代码。例如，代码 5.6 和代码 5.13 中都重复使用了同一个颜色代码：</p>
+<p>Sass 允许我们自定义变量来避免重复，这样也可以写出更具表现力的代码。例如，代码 5.7 和代码 5.14 中都重复使用了同一个颜色代码：</p>
 
 <div class="codeblock"><div class="highlight type-scss"><pre><span class="nt">h2</span> <span class="p">{</span>
   <span class="na">.</span>
@@ -841,9 +849,9 @@ images javascripts stylesheets
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>使用 Sass 提供的嵌套和变量功能后得到的完整 SCSS 文件如代码 5.15 所示。这段代码中使用了 Sass 形式的颜色变量（参照 Bootstrap 变量页面中定义的 LESS 形式的颜色变量）和内置的颜色名称（例如，<code>white</code> 代表 <code>#fff</code>）<sup class="footnote" id="fnref-5-t1"><a href="#fn-5-t1" rel="footnote">10</a></sup>。请特别注意一下 <code>footer</code> 标签样式明显的改进。</p>
+<p>使用 Sass 提供的嵌套和变量功能后得到的完整 SCSS 文件如代码 5.16 所示。这段代码中使用了 Sass 形式的颜色变量（参照 Bootstrap 变量页面中定义的 LESS 形式的颜色变量）和内置的颜色名称（例如，<code>white</code> 代表 <code>#fff</code>）<sup class="footnote" id="fnref-5-t1"><a href="#fn-5-t1" rel="footnote">10</a></sup>。请特别注意一下 <code>footer</code> 标签样式明显的改进。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-15"><p class="caption"><span>代码 5.15：</span>使用嵌套和变量转换后的 SCSS 文件</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
+<div class="codeblock has-caption" id="codeblock-5-16"><p class="caption"><span>代码 5.16：</span>使用嵌套和变量转换后的 SCSS 文件</p><p class="file"><code>app/assets/stylesheets/custom.css.scss</code></p><div class="highlight type-scss"><pre><span class="k">@import</span> <span class="s2">"bootstrap"</span><span class="p">;</span>
 
 <span class="cm">/* mixins, variables, etc. */</span>
 
@@ -888,7 +896,7 @@ images javascripts stylesheets
 <span class="p">}</span>
 
 <span class="nt">h2</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.7</span><span class="kt">em</span><span class="p">;</span>
+  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.2</span><span class="kt">em</span><span class="p">;</span>
   <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
   <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
   <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
@@ -947,7 +955,7 @@ images javascripts stylesheets
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Sass 提供了很多功能，可以用来简化样式表，不过代码 5.15 只用到了最主要的功能，这是个好的开端。更多功能请查看 <a href="http://sass-lang.com/">Sass 网站</a>。</p>
+<p>Sass 提供了很多功能，可以用来简化样式表，不过代码 5.16 只用到了最主要的功能，这是个好的开端。更多功能请查看 <a href="http://sass-lang.com/">Sass 网站</a>。</p>
 
 <h2 id='section-5-3'><span>5.3</span> 布局中的链接</h2>
 
@@ -965,9 +973,9 @@ images javascripts stylesheets
 <p>使用这种方式能更好的表达链接与 URI 和路由的对应关系，如<a href="chapter5.html#table-5-1">表格 5.1</a> 所示。本章完结之前除了最后一个链接之外，其他的链接都会设定好。（<a href="chapter8.html">第 8 章</a>会添加最后一个。）</p>
 
 <div class="table has-caption" id="table-5-1">
-  <p class="caption"><span>表格 5.1：</span>网站中链接的路由和 URI 地址的映射关系</p>
+  <p class="caption"><span>表格 5.1：</span>网站中链接的路由和 URL 地址的映射关系</p>
   <table><thead><tr><th>页面</th>
-      <th>URI</th>
+      <th>URL</th>
       <th>对应的路由</th>
     </tr></thead><tbody><tr><td>“首页”</td>
       <td>/</td>
@@ -988,9 +996,9 @@ images javascripts stylesheets
       <td>/signin</td>
       <td><code>signin_path</code></td>
     </tr></tbody></table></div>
-<p>继续之前，让我们先添加一个“联系”页面（<a href="chapter3.html">第 3 章</a>的一个练习题），测试如代码 5.16 所示，形式和代码 3.18 差不多。注意，和应用程序的代码一样，代码 5.16 中 Hash 使用的也是 Ruby 1.9 风格。</p>
+<p>继续之前，让我们先添加一个“联系”页面（<a href="chapter3.html">第 3 章</a>的一个练习题），测试如代码 5.17 所示，形式和代码 3.19 差不多。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-16"><p class="caption"><span>代码 5.16：</span>“联系”页面的测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-5-17"><p class="caption"><span>代码 5.17：</span>“联系”页面的测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -998,15 +1006,14 @@ images javascripts stylesheets
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"Contact page"</span> <span class="k">do</span>
 
-    <span class="n">it</span> <span class="s2">"should have the h1 'Contact'"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"should have the content 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="s1">'/static_pages/contact'</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Contact'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="s1">'/static_pages/contact'</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                    <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1017,9 +1024,9 @@ images javascripts stylesheets
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
-<p>这里要采用的步骤和 <a href="chapter3.html#section-3-2-2">3.2.2 节</a>中添加“关于”页面的步骤是一致的：先更新路由设置（参见代码 5.17），然后在 StaticPages 控制器中添加 <code>contact</code> 动作（参见代码 5.18），最后再编写“联系”页面的视图（参见代码 5.19）。</p>
+<p>这里要采用的步骤和 <a href="chapter3.html#section-3-2-2">3.2.2 节</a>中添加“关于”页面的步骤是一致的：先更新路由设置（参见代码 5.18），然后在 StaticPages 控制器中添加 <code>contact</code> 动作（参见代码 5.19），最后再编写“联系”页面的视图（参见代码 5.20）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-17"><p class="caption"><span>代码 5.17：</span>添加“联系”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-18"><p class="caption"><span>代码 5.18：</span>添加“联系”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="n">get</span> <span class="s2">"static_pages/about"</span>
@@ -1030,7 +1037,7 @@ images javascripts stylesheets
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-18"><p class="caption"><span>代码 5.18：</span>添加“联系”页面对应的动作</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="codeblock has-caption" id="codeblock-5-19"><p class="caption"><span>代码 5.19：</span>添加“联系”页面对应的动作</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1039,7 +1046,7 @@ images javascripts stylesheets
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-19"><p class="caption"><span>代码 5.19：</span>“联系”页面的视图</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-5-20"><p class="caption"><span>代码 5.20：</span>“联系”页面的视图</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Contact&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  Contact Ruby on Rails Tutorial about the sample app at the</span>
@@ -1065,9 +1072,9 @@ images javascripts stylesheets
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">visit</span> <span class="n">about_path</span>
 </pre></div>
 </div>
-<p>其他的页面也这样做，修改后的结果如代码 5.20 所示。</p>
+<p>其他的页面也这样做，修改后的结果如代码 5.21 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-20"><p class="caption"><span>代码 5.20：</span>具名路由测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-5-21"><p class="caption"><span>代码 5.21：</span>具名路由测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -1075,18 +1082,17 @@ images javascripts stylesheets
 
     <span class="n">it</span> <span class="s2">"should have the h1 'Sample App'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">root_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the base title"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">root_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                        <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should not have a custom page title"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">root_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should_not</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'| Home'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
@@ -1094,41 +1100,38 @@ images javascripts stylesheets
 
     <span class="n">it</span> <span class="s2">"should have the h1 'Help'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">help_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Help'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Help'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'Help'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">help_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                        <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App | Help"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Help"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"About page"</span> <span class="k">do</span>
 
-    <span class="n">it</span> <span class="s2">"should have the h1 'About'"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"should have the h1 'About Us'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">about_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'About Us'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'About Us'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">about_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                    <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App | About Us"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | About Us"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"Contact page"</span> <span class="k">do</span>
 
-    <span class="n">it</span> <span class="s2">"should have the h1 'Contact'"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"should have the content 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">contact_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Contact'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">contact_path</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                    <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1139,12 +1142,12 @@ images javascripts stylesheets
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
-<p>顺便说一下，很多人都会觉得代码 5.20 有很多重复，也很啰嗦，我们会在 <a href="chapter5.html#section-5-3-4">5.3.4 节</a>进行重构。</p>
+<p>顺便说一下，很多人都会觉得代码 5.21 有很多重复，也很啰嗦，我们会在 <a href="chapter5.html#section-5-3-4">5.3.4 节</a>进行重构。</p>
 
 <h3 id='section-5-3-2'><span>5.3.2</span> Rails 路由</h3>
 
 
-<p>我们已经编写了针对所有 URI 地址的测试，现在就要实现这些地址了。如 <a href="chapter3.html#section-3-1-2">3.1.2 节</a>所说，Rails 使用 <code>config/routes.rb</code> 文件设置 URI 地址的映射关系。如果你看一下默认的路由文件，会发现内容很杂乱，不过还是能提供些帮助的，因为有很多注释，说明了各路由的映射关系。我建议你找个时间通读一下路由文件，也建议你阅读一下 Rails 指南中《<a href="http://guides.rubyonrails.org/routing.html">详解 Rails 路由</a>》一文，更深入的了解一下路由。</p>
+<p>我们已经编写了针对所有 URL 地址的测试，现在就要实现这些地址了。如 <a href="chapter3.html#section-3-1">3.1 节</a>所说，Rails 使用 <code>config/routes.rb</code> 文件设置 URL 地址的映射关系。如果你看一下默认的路由文件，会发现内容很杂乱，不过还是能提供些帮助的，因为有很多注释，说明了各路由的映射关系。我建议你找个时间通读一下路由文件，也建议你阅读一下 Rails 指南中《<a href="http://guides.rubyonrails.org/routing.html">详解 Rails 路由</a>》一文，更深入的了解一下路由。</p>
 
 <p>定义具名路由，要把</p>
 
@@ -1153,40 +1156,40 @@ images javascripts stylesheets
 </div>
 <p>修改为</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
 </pre></div>
 </div>
-<p>这样在 /help 地址上就有了一个可访问的页面，也定义了一个名为 <code>help_path</code> 的具名路由，该函数会返回相应页面的地址。（其实把 <code>match</code> 换成 <code>get</code> 效果是一样的，不过使用 <code>match</code> 更符合约定。）</p>
+<p>这样在 <code>/help</code> 地址上就有了一个可访问的页面（响应 <code>GET</code> 请求），也定义了一个名为 <code>help_path</code> 的具名路由，该函数会返回相应页面的地址。（其实把 <code>match</code> 换成 <code>get</code> 效果是一样的，不过使用 <code>match</code> 更符合约定。）</p>
 
-<p>其他页面也要做类似修改，结果如代码 5.21 所示。不过“首页”有点特殊，参见代码 5.23。</p>
+<p>其他页面也要做类似修改，结果如代码 5.22 所示。不过“首页”有点特殊，参见代码 5.24。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-21"><p class="caption"><span>代码 5.21：</span>静态页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
-  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span>
-  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span>
-  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span>
+<div class="codeblock has-caption" id="codeblock-5-22"><p class="caption"><span>代码 5.22：</span>静态页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>如果认真阅读代码 5.21，或许会发现它的作用。例如，你会发现</p>
+<p>如果认真阅读代码 5.22，或许会发现它的作用。例如，你会发现</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>  <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
 </pre></div>
 </div>
-<p>会匹配 /about 地址，并将其分发到 StaticPages 控制器的 <code>about</code> 动作上。之前的设置意图更明显，我们用</p>
+<p>会匹配到 <code>/about</code> 地址的 <code>GET</code> 请求，并将其分发到 StaticPages 控制器的 <code>about</code> 动作上。之前的设置意图更明显，我们用</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">get</span> <span class="s1">'static_pages/about'</span>
 </pre></div>
 </div>
 <p>也可以得到相同的页面，不过 /about 的地址形式更简洁。而且，如前面提到的，<code>match '/about'</code> 会自动创建具名路由函数，可以在控制器和视图中使用：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">about_path</span> <span class="o">=&gt;</span> <span class="s1">'/about'</span>
-<span class="n">about_url</span>  <span class="o">=&gt;</span> <span class="s1">'http://localhost:3000/about'</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">about_path</span> <span class="o">-&gt;</span> <span class="s1">'/about'</span>
+<span class="n">about_url</span>  <span class="o">-&gt;</span> <span class="s1">'http://localhost:3000/about'</span>
 </pre></div>
 </div>
-<p>注意，<code>about_url</code> 返回的结果是完整的 URI 地址 http://localhost:3000/about（部署后，会用实际的域名替换 <code>localhost:3000</code>，例如 <code>example.com</code>）。如 <a href="chapter5.html#section-5-3">5.3 节</a>的用法，如果只想返回 /about，使用 <code>about_path</code> 就可以了。本书基本上都会使用惯用的 <code>path</code> 形式，不过在页面转向时会使用 <code>url</code> 形式，因为 HTTP 标准要求转向后的地址为完整的 URI，不过大多数浏览器都可以正常使用这两种形式。</p>
+<p>注意，<code>about_url</code> 返回的结果是完整的 URL 地址 http://localhost:3000/about（部署后，会用实际的域名替换 <code>localhost:3000</code>，例如 <code>example.com</code>）。如 <a href="chapter5.html#section-5-3">5.3 节</a>的用法，如果只想返回 /about，使用 <code>about_path</code> 就可以了。本书基本上都会使用惯用的 <code>path</code> 形式，不过在页面转向时会使用 <code>url</code> 形式，因为 HTTP 标准要求转向后的地址为完整的 URL，不过大多数浏览器都可以正常使用这两种形式。</p>
 
 <p>设置了这些路由之后，“帮助”页面、“关于”页面和“联系”页面的测试应该就可以通过了：</p>
 
@@ -1197,12 +1200,12 @@ images javascripts stylesheets
 
 <p>要设置“首页”的路由，可以使用如下的代码：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>match <span class="s1">'/'</span>, to: <span class="s1">'static_pages#home'</span>
+<div class="codeblock"><div class="highlight type-sh"><pre>match <span class="s1">'/'</span>, to: <span class="s1">'static_pages#home'</span>, via: <span class="s1">'get'</span>
 </pre></div>
 </div>
-<p>不过没必要这么做。Rails 在路由设置文件的下部为根地址 <code>/</code>（斜线）提供了特别的设置方式（参见代码 5.22）。</p>
+<p>不过没必要这么做。Rails 在路由设置文件的下部为根地址 <code>/</code>（斜线）提供了特别的设置方式（参见代码 5.23）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-22"><p class="caption"><span>代码 5.22：</span>注释掉的根路由设置说明</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-23"><p class="caption"><span>代码 5.23：</span>注释掉的根路由设置说明</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1215,29 +1218,23 @@ images javascripts stylesheets
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>按照上述说明，我们把根地址 <code>/</code> 映射到“首页”上（参见代码 5.23）。</p>
+<p>按照上述说明，我们把根地址 <code>/</code> 映射到“首页”上（参见代码 5.24）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-23"><p class="caption"><span>代码 5.23：</span>添加根地址的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-24"><p class="caption"><span>代码 5.24：</span>添加根地址的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
-
-  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span>
-  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span>
-  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span>
+  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>上面的代码会把根地址 <code>/</code> 映射到 /static_pages/home 页面上，同时生成两个 URI 地址帮助方法，如下所示：</p>
+<p>上面的代码会把根地址 <code>/</code> 映射到 /static_pages/home 页面上，也就是说 <a href="http://localhost:3000/">http://localhost:3000/</a> 中的内容和图 3.1 中的 Rails 默认页面不一样了，同时还生成了两个 URL 地址帮助方法，如下所示：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">root_path</span> <span class="o">=</span>&gt; <span class="s1">'/'</span>
-<span class="nv">root_url</span>  <span class="o">=</span>&gt; <span class="s1">'http://localhost:3000/'</span>
-</pre></div>
-</div>
-<p>我们应该按照代码 5.22 中注释的提示，删掉 <code>public/index.html</code> 文件，避免访问根目录时显示默认的首页（如图 1.3）。你当然可以直接把这个文件丢进垃圾桶，不过，如果使用 Git 做版本控制的话，可以使用 <code>git rm</code> 命令，删除文件的同时也告知 Git 系统做了这个删除操作：</p>
-
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git rm public/index.html
+<div class="codeblock"><div class="highlight type-sh"><pre>root_path -&gt; <span class="s1">'/'</span>
+root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 </pre></div>
 </div>
 <p>至此，所有静态页面的路由都设置好了，而且所有测试应该都可以通过了：</p>
@@ -1262,9 +1259,9 @@ images javascripts stylesheets
 </div>
 <p>其他链接以此类推。</p>
 
-<p>先从头部局部视图 <code>_header.html.erb</code> 开始，这个视图中包含了到“首页”和“帮助”页面的链接。既然要对头部视图做修改，顺便就按照网页的惯例为 LOGO 添加一个到“首页”的链接吧（参见代码 5.24）。</p>
+<p>先从头部局部视图 <code>_header.html.erb</code> 开始，这个视图中包含了到“首页”和“帮助”页面的链接。既然要对头部视图做修改，顺便就按照网页的惯例为 LOGO 添加一个到“首页”的链接吧（参见代码 5.25）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-24"><p class="caption"><span>代码 5.24：</span>头部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-25"><p class="caption"><span>代码 5.25：</span>头部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
 <span class="x">  &lt;div class="navbar-inner"&gt;</span>
 <span class="x">    &lt;div class="container"&gt;</span>
 <span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -1282,9 +1279,9 @@ images javascripts stylesheets
 </div>
 <p><a href="chapter8.html">第 8 章</a>才会为“注册”页面设置具名路由，所以现在还是用占位符 <code>#</code> 代替该页面的地址。</p>
 
-<p>还有一个包含链接的文件是底部局部视图 <code>_footer.html.erb</code>，有到“关于”页面和“联系”页面的链接（参见代码 5.25）。</p>
+<p>还有一个包含链接的文件是底部局部视图 <code>_footer.html.erb</code>，有到“关于”页面和“联系”页面的链接（参见代码 5.26）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-25"><p class="caption"><span>代码 5.25：</span>底部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-26"><p class="caption"><span>代码 5.26：</span>底部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
 <span class="x">  &lt;small&gt;</span>
 <span class="x">    &lt;a href="http://railstutorial.org/"&gt;Rails Tutorial&lt;/a&gt;</span>
 <span class="x">    by Michael Hartl</span>
@@ -1301,7 +1298,7 @@ images javascripts stylesheets
 </div>
 <p>如此一来，<a href="chapter3.html">第 3 章</a>创建的所有静态页面的链接都加入布局了，以“关于”页面为例，输入 /about，就会进入网站的“关于”页面（如图 5.8）。</p>
 
-<p>顺便说一下，要注意，虽然我们没有编写测试检测布局中是否包含这些链接，不过如果没有设置路由的话，前面的测试也会失败，不信你可以把代码 5.21 中的路由注释掉再运行测试来验证一下。检查链接是否指向正确页面的测试代码参见 <a href="chapter5.html#section-5-6">5.6 节</a>。</p>
+<p>顺便说一下，要注意，虽然我们没有编写测试检测布局中是否包含这些链接，不过如果没有设置路由的话，前面的测试也会失败，不信你可以把代码 5.22 中的路由注释掉再运行测试来验证一下。检查链接是否指向正确页面的测试代码参见 <a href="chapter5.html#section-5-6">5.6 节</a>。</p>
 
 <div class="figure" id="figure-5-8">
   <img src="figures/about_page_styled.png" alt="about page styled" /><p class="caption"><span>图 5.8：</span>“关于”页面 <a href="http://localhost:3000/about">/about</a></p>
@@ -1309,26 +1306,25 @@ images javascripts stylesheets
 <h3 id='section-5-3-4'><span>5.3.4</span> 简化 RSpec 测试代码</h3>
 
 
-<p>在 <a href="chapter5.html#section-5-3-1">5.3.1 节</a>中说过，静态页面的测试有点啰嗦，也有些重复（参见代码 5.20）。本节我们就会使用一些最新的 RSpec 特性，把测试变得简洁一些、优雅一些。</p>
+<p>在 <a href="chapter5.html#section-5-3-1">5.3.1 节</a>中说过，静态页面的测试有点啰嗦，也有些重复（参见代码 5.21）。本节我们就会使用一些最新的 RSpec 特性，把测试变得简洁一些、优雅一些。</p>
 
 <p>先看一下如何改进下面的代码：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
 
-  <span class="n">it</span> <span class="s2">"should have the h1 'Sample App'"</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should have the base title"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                      <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should not have a custom page title"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should_not</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'| Home'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1338,17 +1334,16 @@ images javascripts stylesheets
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
   <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">root_path</span> <span class="p">}</span>
 
-  <span class="n">it</span> <span class="s2">"should have the h1 'Sample App'"</span> <span class="k">do</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span>
+  <span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should have the base title"</span> <span class="k">do</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                      <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should not have a custom page title"</span> <span class="k">do</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should_not</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'| Home'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1362,12 +1357,12 @@ images javascripts stylesheets
 
 <p>还有个代码在每个用例中都出现了，我们使用了</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="s2">"should have the h1 'Sample App'"</span> <span class="k">do</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
 </pre></div>
 </div>
 <p>同时还使用了</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>二者虽然形式不同，要表达的意思却是相同的。而且两个用例都引用了 <code>page</code> 变量。我们可以告诉 RSpec，<code>page</code> 就是要测试的对象（subject），这样就可以避免多次使用 <code>page</code>：</p>
@@ -1377,7 +1372,7 @@ images javascripts stylesheets
 </div>
 <p>然后再使用 <code>it</code> 方法的另一种形式，把测试代码和描述文本合二为一：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>因为指明了 <code>subject { page }</code>，所以调用 <code>should</code> 时就会自动使用 Capybara 提供的 <code>page</code> 变量（参见 <a href="chapter3.html#section-3-2-1">3.2.1 节</a>）。</p>
@@ -1389,23 +1384,22 @@ images javascripts stylesheets
   <span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">root_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span> <span class="s1">'title'</span><span class="p">,</span>
-                        <span class="ss">text</span><span class="p">:</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_selector</span> <span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'| Home'</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span> <span class="p">}</span>
   <span class="k">end</span>
 </pre></div>
 </div>
-<p>这样代码看起来就舒服多了，不过标题的测试还有点长。其实，代码 5.20 中大多数标题都是这样的长标题：</p>
+<p>这样代码看起来就舒服多了，不过标题的测试还有点长。其实，代码 5.21 中大多数标题都是这样的长标题：</p>
 
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="x">"Ruby on Rails Tutorial Sample App | About"</span>
 </pre></div>
 </div>
-<p><a href="chapter3.html#section-3-5">3.5 节</a>的练习题建议定义一个 <code>base_title</code> 变量，再使用字符串插值来消除这个重复（参见代码 3.30）。我们可以更进一步，定义一个和代码 4.2 中 <code>full_title</code> 类似的方法。</p>
+<p><a href="chapter3.html#section-3-5">3.5 节</a>的练习题建议定义一个 <code>base_title</code> 变量，再使用字符串插值来消除这个重复（参见代码 3.31）。我们可以更进一步，定义一个和代码 4.2 中 <code>full_title</code> 类似的方法。</p>
 
-<p>为此我们要新建 <code>spec/support</code> 文件夹，然后在其中新建 RSpec 通用函数文件 <code>utilities.rb</code>（参见代码 5.26）。</p>
+<p>为此我们要新建 <code>spec/support</code> 文件夹，然后在其中新建 RSpec 通用函数文件 <code>utilities.rb</code>（参见代码 5.27）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-26"><p class="caption"><span>代码 5.26：</span>RSpec 通用函数文件，包含 <code>full_title</code> 方法</p><p class="file"><code>spec/support/utilities.rb</code></p><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">full_title</span><span class="p">(</span><span class="n">page_title</span><span class="p">)</span>
+<div class="codeblock has-caption" id="codeblock-5-27"><p class="caption"><span>代码 5.27：</span>RSpec 通用函数文件，包含 <code>full_title</code> 方法</p><p class="file"><code>spec/support/utilities.rb</code></p><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">full_title</span><span class="p">(</span><span class="n">page_title</span><span class="p">)</span>
   <span class="n">base_title</span> <span class="o">=</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span>
   <span class="k">if</span> <span class="n">page_title</span><span class="o">.</span><span class="n">empty?</span>
     <span class="n">base_title</span>
@@ -1424,14 +1418,14 @@ images javascripts stylesheets
   <span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">root_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="s1">''</span><span class="p">))</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">''</span><span class="p">))</span> <span class="p">}</span>
   <span class="k">end</span>
 </pre></div>
 </div>
-<p>下面我们要用类似“首页”的方法来简化“帮助”页面、“关于”页面和“联系”页面的测试，结果如代码 5.27 所示。</p>
+<p>下面我们要用类似“首页”的方法来简化“帮助”页面、“关于”页面和“联系”页面的测试，结果如代码 5.28 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-27"><p class="caption"><span>代码 5.27：</span>简化后的静态页面测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-5-28"><p class="caption"><span>代码 5.28：</span>简化后的静态页面测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -1440,30 +1434,30 @@ images javascripts stylesheets
   <span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">root_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="s1">''</span><span class="p">))</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_selector</span> <span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'| Home'</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">''</span><span class="p">))</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"Help page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">help_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="s1">'Help'</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="s1">'Help'</span><span class="p">))</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Help'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Help'</span><span class="p">))</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"About page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">about_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="s1">'About'</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">))</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'About'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">))</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"Contact page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">contact_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">))</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">))</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1473,7 +1467,7 @@ images javascripts stylesheets
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
-<p>代码 5.27 中的 RSpec 测试比代码 5.20 简化多了，其实，还可以变得更简洁，详见 <a href="chapter5.html#section-5-6">5.6 节</a>。在示例程序接下来的开发过程中，只要可以，我们都会使用这种简洁的方式。</p>
+<p>代码 5.28 中的 RSpec 测试比代码 5.21 简化多了，其实，还可以变得更简洁，详见 <a href="chapter5.html#section-5-6">5.6 节</a>。在示例程序接下来的开发过程中，只要可以，我们都会使用这种简洁的方式。</p>
 
 <h2 id='section-5-4'><span>5.4</span> 用户注册：第一步</h2>
 
@@ -1483,9 +1477,9 @@ images javascripts stylesheets
 <h3 id='section-5-4-1'><span>5.4.1</span> Users 控制器</h3>
 
 
-<p>创建第一个控制器 StaticPages 是很久以前的事了，还是在 <a href="chapter3.html#section-3-1-2">3.1.2 节</a>中。现在我们要创建第二个了，Users 控制器。和之前一样，我们使用 <code>generate</code> 命令创建所需的控制器骨架，包含用户注册页面所需的动作。遵照 Rails 的 REST 架构约定，我们把这个动作命名为 <code>new</code>，将其传递给 <code>generate controller</code> 就可以自动创建这个动作了（参见代码 5.28）。</p>
+<p>创建第一个控制器 StaticPages 是很久以前的事了，还是在 <a href="chapter3.html#section-3-1">3.1 节</a>中。现在我们要创建第二个了，Users 控制器。和之前一样，我们使用 <code>generate</code> 命令创建所需的控制器骨架，包含用户注册页面所需的动作。遵照 Rails 的 REST 架构约定，我们把这个动作命名为 <code>new</code>，将其传递给 <code>generate controller</code> 就可以自动创建这个动作了（参见代码 5.29）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-28"><p class="caption"><span>代码 5.28：</span>生成 Users 控制器（包含 <code>new</code> 动作）</p><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate controller Users new --no-test-framework
+<div class="codeblock has-caption" id="codeblock-5-29"><p class="caption"><span>代码 5.29：</span>生成 Users 控制器（包含 <code>new</code> 动作）</p><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate controller Users new --no-test-framework
       create  app/controllers/users_controller.rb
        route  get <span class="s2">"users/new"</span>
       invoke  erb
@@ -1500,20 +1494,20 @@ images javascripts stylesheets
       create      app/assets/stylesheets/users.css.scss
 </pre></div>
 </div>
-<p>这个命令会创建 Users 控制器，还有其中的 <code>new</code> 动作（参见代码 5.29）和一个占位用的视图文件（参见代码 5.30）。</p>
+<p>这个命令会创建 Users 控制器，还有其中的 <code>new</code> 动作（参见代码 5.30）和一个占位用的视图文件（参见代码 5.31）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-29"><p class="caption"><span>代码 5.29：</span>默认生成的 Users 控制器，包含 <code>new</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-sh"><pre>class UsersController &lt; ApplicationController
+<div class="codeblock has-caption" id="codeblock-5-30"><p class="caption"><span>代码 5.30：</span>默认生成的 Users 控制器，包含 <code>new</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-sh"><pre>class UsersController &lt; ApplicationController
   def new
   end
 
 end
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-30"><p class="caption"><span>代码 5.30：</span>默认生成的 <code>new</code> 动作视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Users#new&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-31"><p class="caption"><span>代码 5.31：</span>默认生成的 <code>new</code> 动作视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Users#new&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;Find me in app/views/users/new.html.erb&lt;/p&gt;</span>
 </pre></div>
 </div>
-<h3 id='section-5-4-2'><span>5.4.2</span> “注册”页面的 URI 地址</h3>
+<h3 id='section-5-4-2'><span>5.4.2</span> “注册”页面的 URL 地址</h3>
 
 
 <p><a href="chapter5.html#section-5-4-1">5.4.1 节</a>中生成的代码会在 /users/new 地址上对应一个页面，不过如<a href="chapter5.html#table-5-1">表格 5.1</a>所示，我们希望“注册”页面的地址是 /signup。为此，和 <a href="chapter5.html#section-5-3">5.3 节</a>一样，首先要编写集成测试，可以通过下面的命令生成：</p>
@@ -1521,9 +1515,9 @@ end
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate integration_test user_pages
 </pre></div>
 </div>
-<p>然后，按照代码 5.27 中静态页面测试代码的形式，我们要编写测试检测“注册”页面中是否有 <code>h1</code> 和 <code>title</code> 标签，如代码 5.31 所示。</p>
+<p>然后，按照代码 5.28 中静态页面测试代码的形式，我们要编写测试检测“注册”页面中是否有 <code>h1</code> 和 <code>title</code> 标签，如代码 5.32 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-31"><p class="caption"><span>代码 5.31：</span>Users 控制器的测试代码，包含“注册”页面的测试用例</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-5-32"><p class="caption"><span>代码 5.32：</span>Users 控制器的测试代码，包含“注册”页面的测试用例</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"User pages"</span> <span class="k">do</span>
 
@@ -1532,8 +1526,8 @@ end
   <span class="n">describe</span> <span class="s2">"signup page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">signup_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="s1">'Sign up'</span><span class="p">))</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sign up'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Sign up'</span><span class="p">))</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1543,7 +1537,7 @@ end
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/user_pages_spec.rb
 </pre></div>
 </div>
-<p>不过有一点要知道，你还可以指定整个目录来运行所有的 request 测试：</p>
+<p>不过有一点要注意，你还可以指定整个目录来运行所有的 request 测试：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/
 </pre></div>
@@ -1558,38 +1552,36 @@ end
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake spec
 </pre></div>
 </div>
-<p>（事实上，你可以只输入 <code>rake</code>，因为 <code>rake</code> 的默认任务就是运行测试。）</p>
+<p>（事实上，你可以只输入 <code>rake</code>，因为 <code>rake</code> 的默认任务就是运行测试。）现在唯一的问题是，运行测试会报错，因为还没有准备好“测试数据库”，我们会在 <a href="chapter6.html#section-6-2-1">6.2.1 节</a> 中详细介绍。</p>
 
-<p>我们已经为 Users 控制器生成了 <code>new</code> 动作，如要测试通过，需要正确设置路由，还要有相应内容的视图文件。我们按照代码 5.21 的方式，为“注册”页面加入 <code>match '/signup'</code> 路由设置（参见代码 5.32）。</p>
+<p>我们已经为 Users 控制器生成了 <code>new</code> 动作，如要测试通过，需要正确设置路由，还要有相应内容的视图文件。我们按照代码 5.22 的方式，为“注册”页面加入 <code>match '/signup'</code> 路由设置（参见代码 5.33）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-32"><p class="caption"><span>代码 5.32：</span>“注册”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-33"><p class="caption"><span>代码 5.33：</span>“注册”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"users/new"</span>
 
   <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
-
-  <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to</span><span class="p">:</span> <span class="s1">'users#new'</span>
-
-  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span>
-  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span>
-  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span>
+  <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to</span><span class="p">:</span> <span class="s1">'users#new'</span><span class="p">,</span>            <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>注意，我们保留了 <code>get "users/new"</code> 设置，这是控制器生成命令（代码 5.28）自动添加的路由，如要路由可用，这个设置还不能删除，不过这不符合 REST 约定（参见<a href="chapter2.html#table-2-2">表格 2.2</a>），会在 <a href="chapter7.html#section-7-1-2">7.1.2 节</a>删除。</p>
+<p>注意，我们保留了 <code>get "users/new"</code> 设置，这是控制器生成命令（代码 5.29）自动添加的路由，如要路由可用，这个设置还不能删除，不过这不符合 REST 约定（参见<a href="chapter2.html#table-2-2">表格 2.2</a>），会在 <a href="chapter7.html#section-7-1-2">7.1.2 节</a>删除。</p>
 
-<p>要让测试通过，视图中还要有相应的 <code>h1</code> 和 <code>title</code>（参见代码 5.33）。</p>
+<p>要让测试通过，视图中还要有相应的 <code>h1</code> 和 <code>title</code>（参见代码 5.34）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-33"><p class="caption"><span>代码 5.33：</span>“注册”页面视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-5-34"><p class="caption"><span>代码 5.34：</span>“注册”页面视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Sign up&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;Find me in app/views/users/new.html.erb&lt;/p&gt;</span>
 </pre></div>
 </div>
-<p>现在，代码 5.31 中“注册”页面的测试应该可以通过了。下面要做的就是为“首页”中的注册按钮加上链接。和其他的具名路由一样，<code>match '/signup'</code> 会生成 <code>signup_path</code> 方法，用来链接到“注册”页面（参见代码 5.34）。</p>
+<p>现在，代码 5.32 中“注册”页面的测试应该可以通过了。下面要做的就是为“首页”中的注册按钮加上链接。和其他的具名路由一样，<code>match '/signup'</code> 会生成 <code>signup_path</code> 方法，用来链接到“注册”页面（参见代码 5.35）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-34"><p class="caption"><span>代码 5.34：</span>把按钮链接到“注册”页面</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;div class="center hero-unit"&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-35"><p class="caption"><span>代码 5.35：</span>把按钮链接到“注册”页面</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;div class="center hero-unit"&gt;</span>
 <span class="x">  &lt;h1&gt;Welcome to the Sample App&lt;/h1&gt;</span>
 
 <span class="x">  &lt;h2&gt;</span>
@@ -1647,23 +1639,29 @@ end
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku logs
 </pre></div>
 </div>
-<p>试着使用 Heroku 的日志文件排错。</p>
+<p>试着使用 Heroku 的日志文件排错。同时确保你已经做了代码 2.17 所示的改动。</p>
 
 <h2 id='section-5-6'><span>5.6</span> 练习</h2>
 
 
-<ol><li>测试静态页面的代码 5.27 已经简化了，但还有一些重复的地方。RSpec 提供了一种名为“共享用例（shared example）”的辅助功能，可以消除这些重复。按照代码 5.35 的形式，添加没有编写的“帮助”页面、“关于”页面和“联系”页面的测试。注意，代码 3.30 中用到的 <code>let</code> 方法只要需要就会用指定的值创建一个局部变量（例如，引用这个变量时），相比之下，实例变量只在赋值时才被创建。</li>
-  <li>或许你已经注意到了，对布局中链接的测试，只测试了路由设置，而没有测试链接是否指向了正确的页面。实现这个测试的方法之一是使用 RSpec 集成测试中的 <code>visit</code> 和 <code>click_link</code> 函数。加入代码 5.36 中的测试来验证一下链接的地址是否正确。</li>
-  <li>不要使用代码 5.26 中的 <code>full_title</code> 方法，另外编写一个用例，测试原来那个帮助方法，可参照代码 5.37。（需要新建 <code>spec/helpers</code> 目录和 <code>application_helper_spec.rb</code> 文件。）然后用代码 5.38 中的代码将其引入（<code>require</code>）测试。运行测试验证一下新代码是否可以正常使用。注意：代码 5.37 用到了正则表达式（regular expression），<a href="chapter6.html#section-6-2-4">6.2.4 节</a>会做介绍。（感谢 <a href="http://alexchaffee.com/">Alex Chaffee</a> 的建议，并提供了本题用到的代码。）</li>
-</ol><div class="codeblock has-caption" id="codeblock-5-35"><p class="caption"><span>代码 5.35：</span>用 RSpec “共享用例”来消除重复</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<ol><li>
+    <p>测试静态页面的代码 5.28 已经简化了，但还有一些重复的地方。RSpec 提供了一种名为“共享用例（shared example）”的辅助功能，可以消除这些重复。按照代码 5.36 的形式，添加没有编写的“帮助”页面、“关于”页面和“联系”页面的测试。注意，代码 3.31 中用到的 <code>let</code> 方法只要需要就会用指定的值创建一个局部变量（例如，引用这个变量时），相比之下，实例变量只在赋值时才被创建。</p>
+  </li>
+  <li>
+    <p>或许你已经注意到了，对布局中链接的测试，只测试了路由设置，而没有测试链接是否指向了正确的页面。实现这个测试的方法之一是使用 RSpec 集成测试中的 <code>visit</code> 和 <code>click_link</code> 函数。加入代码 5.37 中的测试来验证一下链接的地址是否正确。</p>
+  </li>
+  <li>
+    <p>不要使用代码 5.27 中的 <code>full_title</code> 方法，另外编写一个用例，测试原来那个帮助方法，可参照代码 5.38。（需要新建 <code>spec/helpers</code> 目录和 <code>application_helper_spec.rb</code> 文件。）然后用代码 5.39 中的代码将其引入（<code>require</code>）测试。运行测试验证一下新代码是否可以正常使用。注意：代码 5.38 用到了正则表达式（regular expression），<a href="chapter6.html#section-6-2-4">6.2.4 节</a>会做介绍。（感谢 <a href="http://alexchaffee.com/">Alex Chaffee</a> 的建议，并提供了本题用到的代码。）</p>
+  </li>
+</ol><div class="codeblock has-caption" id="codeblock-5-36"><p class="caption"><span>代码 5.36：</span>用 RSpec “共享用例”来消除重复</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="n">page</span> <span class="p">}</span>
 
   <span class="n">shared_examples_for</span> <span class="s2">"all static pages"</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span>    <span class="ss">text</span><span class="p">:</span> <span class="n">heading</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="n">page_title</span><span class="p">))</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="n">page_title</span><span class="p">))</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
@@ -1672,7 +1670,7 @@ end
     <span class="n">let</span><span class="p">(</span><span class="ss">:page_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">''</span> <span class="p">}</span>
 
     <span class="n">it_should_behave_like</span> <span class="s2">"all static pages"</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_selector</span> <span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'| Home'</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"Help page"</span> <span class="k">do</span>
@@ -1695,7 +1693,7 @@ end
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-36"><p class="caption"><span>代码 5.36：</span>测试布局中的链接</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-5-37"><p class="caption"><span>代码 5.37：</span>测试布局中的链接</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -1704,41 +1702,41 @@ end
   <span class="n">it</span> <span class="s2">"should have the right links on the layout"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
     <span class="n">click_link</span> <span class="s2">"About"</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span> <span class="s1">'title'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">full_title</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">))</span>
     <span class="n">click_link</span> <span class="s2">"Help"</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
     <span class="n">click_link</span> <span class="s2">"Contact"</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
     <span class="n">click_link</span> <span class="s2">"Home"</span>
     <span class="n">click_link</span> <span class="s2">"Sign up now!"</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
     <span class="n">click_link</span> <span class="s2">"sample app"</span>
-    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-37"><p class="caption"><span>代码 5.37：</span>对 <code>full_title</code> 帮助方法的测试</p><p class="file"><code>spec/helpers/application_helper_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-5-38"><p class="caption"><span>代码 5.38：</span>对 <code>full_title</code> 帮助方法的测试</p><p class="file"><code>spec/helpers/application_helper_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">ApplicationHelper</span> <span class="k">do</span>
 
   <span class="n">describe</span> <span class="s2">"full_title"</span> <span class="k">do</span>
     <span class="n">it</span> <span class="s2">"should include the page title"</span> <span class="k">do</span>
-      <span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)</span><span class="o">.</span><span class="n">should</span> <span class="o">=~</span> <span class="sr">/foo/</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/foo/</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should include the base title"</span> <span class="k">do</span>
-      <span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)</span><span class="o">.</span><span class="n">should</span> <span class="o">=~</span> <span class="sr">/^Ruby on Rails Tutorial Sample App/</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/^Ruby on Rails Tutorial Sample App/</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should not include a bar for the home page"</span> <span class="k">do</span>
-      <span class="n">full_title</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">should_not</span> <span class="o">=~</span> <span class="sr">/\|/</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">""</span><span class="p">))</span><span class="o">.</span><span class="n">not_to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/\|/</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-38"><p class="caption"><span>代码 5.38：</span>使用一个简单的引用代替测试中的 <code>full_title</code> 方法</p><p class="file"><code>spec/support/utilities.rb</code></p><div class="highlight type-ruby"><pre><span class="kp">include</span> <span class="no">ApplicationHelper</span>
+<div class="codeblock has-caption" id="codeblock-5-39"><p class="caption"><span>代码 5.39：</span>使用一个简单的引用代替测试中的 <code>full_title</code> 方法</p><p class="file"><code>spec/support/utilities.rb</code></p><div class="highlight type-ruby"><pre><span class="kp">include</span> <span class="no">ApplicationHelper</span>
 </pre></div>
 </div>
 <div class="footnotes">
@@ -1790,7 +1788,7 @@ end
 			
 		</div>
 		<div class="footer">
-        	<p>Andor Chen 保留部分权力。基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
+        	<p>&copy;2013 <a href="http://about.ac" title="Andor Chen 的个人网站">Andor Chen</a> 保留部分权力。在线阅读版本基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
 		</div>
 	</div>
 </body>

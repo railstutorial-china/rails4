@@ -12,8 +12,8 @@
 <body>
 	<div class="wrapper">
 		<div class="header">
-            <h1 class="logo"><a class="ir" href="">Ruby on Rails 教程</a></h1>
-            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版</p>
+            <h1 class="logo"><a class="ir" href="http://railstutorial-china.org">Ruby on Rails 教程</a></h1>
+            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版（涵盖 Rails 4）</p>
         </div>
         <div class="content">
 			
@@ -92,6 +92,34 @@
   	<div class="main">
   		<p>欢迎学习《Ruby on Rails 教程》。本书的目标是成为对“如果想学习使用 Ruby on Rails 进行 Web 开发，我应该从哪儿开始？”这一问题的最好答案。学习完本书的内容之后，你将具备使用 Rails 进行开发和部署 Web 程序的技能。同时你还能够通过一些进阶的书籍、博客和视频教程等活跃的 Rails 教学体系继续深造。本书基于 Rails 4，这里的知识代表着 Web 开发的发展方向。（《Ruby on Rails 教程》的最新版本可以从<a href="http://railstutorial.org/">本书的网站</a>上获取。）</p>
 
+<p>（你现在看到的是针对 Rails 4 的版本，所有内容都和 Rails 4 兼容，但这并不是一个新版本，因为 Rails 4 的变化还没大到新出一版。作为一本入门书，本书和之前针对 Rails 3.2 的版本差别很小。小变化虽多（详见<a href="chapter1.html#aside-1-1">旁注 1.1</a>），但主要的变化是一个称为“健壮参数”的新安全技术，会在 <a href="chapter7.html#section-7-3-2">7.3.2 节</a>中介绍。只要 Rails 的变化足大，我就会新出一版，介绍 Turbolinks 和俄罗斯套娃缓存等技术，还会介绍 RSpec 的新用法，例如“功能测试”。）</p>
+
+          <div class="aside box" id="aside-1-1">
+  <h4><span>旁注 1.1：</span>与第二版的差异</h4>
+
+  <p>下面的列表列出了本书和第二版之间几乎所有的差异。（最重要的一个差异是，使用了“健壮参数”，其他都是小变动。）我列出这个列表是为了方便第二版的读者（或者熟悉 Rails 3.2 的读者）快速查看两版的不同之处。如果你没用过 Rails 3.2 请忽略这个列表。</p>
+
+  <p>列表的每一项后面都有一个链接，指向变动所在的章节或代码。</p>
+
+  <ul><li>从 Rails 3.2 升级到 Rails 4.0（<a href="chapter1.html#section-1-2-2">1.2.2 节</a>）</li>
+    <li>显式引入 Capybara DSL（代码 3.10）</li>
+    <li>把 RSpec 的 <code>.should</code> 句法换成了 <code>expect().to</code>（<a href="chapter3.html#section-3-2-1">3.2.1 节</a>）</li>
+    <li>把 <code>have_selector('title', ...)</code> 换成了 <code>have_title(...)</code>（<a href="chapter3.html#section-3-3-1">3.3.1 节</a>）</li>
+    <li>更新操作所用的 HTTP 请求从 <code>PUT</code> 换成了 <code>PATCH</code>（<a href="chapter3.html#aside-3-3">旁注 3.3</a>）</li>
+    <li>引入样式表和 JavaScript 脚本时指定了针对 Turbolinks 的参数（代码 3.26）</li>
+    <li>把 <code>root to: 'path'</code> 换成了 <code>root 'path'</code>（代码 5.24）</li>
+    <li>把 <code>find_by_thing(...)</code> 换成了 <code>find_by(thing: ...)</code>（<a href="chapter6.html#section-6-1-4">6.1.4 节</a>）</li>
+    <li>把 <code>rake db:test:prepare</code> 命令换成了 <code>rake test:prepare</code>（<a href="chapter6.html#section-6-2-1">6.2.1 节</a>）</li>
+    <li>撤掉 <code>attr_accessible</code>，换用“健壮参数”（<a href="chapter7.html#section-7-3-2">7.3.2 节</a>）</li>
+    <li>换用加密的记忆权标（<a href="chapter8.html#section-8-2-1">8.2.1 节</a>）</li>
+    <li>把 <code>before_filter</code> 换成了 <code>before_action</code>（代码 9.21）</li>
+    <li>使用 Capybara 的 <code>match: :first</code> 参数点击第一个匹配的链接（代码 9.43）</li>
+    <li>把 <code>default_scope</code> 的参数从 Hash 换成了 lambda（代码 10.11）</li>
+    <li>把 <code>dup</code> 换成了 <code>to_a</code> 方法（代码 10.12）</li>
+    <li>使用 XPath 测试按钮的状态变化（<a href="chapter11.html#section-11-2-4">11.2.4 节</a>）</li>
+  </ul></div>
+
+
 <p>注意，本书的目标并不仅仅是教你 Rails，而是教你怎样使用 Rails 进行 Web 开发，教会你为因特网开发软件的技能。除了讲到 Ruby on Rails 之外，涉及到的技术还有 HTML、CSS、数据库、版本控制、测试和部署。为了达成学习目标，本书使用了一个完整的方案：通过实例学习使用 Rails 从零开始创建一个真正的程序。如 <a href="http://sivers.org/">Derek Sivers</a> 在前言中所说的，本书内容采用线性TDD结构，需要从头开始按顺序读到结尾。如果你经常跳着阅读技术类书籍，这种线性的组织方式需要你适应一下。你可以将本书设想为一个电子游戏，学习完每一章就会升一级。（而练习就是每一关的<a href="http://en.wikipedia.org/wiki/Boss_\(video_gaming\)#Miniboss">小怪兽</a>。）</p>
 
 <p>本章首先将介绍如何安装 Ruby on Rails 所需的软件，搭建开发所需的环境（<a href="chapter1.html#section-1-2">1.2 节</a>）。然后创建第一个 Rails 程序 <code>first_app</code>。本书会遵从一些优秀的软件开发习惯，所以在创建第一个程序后我们会立即将它放到版本控制系统 Git 中（<a href="chapter1.html#section-1-3">1.3 节</a>）。最后，我们还将把这个程序放到实际的生产环境中运行（<a href="chapter1.html#section-1-4">1.4 节</a>）。</p>
@@ -118,8 +146,8 @@
 
 <p>本书的内容不仅只是讲解 Rails，还会涉及 Ruby 语言、RSpec 测试框架、<a href="http://en.wikipedia.org/wiki/HTML">HTML</a>、<a href="http://en.wikipedia.org/wiki/CSS">CSS</a>、少量的 <a href="http://en.wikipedia.org/wiki/JavaScript">JavaScript</a> 和一些 <a href="http://en.wikipedia.org/wiki/SQL">SQL</a>。所以不管你的 Web 开发技能处在什么层次，读完本书后你就能够继续学习一些较为高级的 Rails 资源了，同时也会对书中提到的其他技术有一个大体的认识。这么说也意味着本书要覆盖很多知识，如果你不是一个有些经验的程序员学起来会觉得有些吃力。下面就根据不同的开发背景给出使用本书的一些建议。</p>
 
-          <div class="aside box" id="aside-1-1">
-  <h4><span>旁注 1.1：</span>脚手架：更快，更简单，更诱人</h4>
+          <div class="aside box" id="aside-1-2">
+  <h4><span>旁注 1.2：</span>脚手架：更快，更简单，更诱人</h4>
 
   <p>Rails 出现伊始就吸引了众多目光，特别是 Rails 创始人 DHH （David Heinemeier Hansson）制作的著名的“<a href="http://www.youtube.com/watch?v=Gzj723LkRJY">15分钟博客程序</a>”视频，该视频以及其衍生版本是窥探 Rails 强大功能一种很好的方式，我推荐你也看一下这些视频。剧透一下：这些视频中的演示能控制在15分钟得益于一个叫做“脚手架（scaffold）”的功能，它通过 Rails 命令 <code>generate</code> 生产大量的代码。</p>
 
@@ -129,11 +157,11 @@
 </div>
 
 
-<p><strong>所有读者：</strong>学习 Rails 时一个常见的疑问是，是否要先学习 Ruby。这个问题的答案取决于你个人的学习方式以及你所具有的编程经验。如果你希望较为系统的彻底学习，或者你以前从未编程过，那么先学 Ruby 或许更适合你，我推荐你阅读 Peter Cooper 的《<a href="http://www.amazon.com/gp/product/1430223634">Ruby 入门</a>》一书。很多 Rails 开发初学者很想立马就开始 Web 程序开发，而不是在此之前阅读一本 500 多页纯粹讲解 Ruby 的书。如果你是这类人群，我推荐你在 <a href="http://tryruby.org/">Try Ruby</a><sup class="footnote" id="fnref-1-2"><a href="#fn-1-2" rel="footnote">3</a></sup> 上学习一些短小的交互式教程，然后还可以看一下 <a href="http://railsforzombies.org/">Rails for Zombies</a> <sup class="footnote" id="fnref-1-3"><a href="#fn-1-3" rel="footnote">4</a></sup> 这个免费的视频教程，看看 Rails 都能做些什么。</p>
+<p><strong>所有读者：</strong>学习 Rails 时一个常见的疑问是，是否要先学习 Ruby。这个问题的答案取决于你个人的学习方式以及你所具有的编程经验。如果你希望较为系统的彻底学习，或者你以前从未编程过，那么先学 Ruby 或许更适合你，我推荐你阅读 Peter Cooper 的《<a href="http://www.amazon.com/gp/product/1430223634">Ruby 入门</a>》一书。很多 Rails 开发初学者很想立马就开始 Web 程序开发，而不是在此之前阅读一本 500 多页纯粹讲解 Ruby 的书。如果你是这类人群，我推荐你在 <a href="http://tryruby.org/">Try Ruby</a> 上学习一些短小的交互式教程，然后还可以看一下 <a href="http://railsforzombies.org/">Rails for Zombies</a> 这个免费的视频教程，看看 Rails 都能做些什么。</p>
 
 <p>另外一个常见的疑问是，是否要在一开始就使用测试。就如前面的介绍所说的，本书会使用“测试驱动开发（也叫“先测试后开发”）”理念，我认为这是使用 Rails 进行 Web 开发最好的方式，但这样也会增加难度和复杂度。如果你觉得做测试有些困难，我建议你在第一遍阅读时直接跳过所有测试，或者（更好的是）只把它们当做验证代码正确性的工具，而不用管测试的机理。如果采用后一种方法，你要创建一些必要的测试文件（叫做 spec），然后将本书中提供的测试代码编写进去，然后运行这些测试用例（<a href="chapter5.html">第五章</a>会介绍）得到失败消息，然后编写代码再运行测试让其通过。</p>
 
-<p><strong>缺乏经验的程序员：</strong>本书的主要读者群不是刚入门的程序员，Web 程序及其相关的任意一个技术都是很复杂的。如果你完全是个 Web 编程菜鸟，发现本书的内容太难了，我建议你先学习基本的 HTML 和 CSS（很可惜这两种技术我没有推荐的书籍，但是《深入浅出 HTML》应该不错，一个读者推荐 David Sawyer McFarland 的《CSS 实战手册》），然后再试着阅读本书。你也可以考虑先阅读 Peter Cooper 的《Ruby 入门》的前几章，这几章中的示例程序都比功能完善的 Web 程序小得多。不过也有一批初学者通过本书学会了 Web 开发，所以你不妨也试一下，而且我强烈推荐<a href="http://railstutorial.org/screencasts">本书配套的教学视频</a> <sup class="footnote" id="fnref-1-4"><a href="#fn-1-4" rel="footnote">5</a></sup>，通过观看别人的操作来学习 Rails 开发。</p>
+<p><strong>缺乏经验的程序员：</strong>本书的主要读者群不是刚入门的程序员，Web 程序及其相关的任意一个技术都是很复杂的。如果你完全是个 Web 编程菜鸟，发现本书的内容太难了，我建议你先学习基本的 HTML 和 CSS（很可惜这两种技术我没有推荐的书籍，但是《深入浅出 HTML》应该不错，一个读者推荐 David Sawyer McFarland 的《CSS 实战手册》），然后再试着阅读本书。你也可以考虑先阅读 Peter Cooper 的《Ruby 入门》的前几章，这几章中的示例程序都比功能完善的 Web 程序小得多。不过也有一批初学者通过本书学会了 Web 开发，所以你不妨也试一下，而且我强烈推荐<a href="http://railstutorial.org/screencasts">本书配套的教学视频</a>，通过观看别人的操作来学习 Rails 开发。</p>
 
 <p><strong>经验丰富的程序员，但是刚接触 Web 开发：</strong>以前的经验说明你可能已经理解了类、方法、数据结构等概念，这是个好的开始。不过，如果你以前是 C/C++ 或 Java 程序员，你会觉得 Ruby 有点另类，需要花一段时间才能适应；慢慢的适应，你会习惯的。（如果你实在无法放弃使用行尾的分号，Ruby 允许你这么做）本书会为你介绍所有 Web 相关的概念，所以如果你现在并不知道 <code>POST</code> 和 <code>PATCH</code> 的区别也不要紧。</p>
 
@@ -147,7 +175,7 @@
 
 <p>读完本书后，我建议经验丰富的程序员继续阅读 David A. Black 的《<a href="http://www.amazon.com/gp/product/1933988657">The Well-Grounded Rubyist</a>》，Russ Olsen 的《<a href="http://www.amazon.com/Eloquent-Ruby-Addison-Wesley-Professional-Series/dp/0321584104/?version=4.0#">Eloquent Ruby</a>》，或者 Hal Fulton 的《<a href="http://www.amazon.com/gp/product/0672328844">Ruby 之道</a>》，这本也是进阶书籍，不过更为专注某些特定的话题。</p>
 
-<p>不管你是从哪里开始的，学完本书你还应该继续学习一些中高级 Rails 资源。以下是我推荐的学习资源<sup class="footnote" id="fnref-1-t2"><a href="#fn-1-t2" rel="footnote">6</a></sup>：</p>
+<p>不管你是从哪里开始的，学完本书你还应该继续学习一些中高级 Rails 资源。以下是我推荐的学习资源<sup class="footnote" id="fnref-1-t2"><a href="#fn-1-t2" rel="footnote">3</a></sup>：</p>
 
 <ul><li><a href="http://railscasts.com/">RailsCasts</a>，Ryan Bates：优秀的免费（大多数）视频教程</li>
   <li><a href="http://peepcode.com">PeepCode</a>：优秀的收费视频教程</li>
@@ -164,7 +192,7 @@
 
 <p>本书中使用的排版约定很多都是不言自明的，在本节我要说一下那些意义不是很清晰的部分。</p>
 
-<p>本书的 HTML 版和 PDF 版都包含了大量的链接，有内部各章节之间的链接（例如 <a href="chapter1.html#section-1-2">1.2</a>节），也有链接到其他网站的链接（例如<a href="http://rubyonrails.org/download">Ruby on Rails 下载</a>页面）。<sup class="footnote" id="fnref-1-5"><a href="#fn-1-5" rel="footnote">7</a></sup></p>
+<p>本书的 HTML 版和 PDF 版都包含了大量的链接，有内部各章节之间的链接（例如 <a href="chapter1.html#section-1-2">1.2</a>节），也有链接到其他网站的链接（例如<a href="http://rubyonrails.org/download">Ruby on Rails 下载</a>页面）。<sup class="footnote" id="fnref-1-2"><a href="#fn-1-2" rel="footnote">4</a></sup></p>
 
 <p>本书中很多例子都用到了命令行命令，为了行文方便，所有的命令行示例都使用了 Unix 风格的命令行提示符（美元符号），例如：</p>
 
@@ -178,7 +206,7 @@ hello, world
 hello<span class="p">,</span> world
 </pre></div>
 </div>
-<p>在 Unix 系统中，一些命令要使用 <code>sudo</code>（超级用户的工作，“substitute user do”）执行。<sup class="footnote" id="fnref-1-23"><a href="#fn-1-23" rel="footnote">8</a></sup>默认情况下，使用 <code>sudo</code> 执行的命令是以管理员的身份执行的，这样就能访问普通用户无法访问的文件和文件夹了。例如 <a href="chapter1.html#section-1-2-2">1.2.2 节</a>中的一个例子：</p>
+<p>在 Unix 系统中，一些命令要使用 <code>sudo</code>（超级用户的工作，“substitute user do”）执行。<sup class="footnote" id="fnref-1-14"><a href="#fn-1-14" rel="footnote">5</a></sup>默认情况下，使用 <code>sudo</code> 执行的命令是以管理员的身份执行的，这样就能访问普通用户无法访问的文件和文件夹了。例如 <a href="chapter1.html#section-1-2-2">1.2.2 节</a>中的一个例子：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>sudo ruby setup.rb
 </pre></div>
@@ -222,7 +250,7 @@ hello<span class="p">,</span> world
 
 <p>本书经常需要显示一些来自其他程序（命令行，版本控制系统，Ruby 程序等）的输出，因为系统之间存在差异，你所得到的输出结果可能和本书中的不同，但是无需担心。</p>
 
-<p>你在使用某些命令时可能会导致一些错误的发生，我不会一一列举各个错误的解决方法，你可以自行通过 Google 搜索解决。如果你在学习本书的过程中遇到了问题，我建议你看一下<a href="http://railstutorial.org/help">本书帮助页面</a> <sup class="footnote" id="fnref-1-6"><a href="#fn-1-6" rel="footnote">9</a></sup> 中列出的资源。</p>
+<p>你在使用某些命令时可能会导致一些错误的发生，我不会一一列举各个错误的解决方法，你可以自行通过 Google 搜索解决。如果你在学习本书的过程中遇到了问题，我建议你看一下<a href="http://railstutorial.org/help">本书帮助页面</a>中列出的资源。</p>
 
 <h2 id='section-1-2'><span>1.2</span> 搭建环境</h2>
 
@@ -243,7 +271,7 @@ hello<span class="p">,</span> world
 <h4 id='section-1-2-1-1'><span></span>IDE</h4>
 
 
-<p>使用最多的 Rails IDE 是 <a href="http://www.aptana.com/rails/">RadRails</a> 和 <a href="http://www.jetbrains.com/ruby/index.html">RubyMine</a>。我听说 RubyMine 不错，一个读者（David Loeffler）还总结了一篇文章讲解<a href="https://github.com/perfectionist/sample_project/wiki">如何结合本书使用 RubyMine</a> <sup class="footnote" id="fnref-1-7"><a href="#fn-1-7" rel="footnote">10</a></sup>。如果你习惯使用 IDE，我建议你把上面提到的几个全都试一下，找到最符合自己要求的一款。</p>
+<p>使用最多的 Rails IDE 是 <a href="http://www.aptana.com/rails/">RadRails</a> 和 <a href="http://www.jetbrains.com/ruby/index.html">RubyMine</a>。我听说 RubyMine 不错，一个读者（David Loeffler）还总结了一篇文章讲解<a href="https://github.com/perfectionist/sample_project/wiki">如何结合本书使用 RubyMine</a>。如果你习惯使用 IDE，我建议你把上面提到的几个全都试一下，找到最符合自己要求的一款。</p>
 
 <div class="figure" id="figure-1-1">
   <img src="figures/editor_shell.png" alt="editor shell" /><p class="caption"><span>图 1.1：</span>文本编辑器和命令行的开发环境</p>
@@ -253,9 +281,9 @@ hello<span class="p">,</span> world
 
 <p>较之 IDE，我更喜欢使用文本编辑器编辑文本，使用命令行执行命令（如图 1.1）。如何组合取决于你的喜好和所用的平台。</p>
 
-<ul><li><strong>文本编辑器：</strong>我推荐使用 <a href="http://www.sublimetext.com/2">Sublime Text 2</a>，这是一个跨平台支持的文本编辑器，简单易学且功能强大。<sup class="footnote" id="fnref-1-24"><a href="#fn-1-24" rel="footnote">11</a></sup>Sublime Text 深受 <a href="http://macromates.com/">Textmate</a> 的影响，它能兼容大多数 Textmate 的定制功能，例如代码片段和配色方案。（Textmate 只可在 OS X 中使用，如果你使用 Mac 的话，它仍然是一个很好的选择。）另外一个很好的选择是 <a href="http://www.vim.org/">Vim</a> <sup class="footnote" id="fnref-1-8"><a href="#fn-1-8" rel="footnote">12</a></sup>，它有针对各种主要平台的版本。Sublime Text 需要付费，而 Vim 则是免费的。二者都是界内人士普遍使用的编辑器，但就我的经验而言，Sublime Text 对初学者更友好。</li>
+<ul><li><strong>文本编辑器：</strong>我推荐使用 <a href="http://www.sublimetext.com/2">Sublime Text 2</a>，这是一个跨平台支持的文本编辑器，简单易学且功能强大。<sup class="footnote" id="fnref-1-15"><a href="#fn-1-15" rel="footnote">6</a></sup>Sublime Text 深受 <a href="http://macromates.com/">Textmate</a> 的影响，它能兼容大多数 Textmate 的定制功能，例如代码片段和配色方案。（Textmate 只可在 OS X 中使用，如果你使用 Mac 的话，它仍然是一个很好的选择。）另外一个很好的选择是 <a href="http://www.vim.org/">Vim</a> <sup class="footnote" id="fnref-1-3"><a href="#fn-1-3" rel="footnote">7</a></sup>，它有针对各种主要平台的版本。Sublime Text 需要付费，而 Vim 则是免费的。二者都是界内人士普遍使用的编辑器，但就我的经验而言，Sublime Text 对初学者更友好。</li>
   <li><strong>终端（命令行）：</strong>OS X 系统中我推荐使用 <a href="http://iterm.sourceforge.net/">iTerm</a> 或是内置的终端程序。Linux 系统默认的终端就很好。在 Windows 中，很多用户选择在虚拟机中运行 Linux 来开发 Rails 程序，那么终端就使用默认的好了。如果你是在纯 Windows 系统中开发，我推荐使用 <a href="http://railsinstaller.org/">Rails Installer</a> 中附带的终端。</li>
-</ul><p>如果你决定使用 Sublime Text，可以参照<a href="https://github.com/mhartl/rails_tutorial_sublime_text">针对本书的安装说明</a> <sup class="footnote" id="fnref-1-9"><a href="#fn-1-9" rel="footnote">13</a></sup>来安装。（这些设置可能有些繁琐，且易于出错，所以我只推荐给高级用户使用。即便不做这些设置，Sublime Text 也是编写 Rails 应用程序的绝佳工具。）</p>
+</ul><p>如果你决定使用 Sublime Text，可以参照<a href="https://github.com/mhartl/rails_tutorial_sublime_text">针对本书的安装说明</a>来安装。（这些设置可能有些繁琐，且易于出错，所以我只推荐给高级用户使用。即便不做这些设置，Sublime Text 也是编写 Rails 应用程序的绝佳工具。）</p>
 
 <h4 id='section-1-2-1-3'><span></span>浏览器</h4>
 
@@ -304,7 +332,7 @@ hello<span class="p">,</span> world
 </div>
 <p>这个命令会显示 Ruby 的版本。Rails 4 需要使用 Ruby 1.9 或以上的版本，但最好是 Ruby 2.0。（基本上无法使用 Ruby 1.8.7。）本教程假设多数的读者使用的是 Ruby 1.9.3 或 2.0.0，不过 Ruby 1.9.2 应该也可以用。</p>
 
-<p>如果你使用的是 OS X 或者 Linux，在安装 Ruby 时我强烈建议使用 Ruby 版本管理工具 <a href="http://rvm.io/">RVM</a>，它允许你在同一台电脑上安装并管理多个 Ruby 版本。（在 Windows 中可以使用 <a href="http://github.com/vertiginous/pik">Pik</a>）如果你希望在同一台电脑中运行不同版本的 Ruby 或 Rails 就需要它了。如果你在使用 RVM 时遇到什么问题的话，可以在 RVM 的 IRC 频道（<a href="http://webchat.freenode.net/?channels=rvm">freenode.net 上的 #rvm</a>）中询问它的开发者 Wayne E. Seguin。<sup class="footnote" id="fnref-1-10"><a href="#fn-1-10" rel="footnote">14</a></sup>如果你使用的是 Linux，我推荐你阅读 Sudobits 博客中的《<a href="http://blog.sudobits.com/2012/05/02/how-to-install-ruby-on-rails-in-ubuntu-12-04-lts/">如何在 Ubuntu 中安装 Ruby on Rails</a>》一文。</p>
+<p>如果你使用的是 OS X 或者 Linux，在安装 Ruby 时我强烈建议使用 Ruby 版本管理工具 <a href="http://rvm.io/">RVM</a>，它允许你在同一台电脑上安装并管理多个 Ruby 版本。（在 Windows 中可以使用 <a href="http://github.com/vertiginous/pik">Pik</a>）如果你希望在同一台电脑中运行不同版本的 Ruby 或 Rails 就需要它了。如果你在使用 RVM 时遇到什么问题的话，可以在 RVM 的 IRC 频道（<a href="http://webchat.freenode.net/?channels=rvm">freenode.net 上的 #rvm</a>）中询问它的开发者 Wayne E. Seguin。<sup class="footnote" id="fnref-1-4"><a href="#fn-1-4" rel="footnote">8</a></sup>如果你使用的是 Linux，我推荐你阅读 Sudobits 博客中的《<a href="http://blog.sudobits.com/2012/05/02/how-to-install-ruby-on-rails-in-ubuntu-12-04-lts/">如何在 Ubuntu 中安装 Ruby on Rails</a>》一文。</p>
 
 <p>在此之前，OS X 用户可能要先安装 Xcode 开发者工具。相对于安装整个工具包我更推荐你安装较小的 <a href="https://developer.apple.com/downloads/">Xcode 命令行工具包</a>。</p>
 
@@ -403,7 +431,7 @@ update: --no-rdoc --no-ri
 <h4 id='section-1-2-2-5'><span></span>安装 Rails</h4>
 
 
-<p>安装完 RubyGems 后安装 Rails 也就简单了。本教程使用 Rails 4.0，通过以下命令安装<sup class="footnote" id="fnref-1-t3"><a href="#fn-1-t3" rel="footnote">15</a></sup>：</p>
+<p>安装完 RubyGems 后安装 Rails 也就简单了。本教程使用 Rails 4.0，通过以下命令安装<sup class="footnote" id="fnref-1-t3"><a href="#fn-1-t3" rel="footnote">9</a></sup>：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>gem install rails --version 4.0.0 --no-ri --no-rdoc
 </pre></div>
@@ -507,7 +535,7 @@ gem is installed.
 <p>创建完一个新的 Rails 程序后，你可以使用 Bundler 来安装和包含该程序所需的 gem。在 <a href="chapter1.html#section-1-2-3">1.2.3 节</a> 中提到过，<code>rails</code> 命令会自动执行 Bundler（通过 <code>bundle install</code>），不过本节将对程序默认包含的 gem 做些修改，然后再运行 Bundler。首先在你喜好的文本编辑器中打开 <code>Gemfile</code> 文件：</p>
 
 <div class="figure" id="figure-1-2">
-  <img src="figures/directory_structure_rails_31.png" alt="directory structure rails31" /><p class="caption"><span>图 1.2：</span>新创建的 Rails 程序的文件结构</p>
+  <img src="figures/directory_structure_rails_4_0.png" alt="directory structure rails40" /><p class="caption"><span>图 1.2：</span>新创建的 Rails 程序的文件结构</p>
 </div>
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span><span class="nb">cd </span>first_app/
 <span class="nv">$ </span>subl Gemfile
@@ -647,7 +675,7 @@ gem is installed.
 </div>
 <p>只会安装高于 <code>4.0.0</code> 版的 <code>coffee-rails</code>（也是 asset pipeline 用到的）。换句话说，<code>&gt;=</code> 总会升级到最新版；<code>~&gt; 4.0.0</code> 只会升级补丁版本的更新（例如从 <code>4.0.0</code> 到 <code>4.0.1</code>），而不会升级到次版本或主版本的更新（例如从 <code>4.0</code> 到 <code>4.1</code>）。不过，经验告诉我们，即使是补丁版本的升级也可能会产生错误，所以在本教程中我们基本上会为所有的 gem 指定明确的版本号。你可以使用任何 gem 的最新版本，还可以在 <code>Gemfile</code> 中使用 <code>~&gt;</code>（推荐高级用户使用），但我事先提醒你，这可能会导致本教程开发的程序表现异常。</p>
 
-<p>修改完 <code>Gemfile</code> 后，运行 <code>bundle update</code><sup class="footnote" id="fnref-1-25"><a href="#fn-1-25" rel="footnote">16</a></sup> 和 <code>bundle install</code> 安装所需的 gem：</p>
+<p>修改完 <code>Gemfile</code> 后，运行 <code>bundle update</code><sup class="footnote" id="fnref-1-16"><a href="#fn-1-16" rel="footnote">10</a></sup> 和 <code>bundle install</code> 安装所需的 gem：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle update
 <span class="nv">$ </span>bundle install
@@ -662,7 +690,7 @@ Fetching <span class="nb">source </span>index <span class="k">for </span>https:/
 <h3 id='section-1-2-5'><span>1.2.5</span> rails server</h3>
 
 
-<p>运行完 <a href="chapter1.html#section-1-2-3">1.2.3 节</a>中介绍的 <code>rails new</code> 和 <a href="chapter1.html#section-1-2-4">1.2.4 节</a> 中介绍的 <code>bundle install</code> 后我们的程序就可以运行了，但怎么运行呢？Rails 自带了一个命令行程序可以在开发电脑上运行一个本地服务器：<sup class="footnote" id="fnref-1-14"><a href="#fn-1-14" rel="footnote">17</a></sup></p>
+<p>运行完 <a href="chapter1.html#section-1-2-3">1.2.3 节</a>中介绍的 <code>rails new</code> 和 <a href="chapter1.html#section-1-2-4">1.2.4 节</a> 中介绍的 <code>bundle install</code> 后我们的程序就可以运行了，但怎么运行呢？Rails 自带了一个命令行程序可以在开发电脑上运行一个本地服务器：<sup class="footnote" id="fnref-1-5"><a href="#fn-1-5" rel="footnote">11</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails <span class="nv">server</span>
 <span class="o">=</span>&gt; Booting <span class="nv">WEBrick</span>
@@ -671,17 +699,17 @@ Fetching <span class="nb">source </span>index <span class="k">for </span>https:/
 <span class="o">=</span>&gt; Ctrl-C to shutdown server
 </pre></div>
 </div>
-<p>（如果系统提示缺少 JavaScript 运行时，请浏览 <a href="https://github.com/sstephenson/execjs">execjs 位于 github 的页面</a>查看一些可选的运行时，我建议安装 <a href="http://nodejs.org/">Node.js</a>。）上述代码的提示信息告诉我们这个应用程序在 <code>0.0.0.0</code> 地址的 3000<sup class="footnote" id="fnref-1-15"><a href="#fn-1-15" rel="footnote">18</a></sup> 端口运行。这个地址告诉系统监听这台电脑上的每一个可用的 IP 地址。一般来说，我们可以通过一个特殊的地址 <code>127.0.0.1</code> 来查看应用程序，或者也可以使用 <code>localhost</code>。通过 <a href="http://localhost:3000">http://localhost:3000</a> 查看结果，如图 1.3 所示。</p>
+<p>（如果系统提示缺少 JavaScript 运行时，请浏览 <a href="https://github.com/sstephenson/execjs">execjs 位于 github 的页面</a>查看一些可选的运行时，我建议安装 <a href="http://nodejs.org/">Node.js</a>。）上述代码的提示信息告诉我们这个应用程序在 <code>0.0.0.0</code> 地址的 3000<sup class="footnote" id="fnref-1-6"><a href="#fn-1-6" rel="footnote">12</a></sup> 端口运行。这个地址告诉系统监听这台电脑上的每一个可用的 IP 地址。一般来说，我们可以通过一个特殊的地址 <code>127.0.0.1</code> 来查看应用程序，或者也可以使用 <code>localhost</code>。通过 <a href="http://localhost:3000">http://localhost:3000</a> 查看结果，如图 1.3 所示。</p>
 
 <div class="figure" id="figure-1-3">
-  <img src="figures/riding_rails_31.png" alt="riding rails31" /><p class="caption"><span>图 1.3：</span>默认的 Rails 页面</p>
+  <img src="figures/riding_rails_4_0.png" alt="riding rails40" /><p class="caption"><span>图 1.3：</span>默认的 Rails 页面</p>
 </div>
 <p>点击“About your application’s environment” 可以查看应用程序的信息。结果如图 1.4 所示。（图 1.4 显示的是截图时我电脑上的环境信息，你的结果可能会与我的不同。）</p>
 
 <p>当然我们不是真的想使用默认的 Rails 页面，但这个页面告诉我们 Rails 可以正常运行了。我们会在 <a href="chapter5.html#section-5-3-2">5.3.2 节</a>中移除默认页面。</p>
 
 <div class="figure" id="figure-1-4">
-  <img src="figures/riding_rails_32_environment.png" alt="riding rails32 environment" /><p class="caption"><span>图 1.4：</span>默认页面中的应用程序信息</p>
+  <img src="figures/riding_rails_environment_4_0.png" alt="riding rails environment 40" /><p class="caption"><span>图 1.4：</span>默认页面中的应用程序信息</p>
 </div>
 <h3 id='section-1-2-6'><span>1.2.6</span> 模型-视图-控制器（MVC）</h3>
 
@@ -723,7 +751,7 @@ Fetching <span class="nb">source </span>index <span class="k">for </span>https:/
 </div>
 <p>本书中我基本上都会使用完整的 <code>checkout</code> 命令，防止你没有做以上的设置，但我自己都是使用 <code>git co</code>。</p>
 
-<p>最后，你还可以设置编辑 git 提交信息时使用的编辑器。如果你使用的是图形界面的编辑器，例如 Sublime Text、TextMate、gVim 或 MacVim，要加上一个旗标确保编辑器会在终端中保持状态而不是立马结束命令：<sup class="footnote" id="fnref-1-16"><a href="#fn-1-16" rel="footnote">19</a></sup></p>
+<p>最后，你还可以设置编辑 git 提交信息时使用的编辑器。如果你使用的是图形界面的编辑器，例如 Sublime Text、TextMate、gVim 或 MacVim，要加上一个旗标确保编辑器会在终端中保持状态而不是立马结束命令：<sup class="footnote" id="fnref-1-7"><a href="#fn-1-7" rel="footnote">13</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git config --global core.editor <span class="s2">"subl -w"</span>
 </pre></div>
@@ -739,7 +767,7 @@ Fetching <span class="nb">source </span>index <span class="k">for </span>https:/
 Initialized empty Git repository in /Users/mhartl/rails_projects/first_app/.git/
 </pre></div>
 </div>
-<p>接下来要将项目的文件添加到仓库中。不过有一点要说明一下：git 默认会跟踪所有文件的变化，但是有些文件我们并不想跟踪。例如，Rails 会创建一些日志文件记录应用程序的动作，这些文件经常变化，我们并不需要版本控制系统跟踪这些文件。git 有忽略文件的机制：在应用程序的根目录创建一个名为 <code>.gitignore</code> 的文件，然后写入一些规则告诉 git 要忽略哪些文件即可。<sup class="footnote" id="fnref-1-17"><a href="#fn-1-17" rel="footnote">20</a></sup></p>
+<p>接下来要将项目的文件添加到仓库中。不过有一点要说明一下：git 默认会跟踪所有文件的变化，但是有些文件我们并不想跟踪。例如，Rails 会创建一些日志文件记录应用程序的动作，这些文件经常变化，我们并不需要版本控制系统跟踪这些文件。git 有忽略文件的机制：在应用程序的根目录创建一个名为 <code>.gitignore</code> 的文件，然后写入一些规则告诉 git 要忽略哪些文件即可。<sup class="footnote" id="fnref-1-8"><a href="#fn-1-8" rel="footnote">14</a></sup></p>
 
 <p>看一下前面的表格 1.1，<code>rails</code> 命令默认会在应用程序的根目录创建 <code>.gitignore</code> 文件，其内容如代码 1.6 所示。</p>
 
@@ -793,7 +821,7 @@ doc/
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
 </pre></div>
 </div>
-<p>这里的点号（.）代表当前目录，git 会自动的将所有的文件，包括子目录中的文件添加到 git 中。这个命令会将项目的文件添加到暂存区域（staging area），这个区域包含未提交的改动。你可以使用 <code>status</code> 命令查看暂存区域有哪些文件：<sup class="footnote" id="fnref-1-18"><a href="#fn-1-18" rel="footnote">21</a></sup></p>
+<p>这里的点号（.）代表当前目录，git 会自动的将所有的文件，包括子目录中的文件添加到 git 中。这个命令会将项目的文件添加到暂存区域（staging area），这个区域包含未提交的改动。你可以使用 <code>status</code> 命令查看暂存区域有哪些文件：<sup class="footnote" id="fnref-1-9"><a href="#fn-1-9" rel="footnote">15</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git status
 <span class="c"># On branch master</span>
@@ -890,11 +918,11 @@ application_controller.rb
 <span class="nv">$ </span>git push -u origin master
 </pre></div>
 </div>
+<div class="figure" id="figure-1-6">
+  <img src="figures/create_first_repository_4_0.png" alt="create first repository 40" /><p class="caption"><span>图 1.6：</span>在 GitHub 创建第一个仓库</p>
+</div>
 <p>上面的代码告诉 Git 你要添加 GitHub 上面的仓库地址为代码的原本，代表本地的主分支（<code>master</code>），然后将本地的仓库推送到 GitHub 上。（先不要关心旗标 <code>-u</code> 的作用，如果你实在好奇可以搜索“git set upstream”。）当然你要把 <code>&lt;username&gt;</code> 换成你真正的用户名。例如，我执行的命令是：</p>
 
-<div class="figure" id="figure-1-6">
-  <img src="figures/create_first_repository_new.png" alt="create first repository new" /><p class="caption"><span>图 1.6：</span>在 GitHub 创建第一个仓库</p>
-</div>
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git remote add origin https://github.com/mhartl/first_app.git
 </pre></div>
 </div>
@@ -903,7 +931,7 @@ application_controller.rb
 <p>GitHub 还提供了增强命令行界面的工具，如果你更喜欢使用 GUI 程序，可以到 <a href="http://windows.github.com/">GitHub for Windows</a> 和 <a href="http://mac.github.com/">GitHub for Mac</a> 页面下载。（GitHub 针对 Linux 的工具看样子就是 Git 本身了。）</p>
 
 <div class="figure" id="figure-1-7">
-  <img src="figures/github_repository_page.png" alt="github repository page" /><p class="caption"><span>图 1.7：</span>GitHub 仓库页面</p>
+  <img src="figures/github_repository_page_4_0.png" alt="github repository page 40" /><p class="caption"><span>图 1.7：</span>GitHub 仓库页面</p>
 </div>
 <h3 id='section-1-3-5'><span>1.3.5</span> 分支，编辑，提交，合并</h3>
 
@@ -911,7 +939,7 @@ application_controller.rb
 <p>如果你按照 <a href="chapter1.html#section-1-3-4">1.3.4 节</a>中所说的做了，或许已经注意到了，GitHub 在仓库的主页面会自动显示 <code>README</code> 文件的内容。在这里，因为项目是使用 <code>rails</code> 命令生成的，这个 <code>README</code> 是 Rails 自带的（如图 1.8）。根据 <code>.rdoc</code> 扩展名，GitHub 会按照一定的格式显示其内容。但是其内容本身并没有什么意义。在本节，我们将做第一次编辑，修改 <code>README</code> 文件的内容来描述我们的项目而不是 Rails 框架。在编辑的过程中你可以看到分支、编辑、提交、合并的工作流，我推荐你在 Git 中使用这样的工作流。</p>
 
 <div class="figure" id="figure-1-8">
-  <img src="figures/rails_readme_3_2.png" alt="rails readme32" /><p class="caption"><span>图 1.8：</span>GitHub 中显示的项目初始生成的 <code>README</code> 文件</p>
+  <img src="figures/rails_readme_4_0.png" alt="rails readme 40" /><p class="caption"><span>图 1.8：</span>GitHub 中显示的项目初始生成的 <code>README</code> 文件</p>
 </div>
 <h4 id='section-1-3-5-1'><span></span>分支</h4>
 
@@ -927,7 +955,7 @@ master
 </div>
 <p>第二个命令，<code>git branch</code>，会将本地所有的分支列出来，分支名前面的星号（<code>*</code>）指明当前所在的分支。注意，<code>git checkout -b modify-README</code> 会创建一个新分支，然后切换到这个分支，<code>modify-README</code> 前面的星号证明了这一点。（如果你在 <a href="chapter1.html#section-1-3">1.3 节</a>中设置了别名 <code>co</code>，那么你就要使用 <code>git co -b modify-README</code> 了。）</p>
 
-<p>分支的唯一价值是在多个开发人员协同开发一个项目时使开发的过程更明了，<sup class="footnote" id="fnref-1-19"><a href="#fn-1-19" rel="footnote">22</a></sup>不过对只有一个开发者的项目（比如本教程）也有用。一般而言，主分支是和从分支隔离开的，所以即便我们搞砸了也只需切换回到主分支并删除从分支来丢掉改动。在本节末尾我们会看到怎么做。</p>
+<p>分支的唯一价值是在多个开发人员协同开发一个项目时使开发的过程更明了，<sup class="footnote" id="fnref-1-10"><a href="#fn-1-10" rel="footnote">16</a></sup>不过对只有一个开发者的项目（比如本教程）也有用。一般而言，主分支是和从分支隔离开的，所以即便我们搞砸了也只需切换回到主分支并删除从分支来丢掉改动。在本节末尾我们会看到怎么做。</p>
 
 <p>顺便说一下，对于较小的改动我一般不会动用新分支，这里是对好的习惯做一个演示。</p>
 
@@ -1030,16 +1058,16 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 <p>正像我们介绍的，GitHub 使用 Markdown 解析器对文件进行了排版（如图 1.9）。</p>
 
 <div class="figure" id="figure-1-9">
-  <img src="figures/new_readme.png" alt="new readme" /><p class="caption"><span>图 1.9：</span>使用 Markdown 排版的改进版 <code>README</code> 文件</p>
+  <img src="figures/new_readme_4_0.png" alt="new readme 40" /><p class="caption"><span>图 1.9：</span>使用 Markdown 排版的改进版 <code>README</code> 文件</p>
 </div>
 <h2 id='section-1-4'><span>1.4</span> 部署</h2>
 
 
-<p>即使现在还处在早期阶段，我们还是要将我们（没什么内容）的 Rails 应用程序部署到生产环境。这一步是可选的，不过在开发过程中尽早、频繁的部署可以尽早的发现开发中的问题。在开发环境中极力解决问题之后再部署,等到发布日期到来时经常会导致严重的问题。<sup class="footnote" id="fnref-1-20"><a href="#fn-1-20" rel="footnote">23</a></sup></p>
+<p>即使现在还处在早期阶段，我们还是要将我们（没什么内容）的 Rails 应用程序部署到生产环境。这一步是可选的，不过在开发过程中尽早、频繁的部署可以尽早的发现开发中的问题。在开发环境中极力解决问题之后再部署,等到发布日期到来时经常会导致严重的问题。<sup class="footnote" id="fnref-1-11"><a href="#fn-1-11" rel="footnote">17</a></sup></p>
 
-<p>过去部署 Rails 应用程序是很痛苦的事，但最近几年 Rails 开发群体不断的成熟，现在有很多好的解决方案了。这些方案包括运行 <a href="http://www.modrails.com/">Phusion Passenger</a>（Apache 和 Nginx<sup class="footnote" id="fnref-1-21"><a href="#fn-1-21" rel="footnote">24</a></sup> 网络服务器的一个模块）的共享主机或私有虚拟服务器，<a href="http://engineyard.com/">Engine Yard</a> 和 <a href="http://railsmachine.com/">Rails Machine</a> 这种提供全方位部署服务的公司，<a href="http://cloud.engineyard.com/">Engine Yard Cloud</a> 和 <a href="http://heroku.com/">Heroku</a> 这种云部署服务。</p>
+<p>过去部署 Rails 应用程序是很痛苦的事，但最近几年 Rails 开发群体不断的成熟，现在有很多好的解决方案了。这些方案包括运行 <a href="http://www.modrails.com/">Phusion Passenger</a>（Apache 和 Nginx<sup class="footnote" id="fnref-1-12"><a href="#fn-1-12" rel="footnote">18</a></sup> 网络服务器的一个模块）的共享主机或私有虚拟服务器，<a href="http://engineyard.com/">Engine Yard</a> 和 <a href="http://railsmachine.com/">Rails Machine</a> 这种提供全方位部署服务的公司，<a href="http://cloud.engineyard.com/">Engine Yard Cloud</a> 和 <a href="http://heroku.com/">Heroku</a> 这种云部署服务。</p>
 
-<p>我最喜欢的部署方案是 Heroku，这是一个特别针对 Rails 和其他 Ruby Web 应用程序<sup class="footnote" id="fnref-1-22"><a href="#fn-1-22" rel="footnote">25</a></sup>的托管平台。Heroku 让 Rails 应用程序的部署变得异常简单，只要你的源码纳入了 Git 版本控制系统就好。（这也是为什么你要按照 <a href="chapter1.html#section-1-3">1.3 节</a> 中介绍的步骤安装 Git 的原因，如果你还没有安装就赶快安装吧。）本节下面的内容就是介绍如何将我们的第一个应用程序部署到 Heroku。</p>
+<p>我最喜欢的部署方案是 Heroku，这是一个特别针对 Rails 和其他 Ruby Web 应用程序<sup class="footnote" id="fnref-1-13"><a href="#fn-1-13" rel="footnote">19</a></sup>的托管平台。Heroku 让 Rails 应用程序的部署变得异常简单，只要你的源码纳入了 Git 版本控制系统就好。（这也是为什么你要按照 <a href="chapter1.html#section-1-3">1.3 节</a> 中介绍的步骤安装 Git 的原因，如果你还没有安装就赶快安装吧。）本节下面的内容就是介绍如何将我们的第一个应用程序部署到 Heroku。</p>
 
 <h3 id='section-1-4-1'><span>1.4.1</span> 搭建 Heroku 部署环境</h3>
 
@@ -1109,9 +1137,6 @@ Git remote heroku added
 </div>
 <p><code>heroku</code> 命令会为你的应用程序新建一个子域名，立马就可以生效。当然，现在还看不到内容，让我们开始部署吧。</p>
 
-<div class="figure" id="figure-1-10">
-  <img src="figures/heroku_app_31.png" alt="heroku app31" /><p class="caption"><span>图 1.10：</span>本教程的第一个应用程序运行在 Heroku 上</p>
-</div>
 <h3 id='section-1-4-2'><span>1.4.2</span> Heroku 部署第一步</h3>
 
 
@@ -1119,6 +1144,9 @@ Git remote heroku added
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push heroku master
 </pre></div>
+</div>
+<div class="figure" id="figure-1-10">
+  <img src="figures/heroku_app_4_0.png" alt="heroku app 40" /><p class="caption"><span>图 1.10：</span>本教程的第一个应用程序运行在 Heroku 上</p>
 </div>
 <h3 id='section-1-4-3'><span>1.4.3</span> Heroku 部署第二步</h3>
 
@@ -1132,9 +1160,6 @@ Git remote heroku added
 
 <p>部署成功后，Heroku 会提供一个很精美的界面管理和设置你的应用程序（如图 1.11）。</p>
 
-<div class="figure" id="figure-1-11">
-  <img src="figures/heroku_info.png" alt="heroku info" /><p class="caption"><span>图 1.11：</span>Heroku 提供的精美界面</p>
-</div>
 <h3 id='section-1-4-4'><span>1.4.4</span> Heroku 的其他命令</h3>
 
 
@@ -1142,6 +1167,9 @@ Git remote heroku added
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku rename railstutorial
 </pre></div>
+</div>
+<div class="figure" id="figure-1-11">
+  <img src="figures/heroku_info_4_0.png" alt="heroku info 40" /><p class="caption"><span>图 1.11：</span>Heroku 提供的精美界面</p>
 </div>
 <p>你不要再使用这个名字了，我已经使用了。事实上，现在你无需做这样的修改，使用 Heroku 提供的默认值就行。不过如果你真的想重命名你的应用程序，你可以基于安全的考虑使用一些随机或难猜测到的名字，例如：</p>
 
@@ -1155,7 +1183,7 @@ jhyicevg.herokuapp.com
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="o">(</span><span class="s1">'a'</span>..<span class="s1">'z'</span><span class="o">)</span>.to_a.shuffle<span class="o">[</span>0..7<span class="o">]</span>.join
 </pre></div>
 </div>
-<p>除了支持子域名，Heroku 也支持自定义域名。（事实上<a href="http://railstutorial.org/">本书的网站</a><sup class="footnote" id="fnref-1-t4"><a href="#fn-1-t4" rel="footnote">26</a></sup>就放在 Heroku 上。如果你阅读的是本书的在线版，你现在就正在浏览一个托管在 Heroku 上的网站。）在 <a href="http://devcenter.heroku.com/">Heroku 文档</a> 中可以查看更多关于自定义域名的信息以及其他 Heroku 相关的话题。</p>
+<p>除了支持子域名，Heroku 也支持自定义域名。（事实上<a href="http://railstutorial.org/">本书的网站</a><sup class="footnote" id="fnref-1-t4"><a href="#fn-1-t4" rel="footnote">20</a></sup>就放在 Heroku 上。如果你阅读的是本书的在线版，你现在就正在浏览一个托管在 Heroku 上的网站。）在 <a href="http://devcenter.heroku.com/">Heroku 文档</a> 中可以查看更多关于自定义域名的信息以及其他 Heroku 相关的话题。</p>
 
 <h2 id='section-1-5'><span>1.5</span> 小结</h2>
 
@@ -1173,74 +1201,56 @@ jhyicevg.herokuapp.com
     <li id="fn-1-t1">
       <p>译者注：指 Twiiter<a href="#fnref-1-t1" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-2">
-      <p><a href="http://tryruby.org">http://tryruby.org</a><a href="#fnref-1-2" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-1-3">
-      <p><a href="http://railsforzombies.org/">http://railsforzombies.org/</a><a href="#fnref-1-3" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-1-4">
-      <p><a href="http://railstutorial.org/screencasts">http://railstutorial.org/screencasts</a><a href="#fnref-1-4" rel="reference">↩</a></p>
-    </li>
     <li id="fn-1-t2">
       <p>译者注：Ruby 中文社区也有一些质量比较高的资源，如 <a href="http://railscasts-china.com">RailsCasts China</a>，<a href="http://happycasts.net/">Happycasts</a> 等<a href="#fnref-1-t2" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-5">
-      <p>阅读本书时你会发现内部章节之间的链接很有用，你可以查看引用的内容然后快速的回到之前的位置。在浏览器中阅读时这种操作很简单，直接点击浏览器的后退按钮就可以了，不过 Adobe Reader 和 OS X 的预览程序也为 PDF 提供了这种功能。在 Reader 中，在文档中点击鼠标右键，然后选择“上一个视图”就可以返回了。在预览程序中要使用“浏览（Go）”菜单：浏览-&gt;返回（Back）。<a href="#fnref-1-5" rel="reference">↩</a></p>
+    <li id="fn-1-2">
+      <p>阅读本书时你会发现内部章节之间的链接很有用，你可以查看引用的内容然后快速的回到之前的位置。在浏览器中阅读时这种操作很简单，直接点击浏览器的后退按钮就可以了，不过 Adobe Reader 和 OS X 的预览程序也为 PDF 提供了这种功能。在 Reader 中，在文档中点击鼠标右键，然后选择“上一个视图”就可以返回了。在预览程序中要使用“浏览（Go）”菜单：浏览-&gt;返回（Back）。<a href="#fnref-1-2" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-23">
-      <p>很多人都错误地认为 <code>sudo</code> 的全称是“superuser do”，因为它已超级用户（root）的身份执行命令。其实，<code>sudo</code> 结合了 <code>su</code> 命令和英语单词“do”，而 <code>su</code> 的全称是“substitute user”，不信你可以执行 <code>man su</code> 命令验证一下。<a href="#fnref-1-23" rel="reference">↩</a></p>
+    <li id="fn-1-14">
+      <p>很多人都错误地认为 <code>sudo</code> 的全称是“superuser do”，因为它已超级用户（root）的身份执行命令。其实，<code>sudo</code> 结合了 <code>su</code> 命令和英语单词“do”，而 <code>su</code> 的全称是“substitute user”，不信你可以执行 <code>man su</code> 命令验证一下。<a href="#fnref-1-14" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-6">
-      <p><a href="http://railstutorial.org/help">http://railstutorial.org/help</a><a href="#fnref-1-6" rel="reference">↩</a></p>
+    <li id="fn-1-15">
+      <p>写作本书时，<a href="http://www.sublimetext.com/3">Sublime Text 3</a> 已经推出了 Beta 版，但只对 Sublime Text 2 的注册用户开放。我只建议尝鲜用户升级。<a href="#fnref-1-15" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-7">
-      <p><a href="https://github.com/perfectionist/sample_project/wiki">https://github.com/perfectionist/sample_project/wiki</a><a href="#fnref-1-7" rel="reference">↩</a></p>
+    <li id="fn-1-3">
+      <p>vi 编辑器是 Unix 中古老而强大的强力工具，Vim 是 vi 的增强版（vi improved）。<a href="#fnref-1-3" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-24">
-      <p>写作本书时，<a href="http://www.sublimetext.com/3">Sublime Text 3</a> 已经推出了 Beta 版，但只对 Sublime Text 2 的注册用户开放。我只建议尝鲜用户升级。<a href="#fnref-1-24" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-1-8">
-      <p>vi 编辑器是 Unix 中古老而强大的强力工具，Vim 是 vi 的增强版（vi improved）。<a href="#fnref-1-8" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-1-9">
-      <p><a href="https://github.com/mhartl/rails_tutorial_sublime_text">https://github.com/mhartl/rails_tutorial_sublime_text</a><a href="#fnref-1-9" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-1-10">
-      <p>如果你从未使用过 IRC，我建议你先搜索一下“irc client &lt;你的平台&gt;”。OS X 上的客户端有 <a href="http://colloquy.info/">Colloquy</a> 和 <a href="http://limechat.net/mac/">LimeChat</a>。当然网页客户端总是可以使用的 <a href="http://webchat.freenode.net/?channels=rvm">http://webchat.freenode.net/?channels=rvm</a>。<a href="#fnref-1-10" rel="reference">↩</a></p>
+    <li id="fn-1-4">
+      <p>如果你从未使用过 IRC，我建议你先搜索一下“irc client &lt;你的平台&gt;”。OS X 上的客户端有 <a href="http://colloquy.info/">Colloquy</a> 和 <a href="http://limechat.net/mac/">LimeChat</a>。当然网页客户端总是可以使用的 <a href="http://webchat.freenode.net/?channels=rvm">http://webchat.freenode.net/?channels=rvm</a>。<a href="#fnref-1-4" rel="reference">↩</a></p>
     </li>
     <li id="fn-1-t3">
       <p>译者注：鉴于国内的“社会主义特色”，你可能无法正常下载 gem，这时你可以使用 <a href="http://en.wikipedia.org/wiki/Vpn">VPN</a> 或者使用 <a href="http://ruby.taobao.com">RubyGems 在国内的镜像</a>。<a href="#fnref-1-t3" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-25">
-      <p>这个命令只有修改了 Rails gem 版本时才必须要执行，可能只有使用 Rails Installer 才会用到，不过在其他情况下执行也没有坏处。<a href="#fnref-1-25" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-1-14">
-      <p>如 <a href="chapter1.html#section-1-1-3">1.1.3 节</a>中所说，在 Windows 中或许你要输入 <code>ruby rails server</code>。<a href="#fnref-1-14" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-1-15">
-      <p>一般情况下网站使用的是 80 端口，但这需要特别的权限，所以 Rails 为开发服务器选择了一个没有受限制的较大值。<a href="#fnref-1-15" rel="reference">↩</a></p>
-    </li>
     <li id="fn-1-16">
-      <p>这其实是一个特性，因为启动编辑器之后你可以继续使用命令行，不过 git 执行程序在脱离后会关闭文件，返回一个空信息，这就阻碍了提交的进行。我在这里提到这一点是因为如果不说你在使用 <code>subl</code> 和 <code>gvim</code> 时就会困惑为什么行不通。如果你发现这个注释很难懂那就完全忽略它吧。<a href="#fnref-1-16" rel="reference">↩</a></p>
+      <p>这个命令只有修改了 Rails gem 版本时才必须要执行，可能只有使用 Rails Installer 才会用到，不过在其他情况下执行也没有坏处。<a href="#fnref-1-16" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-17">
-      <p>如果你没有看到 <code>.gitignore</code> 文件，或许你需要设置一下让文件查看器显示隐藏文件。<a href="#fnref-1-17" rel="reference">↩</a></p>
+    <li id="fn-1-5">
+      <p>如 <a href="chapter1.html#section-1-1-3">1.1.3 节</a>中所说，在 Windows 中或许你要输入 <code>ruby rails server</code>。<a href="#fnref-1-5" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-18">
-      <p>如果以后你执行 <code>git status</code> 看到一些不需要的文件出现了，你就可以将其加入你的 <code>.gitignore</code> 文件中。<a href="#fnref-1-18" rel="reference">↩</a></p>
+    <li id="fn-1-6">
+      <p>一般情况下网站使用的是 80 端口，但这需要特别的权限，所以 Rails 为开发服务器选择了一个没有受限制的较大值。<a href="#fnref-1-6" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-19">
-      <p>更多内容请查看《Pro Git》书中的“<a href="http://progit.org/book/ch3-0.html">Git 分支</a>（<a href="http://git-scm.com/book/zh/Git-%E5%88%86%E6%94%AF">中文版</a>）”部分。<a href="#fnref-1-19" rel="reference">↩</a></p>
+    <li id="fn-1-7">
+      <p>这其实是一个特性，因为启动编辑器之后你可以继续使用命令行，不过 git 执行程序在脱离后会关闭文件，返回一个空信息，这就阻碍了提交的进行。我在这里提到这一点是因为如果不说你在使用 <code>subl</code> 和 <code>gvim</code> 时就会困惑为什么行不通。如果你发现这个注释很难懂那就完全忽略它吧。<a href="#fnref-1-7" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-20">
-      <p>虽然针对本书的示例程序你无需关心，不过如果你很担心太早的将你的应用程序公开，参考在 <a href="chapter1.html#section-1-4-4">1.4.4 节</a>中提供几个方法。<a href="#fnref-1-20" rel="reference">↩</a></p>
+    <li id="fn-1-8">
+      <p>如果你没有看到 <code>.gitignore</code> 文件，或许你需要设置一下让文件查看器显示隐藏文件。<a href="#fnref-1-8" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-21">
-      <p>发音为“Engine X”。<a href="#fnref-1-21" rel="reference">↩</a></p>
+    <li id="fn-1-9">
+      <p>如果以后你执行 <code>git status</code> 看到一些不需要的文件出现了，你就可以将其加入你的 <code>.gitignore</code> 文件中。<a href="#fnref-1-9" rel="reference">↩</a></p>
     </li>
-    <li id="fn-1-22">
-      <p>Heroku 可以正常运行任意一个使用 <a href="http://rack.rubyforge.org/">Rack 中间件</a>的 Ruby Web 程序，Rack 为 Web 框架和 Web 服务器之间提供了标准接口。Ruby 社区很严格的承袭了这一标准，很多框架都是这样做的，例如 <a href="http://www.sinatrarb.com/">Sinatra</a>、<a href="http://ramaze.net/">Ramaze</a>、<a href="http://camping.rubyforge.org/files/README.html">Camping</a> 和 Rails，这也就意味着 Heroku 基本上支持所有的 Ruby Web 应用程序。<a href="#fnref-1-22" rel="reference">↩</a></p>
+    <li id="fn-1-10">
+      <p>更多内容请查看《Pro Git》书中的“<a href="http://progit.org/book/ch3-0.html">Git 分支</a>（<a href="http://git-scm.com/book/zh/Git-%E5%88%86%E6%94%AF">中文版</a>）”部分。<a href="#fnref-1-10" rel="reference">↩</a></p>
+    </li>
+    <li id="fn-1-11">
+      <p>虽然针对本书的示例程序你无需关心，不过如果你很担心太早的将你的应用程序公开，参考在 <a href="chapter1.html#section-1-4-4">1.4.4 节</a>中提供几个方法。<a href="#fnref-1-11" rel="reference">↩</a></p>
+    </li>
+    <li id="fn-1-12">
+      <p>发音为“Engine X”。<a href="#fnref-1-12" rel="reference">↩</a></p>
+    </li>
+    <li id="fn-1-13">
+      <p>Heroku 可以正常运行任意一个使用 <a href="http://rack.rubyforge.org/">Rack 中间件</a>的 Ruby Web 程序，Rack 为 Web 框架和 Web 服务器之间提供了标准接口。Ruby 社区很严格的承袭了这一标准，很多框架都是这样做的，例如 <a href="http://www.sinatrarb.com/">Sinatra</a>、<a href="http://ramaze.net/">Ramaze</a>、<a href="http://camping.rubyforge.org/files/README.html">Camping</a> 和 Rails，这也就意味着 Heroku 基本上支持所有的 Ruby Web 应用程序。<a href="#fnref-1-13" rel="reference">↩</a></p>
     </li>
     <li id="fn-1-t4">
       <p>译者注：英文版原书的网站托管于 Heroku，本中文版在 Github（<a href="http://railstutorial-china.org">http://railstutorial-china.org</a>）上<a href="#fnref-1-t4" rel="reference">↩</a></p>
@@ -1263,7 +1273,7 @@ jhyicevg.herokuapp.com
 			
 		</div>
 		<div class="footer">
-        	<p>Andor Chen 保留部分权力。基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
+        	<p>&copy;2013 <a href="http://about.ac" title="Andor Chen 的个人网站">Andor Chen</a> 保留部分权力。在线阅读版本基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
 		</div>
 	</div>
 </body>

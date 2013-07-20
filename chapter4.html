@@ -12,8 +12,8 @@
 <body>
 	<div class="wrapper">
 		<div class="header">
-            <h1 class="logo"><a class="ir" href="">Ruby on Rails 教程</a></h1>
-            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版</p>
+            <h1 class="logo"><a class="ir" href="http://railstutorial-china.org">Ruby on Rails 教程</a></h1>
+            <p class="subtitle">Ruby on Rails Tutorial 原书第 2 版（涵盖 Rails 4）</p>
         </div>
         <div class="content">
 			
@@ -90,14 +90,15 @@
 
 <p>从上一章我们可以看到，即使不懂任何背后用到的 Ruby 语言，我们也可以创建一个 Rails 应用程序骨架，也可以进行测试。不过我们依赖的是本教程中提供的测试代码，得到错误信息，然后让其通过。我们不能总是这样做，所以这一章我们要暂别网站开发学习，正视我们的 Ruby 短肋。</p>
 
-<p>上次接触应用程序时，我们已经使用 Rails 布局去掉了几乎是静态的页面中的代码重复。（参见代码 4.1）</p>
+<p>上次接触应用程序时，我们已经使用 Rails 布局去掉了几乎是静态的页面中的代码重复，参见代码 4.1，这段代码就是重新排版一下代码 3.26。</p>
 
 <div class="codeblock has-caption" id="codeblock-4-1"><p class="caption"><span>代码 4.1：</span>示例程序的网站布局</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;Ruby on Rails Tutorial Sample App | </span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s2">"application"</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;/head&gt;</span>
 <span class="x">  &lt;body&gt;</span>
@@ -108,7 +109,8 @@
 </div>
 <p>让我们把注意力集中在代码 4.1 中的这一行：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                       <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 <p>这行代码使用 Rails 内置的方法 <code>stylesheet_link_tag</code>（更多内容请查看 <a href="http://api.rubyonrails.org/v3.2.0/classes/ActionView/Helpers/AssetTagHelper/StylesheetTagHelpers.html#method-i-stylesheet_link_tag">Rails API 文档</a>）为所有的<a href="http://www.w3.org/TR/CSS2/media.html">媒介类型</a>引入了 <code>application.css</code>。对于经验丰富的 Rails 开发者来说，这一行很简单，但是这里却至少包含了困惑着你的四个 Ruby 知识点：内置的 Rails 方法，不用括号的方法调用，Symbol 和 Hash。这几点本章都会介绍。</p>
@@ -168,8 +170,9 @@
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span>    <span class="s2">"application"</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">  &lt;/head&gt;</span>
 <span class="x">  &lt;body&gt;</span>
@@ -186,20 +189,19 @@
 
   <span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
 
-    <span class="n">it</span> <span class="s2">"should have the h1 'Sample App'"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="s1">'/static_pages/home'</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s1">'Sample App'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the base title"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="s1">'/static_pages/home'</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span>
-                        <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should not have a custom page title"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="s1">'/static_pages/home'</span>
-      <span class="n">page</span><span class="o">.</span><span class="n">should_not</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s1">'| Home'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
   <span class="o">.</span>
@@ -244,7 +246,7 @@ Loading development environment
 </div>
 <p>默认情况下，控制台是以开发环境启用的，这是 Rails 定义的三个独立的环境之一（其他两个是测试环境和生产环境）。三个环境的区别在本章还不需要知道，我们会在 <a href="chapter7.html#section-7-1-1">7.1.1 节</a>中更详细的介绍。</p>
 
-<p>控制台是个很好的学习工具，你不用有所畏惧尽情的使用吧，没必要担心，你（几乎）不会破坏任何东西。如果你在控制器中遇到问题了可以使用 Ctrl-C 结束当前执行的命令，或者使用 Ctrl-D 直接退出控制台。在阅读本章后面的内容时，你会发现查阅 <a href="http://ruby-doc.org/core-1.9.3/">Ruby API</a> 会很有用。API 包含很多信息，例如，如果你想查看关于 Ruby 字符串更多的内容，可以查看其中的 <code>String</code> 类页面。</p>
+<p>控制台是个很好的学习工具，你不用有所畏惧尽情的使用吧，没必要担心，你（几乎）不会破坏任何东西。如果你在控制台中遇到问题了可以使用 Ctrl-C 结束当前执行的命令，或者使用 Ctrl-D 直接退出控制台。在阅读本章后面的内容时，你会发现查阅 <a href="http://ruby-doc.org/core-2.0/">Ruby API</a> 会很有用。API 包含很多信息，例如，如果你想查看关于 Ruby 字符串更多的内容，可以查看其中的 <code>String</code> 类页面。</p>
 
 <h3 id='section-4-2-1'><span>4.2.1</span> 注释</h3>
 
@@ -282,7 +284,7 @@ Loading development environment
 <span class="o">=</span>&gt; <span class="s2">"foo"</span>
 </pre></div>
 </div>
-<p>上面的字符串是字面量（字面量字符串，literal string），通过双引号（<code>"</code>）创建。控制器回显的是每一行的计算结果，本例中字符串字面量的结果就是字符串本身。</p>
+<p>上面的字符串是字面量（字面量字符串，literal string），通过双引号（<code>"</code>）创建。控制台回显的是每一行的计算结果，本例中字符串字面量的结果就是字符串本身。</p>
 
 <p>我们还可以使用 <code>+</code> 号连接字符串：</p>
 
@@ -751,7 +753,7 @@ NoMethodError: undefined method <span class="sb">`</span>to_a<span class="se">\'
 <h3 id='section-4-3-3'><span>4.3.3</span> Hash 和 Symbol</h3>
 
 
-<p>Hash 本质上就是数组的一个特例：你可以认为 Hash 基本上就是数组，只不过它的索引不局限于使用数字。（实际上在一些语言中，特别是 Perl，因为这个原因就把 Hash 叫做关联数组（associative array）。）Hash 的索引（或者叫“键”）几乎可以是任何对象。例如，我们可以使用字符串当键：</p>
+<p>Hash 本质上就是数组，只不过它的索引不局限于使用数字。（实际上在一些语言中，特别是 Perl，因为这个原因就把 Hash 叫做关联数组（associative array）。）Hash 的索引（或者叫“键”）几乎可以是任何对象。例如，我们可以使用字符串当键：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">user</span> <span class="o">=</span> <span class="o">{}</span>                          <span class="c"># {} 是一个空 Hash</span>
 <span class="o">=</span>&gt; <span class="o">{}</span>
@@ -816,7 +818,7 @@ NoMethodError: undefined method <span class="sb">`</span>split<span class="s1">'
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"michael@example.com"</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>这种结构更好的沿袭了其他语言（例如 JavaScript）中 Hash 的表现方式，在 Rails 社区中也越来越受欢迎。这两种方式现在都在使用，所以你要能识别它们。本书后续内容中大多数的 Hash 都会使用新的形式，在 Ruby 1.8.7 或之前的版本中是不可以使用的。如果你使用的是较早前的版本，你可以更新到 Ruby 1.9（推荐），或者使用旧的形式。</p>
+<p>这种结构更好的沿袭了其他语言（例如 JavaScript）中 Hash 的表现方式，在 Rails 社区中也越来越受欢迎。这两种方式现在都在使用，所以你要能识别它们。</p>
 
 <p>Hash 元素的值可以是任何对象，甚至是一个 Hash，如代码 4.6 所示。</p>
 
@@ -874,37 +876,62 @@ It worked!
 
 <p>现在我们要重新认识一下代码 4.1 中在布局中引入 CSS 的代码：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s2">"all"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                       <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 <p>我们现在基本上可以理解这行代码了。在 <a href="chapter4.html#section-4-1">4.1 节</a>中简单的提到过，Rails 定义了一个特殊的函数用来引入样式表，下面的代码</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">stylesheet_link_tag "application", :media =&gt; "all"</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">stylesheet_link_tag "application", media: "all",</span>
+<span class="x">                                   "data-turbolinks-track" =&gt; true</span>
 </pre></div>
 </div>
-<p>就是对这个函数的调用。不过还有两个奇怪的地方。第一，括号哪儿去了？因为在 Ruby 中，括号是可以省略的，下面的两行代码是等价的：</p>
+<p>就是对这个函数的调用。不过还有几个奇怪的地方。第一，括号哪儿去了？因为在 Ruby 中，括号是可以省略的，下面的两行代码是等价的：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x"># 函数调用时括号是可以省略的</span>
-<span class="x">stylesheet_link_tag("application", :media =&gt; "all")</span>
-<span class="x">stylesheet_link_tag "application", :media =&gt; "all"</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="x"># Parentheses on function calls are optional.</span>
+<span class="x">stylesheet_link_tag("application", media: "all",</span>
+<span class="x">                                   "data-turbolinks-track" =&gt; true)</span>
+<span class="x">stylesheet_link_tag "application", media: "all",</span>
+<span class="x">                                   "data-turbolinks-track" =&gt; true</span>
 </pre></div>
 </div>
-<p>第二，<code>:media</code> 部分显然是一个 Hash，但是怎么没用花括号？因为在调用函数时，如果 Hash 是最后一个参数，它的花括号是可以省略的。下面的两行代码是等价的：</p>
+<p>第二，<code>media</code> 部分显然是一个 Hash，但是怎么没用花括号？因为在调用函数时，如果 Hash 是最后一个参数，它的花括号是可以省略的。下面的两行代码是等价的：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x"># Hash 是最后一个参数时花括号可以省略</span>
-<span class="x">stylesheet_link_tag "application", { :media =&gt; "all" }</span>
-<span class="x">stylesheet_link_tag "application", :media =&gt; "all"</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="x"># Curly braces on final hash arguments are optional.</span>
+<span class="x">stylesheet_link_tag "application", { media: "all",</span>
+<span class="x">                                     "data-turbolinks-track" =&gt; true }</span>
+<span class="x">stylesheet_link_tag "application", media: "all",</span>
+<span class="x">                                   "data-turbolinks-track" =&gt; true</span>
 </pre></div>
 </div>
+<p>还有，为什么 <code>data-turbolinks-track</code> 这个键值对使用旧句法？因为如果是新新句法，写成</p>
+
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">data</span><span class="o">-</span><span class="n">turbolinks</span><span class="o">-</span><span class="ss">track</span><span class="p">:</span> <span class="kp">true</span>
+</pre></div>
+</div>
+<p>就会尝试创建一个 Symbol <code>:data-turbolinks-track</code>，但是因为包含了连字符，所以这个 Symbol 是不合法的。所以就只能使用旧句法，写成</p>
+
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</pre></div>
+</div>
+<p>最后，为什么下面这两行代码</p>
+
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
+                                   <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</pre></div>
+</div>
+<p>为什么可以这么写，中间有空格也可以？当然可以，Ruby 不关心有没有换行。[^1-10]我之所以把代码拆成两行，是要保持每行代码不超过 80 列。[^1-11]</p>
+
 <p>所以我们就看到了这样一行代码</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">stylesheet_link_tag "application", :media =&gt; "all"</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">stylesheet_link_tag "application", media: "all",</span>
+<span class="x">                                   "data-turbolinks-track" =&gt; true</span>
 </pre></div>
 </div>
-<p>它调用了 <code>stylesheet_link_tag</code> 函数，传进两个参数：一个是字符串，指明样式表的路径；另一个是 Hash，指明媒介类型。因为使用的是 <code>&lt;%= %&gt;</code>，函数的执行结果会通过 ERb 插入模板中，如果你在浏览器中查看网页的源代码就会看到引入样式表所用的 HTML（参见代码 4.7）。（你可能会在 CSS 的文件名后看到额外的字符，例如 <code>?body=1</code>。这是 Rails 加入的，可以确保 CSS 修改后浏览器会重新加载它。）</p>
+<p>它调用了 <code>stylesheet_link_tag</code> 函数，传进两个参数：一个是字符串，指明样式表的路径；另一个是 Hash，包含两个元素，指明媒介类型，并启用 <a href="https://github.com/rails/turbolinks">Turbolink</a> 功能(Rails 4 的新功能，本书的后续草稿会深入介绍)。因为使用的是 <code>&lt;%= %&gt;</code>，函数的执行结果会通过 ERb 插入模板中，如果你在浏览器中查看网页的源代码就会看到引入样式表所用的 HTML（参见代码 4.7）。（你可能会在 CSS 的文件名后看到额外的字符，例如 <code>?body=1</code>。这是 Rails 加入的，可以确保 CSS 修改后浏览器会重新加载它。）</p>
 
-<div class="codeblock has-caption" id="codeblock-4-7"><p class="caption"><span>代码 4.7：</span>引入 CSS 的代码生成的 HTML</p><div class="highlight type-html"><pre><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"/assets/application.css"</span> <span class="na">media=</span><span class="s">"all"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span>
-<span class="na">type=</span><span class="s">"text/css"</span> <span class="nt">/&gt;</span>
+<div class="codeblock has-caption" id="codeblock-4-7"><p class="caption"><span>代码 4.7：</span>引入 CSS 的代码生成的 HTML</p><div class="highlight type-html"><pre><span class="nt">&lt;link</span> <span class="na">data-turbolinks-track=</span><span class="s">"true"</span> <span class="na">href=</span><span class="s">"/assets/application.css"</span> <span class="na">media=</span><span class="s">"all"</span>
+<span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="nt">/&gt;</span>
 </pre></div>
 </div>
 <p>如果你打开 <a href="http://localhost:3000/assets/application.css">http://localhost:3000/assets/application.css</a> 查看 CSS 的话，会发现是空的（除了一些注释）。在<a href="chapter5.html">第 5 章</a>中我们会看介绍如何添加样式。</p>
@@ -927,7 +954,7 @@ It worked!
 </div>
 <p>我们看到字符串可以响应 <code>class</code> 方法，返回的结果是字符串所属的类。</p>
 
-<p>除了使用字面构造器之外，我们还可以使用等价的具名构造器（named constructor），即在类名上调用 <code>new</code> 方法：<sup class="footnote" id="fnref-4-10"><a href="#fn-4-10" rel="footnote">10</a></sup></p>
+<p>除了使用字面构造器之外，我们还可以使用等价的具名构造器（named constructor），即在类名上调用 <code>new</code> 方法：<sup class="footnote" id="fnref-4-12"><a href="#fn-4-12" rel="footnote">10</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">s</span> <span class="o">=</span> String.new<span class="o">(</span><span class="s2">"foobar"</span><span class="o">)</span>   <span class="c"># 字符串的具名构造器</span>
 <span class="o">=</span>&gt; <span class="s2">"foobar"</span>
@@ -978,6 +1005,9 @@ It worked!
 </div>
 <p>这个继承关系如图 4.1 所示。我们可以看到，<code>String</code> 的父类是 <code>Object</code>，<code>Object</code> 的父类是 <code>BasicObject</code>，但是 <code>BasicObject</code> 就没有父类了。这样的关系对每个 Ruby 对象都是适用的：只要在类的继承关系上往上多走几层就会发现 Ruby 中的每个类最终都是继承自 <code>BasicObject</code>，而其本身没有父类。这就是“Ruby 中一切皆对象”技术层面的意义。</p>
 
+<div class="figure" id="figure-4-1">
+  <img src="figures/string_inheritance_ruby_1_9.png" alt="string inheritance ruby19" /><p class="caption"><span>图 4.1：</span><code>String</code> 类的继承关系</p>
+</div>
 <p>要更深入的理解类，最好的方法就是自己动手编写。我们来创建一个名为 <code>Word</code> 的类，包含一个名为 <code>palindrome?</code> 方法，如果单词顺读和反读时都一样则返回 <code>true</code>：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; class Word
@@ -987,9 +1017,6 @@ It worked!
 &gt;&gt; <span class="nv">end</span>
 <span class="o">=</span>&gt; nil
 </pre></div>
-</div>
-<div class="figure" id="figure-4-1">
-  <img src="figures/string_inheritance_ruby_1_9.png" alt="string inheritance ruby19" /><p class="caption"><span>图 4.1：</span><code>String</code> 类的继承关系</p>
 </div>
 <p>我们可以按照下面的方式使用：</p>
 
@@ -1012,7 +1039,7 @@ It worked!
 <span class="o">=</span>&gt; nil
 </pre></div>
 </div>
-<p>上面代码中的 <code>Word &lt; String</code> 在 Ruby 中表示继承（<a href="chapter3.html#section-3-1-2">3.1.2 节</a>中简单介绍过），这样除了刚定义的 <code>palindrome?</code> 方法之外，<code>Word</code> 还拥有所有字符串拥有的方法：</p>
+<p>上面代码中的 <code>Word &lt; String</code> 在 Ruby 中表示继承（<a href="chapter3.html#section-3-1">3.1 节</a>中简单介绍过），这样除了刚定义的 <code>palindrome?</code> 方法之外，<code>Word</code> 还拥有所有字符串拥有的方法：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">s</span> <span class="o">=</span> Word.new<span class="o">(</span><span class="s2">"level"</span><span class="o">)</span>    <span class="c"># 创建一个新的 Word，初始值为 level</span>
 <span class="o">=</span>&gt; <span class="s2">"level"</span>
@@ -1042,7 +1069,7 @@ It worked!
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span> <span class="o">==</span> <span class="nb">self</span><span class="o">.</span><span class="n">reverse</span>
 </pre></div>
 </div>
-<p>来检查单词是否是一个回文。<sup class="footnote" id="fnref-4-11"><a href="#fn-4-11" rel="footnote">11</a></sup></p>
+<p>来检查单词是否是一个回文。<sup class="footnote" id="fnref-4-13"><a href="#fn-4-13" rel="footnote">11</a></sup></p>
 
 <h3 id='section-4-4-3'><span>4.4.3</span> 修改内置的类</h3>
 
@@ -1053,7 +1080,7 @@ It worked!
 NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class="se">\'</span> <span class="k">for</span> <span class="s2">"level"</span>:String
 </pre></div>
 </div>
-<p>有点令人惊讶的是，Ruby 允许你这么做，Ruby 中的类可以被打开进行修改，允许像我们自己这样的普通人添加一些方法：<sup class="footnote" id="fnref-4-12"><a href="#fn-4-12" rel="footnote">12</a></sup></p>
+<p>有点令人惊讶的是，Ruby 允许你这么做，Ruby 中的类可以被打开进行修改，允许像我们自己这样的普通人添加一些方法：<sup class="footnote" id="fnref-4-14"><a href="#fn-4-14" rel="footnote">12</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; class String
 &gt;&gt;   <span class="c"># 如果字符串和自己反转后相等则返回 true</span>
@@ -1085,7 +1112,7 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 <h3 id='section-4-4-4'><span>4.4.4</span> 控制器类</h3>
 
 
-<p>讨论类和继承时你可能觉得似曾相识，不错，我们之前介绍过，在使用 StaticPages 控制器时（代码 3.15）：</p>
+<p>讨论类和继承时你可能觉得似曾相识，不错，我们之前介绍过，在使用 StaticPages 控制器时（代码 3.16）：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
@@ -1100,7 +1127,7 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>你现在可以理解，至少有点能理解，这些代码的意思了：<code>StaticPagesController</code> 是一个类，继承自 <code>ApplicationController</code>，<code>StaticPagesController</code> 类中有三个方法 <code>home</code>、<code>help</code> 和 <code>about</code>。因为 Rails 控制台会加载本地的 Rails 环境，所以我们可以在控制台中创建一个控制器来查看一下它的继承关系：<sup class="footnote" id="fnref-4-13"><a href="#fn-4-13" rel="footnote">13</a></sup></p>
+<p>你现在可以理解，至少有点能理解，这些代码的意思了：<code>StaticPagesController</code> 是一个类，继承自 <code>ApplicationController</code>，<code>StaticPagesController</code> 类中有三个方法 <code>home</code>、<code>help</code> 和 <code>about</code>。因为 Rails 控制台会加载本地的 Rails 环境，所以我们可以在控制台中创建一个控制器来查看一下它的继承关系：<sup class="footnote" id="fnref-4-15"><a href="#fn-4-15" rel="footnote">13</a></sup></p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">controller</span> <span class="o">=</span> StaticPagesController.new
 <span class="o">=</span>&gt; <span class="c">#&lt;StaticPagesController:0x22855d0&gt;</span>
@@ -1132,9 +1159,6 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 
 <p>原因在于，Rails 是用 Ruby 编写的，但 Rails 不是 Ruby。有些 Rails 类就像普通的 Ruby 类一样，不过也有些则得益于 Rails 的强大功能。Rails 是单独的一门学问，应该区别于 Ruby 进行学习和理解。这就是为什么，如果你的兴趣是开发 Web 应用程序，我建议你先学 Rails 再学 Ruby，然后再回到 Rails 上的原因。</p>
 
-<div class="figure" id="figure-4-3">
-  <img src="figures/static_pages_controller_inheritance.png" alt="static pages controller inheritance" /><p class="caption"><span>图 4.3：</span>StaticPages 控制器的继承关系</p>
-</div>
 <h3 id='section-4-4-5'><span>4.4.5</span> 用户类</h3>
 
 
@@ -1142,6 +1166,9 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 
 <p>到目前为止，我们都是在控制台中定义类的，这样很快捷，但也有点不爽。现在我们要在应用程序的根目录创建一个名为 <code>example_user.rb</code> 的文件，写入代码 4.9 中的内容。</p>
 
+<div class="figure" id="figure-4-3">
+  <img src="figures/static_pages_controller_inheritance.png" alt="static pages controller inheritance" /><p class="caption"><span>图 4.3：</span>StaticPages 控制器的继承关系</p>
+</div>
 <div class="codeblock has-caption" id="codeblock-4-9"><p class="caption"><span>代码 4.9：</span><code>User</code> 类的代码</p><p class="file"><code>example_user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span>
   <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
 
@@ -1247,7 +1274,7 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
     <p>找一个在线的 Ruby API 文档，阅读 <code>Hash</code> 的 <code>merge</code> 方法的使用方法。</p>
   </li>
   <li>
-    <p>跟着 <a href="http://rubykoans.com/">Ruby Koans</a><sup class="footnote" id="fnref-4-14"><a href="#fn-4-14" rel="footnote">14</a></sup> 学习 Ruby 入门知识。</p>
+    <p><strong>（选做）</strong>跟着 <a href="http://rubykoans.com/">Ruby Koans</a> 学习 Ruby 入门知识。</p>
   </li>
 </ol><div class="codeblock has-caption" id="codeblock-4-10"><p class="caption"><span>代码 4.10：</span>打乱字符串函数的骨架</p><div class="highlight type-ruby"><pre><span class="o">&gt;&gt;</span> <span class="k">def</span> <span class="nf">string_shuffle</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="o">&gt;&gt;</span>   <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="sc">?.</span><span class="p">?</span>
@@ -1293,20 +1320,17 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
     <li id="fn-4-9">
       <p>没有了约束的好处是，Symbol 很容易进行比较，字符串要按照字母一个一个的比较，而 Symbol 只需进行一次操作。这就使得 Symbol 成为 Hash 键的最佳选择。<a href="#fnref-4-9" rel="reference">↩</a></p>
     </li>
-    <li id="fn-4-10">
-      <p>返回的结果可能由于 Ruby 版本的不同而有所不同。这个例子假设你使用的是 Ruby 1.9.3。<a href="#fnref-4-10" rel="reference">↩</a></p>
-    </li>
-    <li id="fn-4-11">
-      <p>关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/">RailsTips</a> 上的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/">Class and Instance Variables in Ruby</a>》一文。<a href="#fnref-4-11" rel="reference">↩</a></p>
-    </li>
     <li id="fn-4-12">
-      <p>了解 JavaScript 的人可能知道这个功能与使用内置的类原型对象扩充类的方式类似。（感谢读者 <a href="http://getsatisfaction.com/railstutorial/topics/adding_methods_to_built_in_classes_comparable_to_using_javascripts_prototype_object">Erik Eldridge</a> 指出这一点。）<a href="#fnref-4-12" rel="reference">↩</a></p>
+      <p>返回的结果可能由于 Ruby 版本的不同而有所不同。这个例子假设你使用的是 Ruby 1.9.3。<a href="#fnref-4-12" rel="reference">↩</a></p>
     </li>
     <li id="fn-4-13">
-      <p>你没必要知道继承关系中的每个类。我也不知道它们都是干什么的，而我从 2005 年就开始使用 Ruby on Rails 进行开发了。这可能意味着了以下两个问题中的一个，第一，我是个废柴，第二，你不需要知道所有的内在知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。<a href="#fnref-4-13" rel="reference">↩</a></p>
+      <p>关于 Ruby 类和 <code>self</code> 关键字，请阅读 <a href="http://railstips.org/">RailsTips</a> 上的《<a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/">Class and Instance Variables in Ruby</a>》一文。<a href="#fnref-4-13" rel="reference">↩</a></p>
     </li>
     <li id="fn-4-14">
-      <p><a href="http://rubykoans.com/">http://rubykoans.com/</a><a href="#fnref-4-14" rel="reference">↩</a></p>
+      <p>了解 JavaScript 的人可能知道这个功能与使用内置的类原型对象扩充类的方式类似。（感谢读者 <a href="http://getsatisfaction.com/railstutorial/topics/adding_methods_to_built_in_classes_comparable_to_using_javascripts_prototype_object">Erik Eldridge</a> 指出这一点。）<a href="#fnref-4-14" rel="reference">↩</a></p>
+    </li>
+    <li id="fn-4-15">
+      <p>你没必要知道继承关系中的每个类。我也不知道它们都是干什么的，而我从 2005 年就开始使用 Ruby on Rails 进行开发了。这可能意味着了以下两个问题中的一个，第一，我是个废柴，第二，你不需要知道所有的内在知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。<a href="#fnref-4-15" rel="reference">↩</a></p>
     </li>
   </ol></div>
   	</div>
@@ -1326,7 +1350,7 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 			
 		</div>
 		<div class="footer">
-        	<p>Andor Chen 保留部分权力。基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
+        	<p>&copy;2013 <a href="http://about.ac" title="Andor Chen 的个人网站">Andor Chen</a> 保留部分权力。在线阅读版本基于<a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-ShareAlike 3.0 Unported License" target="_blank">“CC 3.0 BY-SA 协议”</a>发布</p>
 		</div>
 	</div>
 </body>
