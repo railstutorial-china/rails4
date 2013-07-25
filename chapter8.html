@@ -674,7 +674,7 @@
 </div>
 <p>接下来我们要考虑记忆权标要保存什么数据，这有很多种选择，其实任何足够长的随机字符串都是可以的，只要能保证唯一性。Ruby 标准库中 <code>SecureRandom</code> 模块提供的 <code>urlsafe_base64</code> 方法可以满足我们的要求。<sup class="footnote" id="fnref-8-3"><a href="#fn-8-3" rel="footnote">3</a></sup><code>SecureRandom.urlsafe_base64</code> 创建的字符串长度为 16，由 A-Z、a-z、0-9、下划线（_）和连字符（-）组成（每一位字符都有 64 种可能的情况，所以叫做“<a href="http://en.wikipedia.org/wiki/Base64">base64</a>”）.所以两个记忆权标相等的概率就是 1/64<sup>16</sup> = 2<sup>-96</sup> ≈ 10<sup>-29</sup>，完全可以忽略。</p>
 
-<p>我们计划在浏览器中存储这个 base64 权标，在数据库中存储加密后的版本。如果要自动登入用户，就可以从 cookie 中取出记忆权标，加密后查询数据库。数据库之所以只保存加密后的权标是因为，即便整个数据库都泄露了，攻击者也无法使用记忆权标登入网站。为了让记忆权标更安全，我们计划每次回话都生成不一样的权标，这样即使回话被劫持了（攻击者偷取 cookie 伪装成某个用户登录），用户下次登录时前一个回话就会失效。（会话劫持可以通过 <a href="http://codebutler.com/firesheep/">Firesheep</a> 扩展检测，使用这个扩展可以看到很多著名的网站在连接到公共 WIFI 时，记忆权标都是可见的。为了避免这个问题可以全站使用 SSL，在 <a href="chapter7.html#section-7-4-4">7.4.4 节</a>有介绍。）</p>
+<p>我们计划在浏览器中存储这个 base64 权标，在数据库中存储加密后的版本。如果要自动登入用户，就可以从 cookie 中取出记忆权标，加密后查询数据库。数据库之所以只保存加密后的权标是因为，即便整个数据库都泄露了，攻击者也无法使用记忆权标登入网站。为了让记忆权标更安全，我们计划每次会话都生成不一样的权标，这样即使会话被劫持了（攻击者偷取 cookie 伪装成某个用户登录），用户下次登录时前一个会话就会失效。（会话劫持可以通过 <a href="http://codebutler.com/firesheep/">Firesheep</a> 扩展检测，使用这个扩展可以看到很多著名的网站在连接到公共 WIFI 时，记忆权标都是可见的。为了避免这个问题可以全站使用 SSL，在 <a href="chapter7.html#section-7-4-4">7.4.4 节</a>有介绍。）</p>
 
 <p>真实的应用程序都会自动登入刚注册的用户（这样做的一个副作用就是创建了一个新的记忆权标），但是我们不想这么做，我们要用一种更好的方式，确保从一开始用户就有可用的记忆权标。为此，我们要使用回调函数生成权标。在 <a href="chapter6.html#section-6-2-5">6.2.5 节</a>中确保 Email 唯一性时用过回调函数，调用的是 <code>before_save</code>。现在我们要调用 <code>before_create</code> 在创建用户时设置记忆权标。<sup class="footnote" id="fnref-8-4"><a href="#fn-8-4" rel="footnote">4</a></sup></p>
 
