@@ -1290,9 +1290,7 @@ first.last@foo.jp
 
 <p>把以上的代码放在一起就得到了如代码 6.29 所示的 User 模型，同时也实现了安全的密码机制。</p>
 
-<p><strong>代码 6.30</strong> 最终实现的安全的密码机制<br /><code>app/models/user.rb</code></p>
-
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-29"><p class="caption"><span>代码 6.29：</span>最终实现的安全的密码机制</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
@@ -1384,7 +1382,7 @@ first.last@foo.jp
   <li>
     <p>花点时间熟悉一下 <a href="http://www.rubular.com/">Rubular</a>。</p>
   </li>
-</ol><div class="codeblock has-caption" id="codeblock-6-29"><p class="caption"><span>代码 6.29：</span>对代码 6.20 中 Email 变小写的测试</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+</ol><div class="codeblock has-caption" id="codeblock-6-30"><p class="caption"><span>代码 6.30：</span>对代码 6.20 中 Email 变小写的测试</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -1405,7 +1403,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-6-30"><p class="caption"><span>代码 6.30：</span><code>before_save</code> 回调函数的另一种写法</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-31"><p class="caption"><span>代码 6.31：</span><code>before_save</code> 回调函数的另一种写法</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="n">has_secure_password</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase!</span> <span class="p">}</span>
   <span class="o">.</span>
@@ -1414,7 +1412,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-6-31"><p class="caption"><span>代码 6.31：</span>不允许 Email 地址中出现连续点号的正则表达式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-32"><p class="caption"><span>代码 6.32：</span>不允许 Email 地址中出现连续点号的正则表达式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
