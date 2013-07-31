@@ -135,6 +135,37 @@
 </div>
 <p>与 <a href="chapter1.html#section-1-4-1">1.4.1 节</a> 和第 2 章一样，我们使用 <code>-without production</code> 禁止安装生产环境所需的 gem。这个选项会被记住，所以后续调用 Bundler 就不用再指定这个选项，直接运行 <code>bundle install</code> 就可以自动不安装生产环境所需的 gem。<sup class="footnote" id="fnref-3-2"><a href="#fn-3-2" rel="footnote">2</a></sup></p>
 
+<p>因为我们会公开分享这个示例程序的源码，所以一定要修改“安全权标”。Rails 使用安全权标来加密会话。我们要把硬编码的字符串改为动态生成的（如代码 3.2）。（代码 3.2 中的代码现在看来是很高级的，但这是一个很严重的安全隐患，所以我觉得有必要尽早加入这段代码。）请确保使用了代码 1.7 所示的 <code>.gitignore</code> 文件，不把 <code>.secret</code> 纳入仓库。</p>
+
+<div class="codeblock has-caption" id="codeblock-3-2"><p class="caption"><span>代码 3.2：</span>动态生成安全权标</p><p class="file"><code>config/initializers/secret_token.rb</code></p><div class="highlight type-ruby"><pre><span class="c1"># Be sure to restart your server when you modify this file.</span>
+
+<span class="c1"># Your secret key is used for verifying the integrity of signed cookies.</span>
+<span class="c1"># If you change this key, all old signed cookies will become invalid!</span>
+
+<span class="c1"># Make sure the secret is at least 30 characters and all random,</span>
+<span class="c1"># no regular words or you'll be exposed to dictionary attacks.</span>
+<span class="c1"># You can use `rake secret` to generate a secure secret key.</span>
+
+<span class="c1"># Make sure your secret_key_base is kept private</span>
+<span class="c1"># if you're sharing your code publicly.</span>
+<span class="nb">require</span> <span class="s1">'securerandom'</span>
+
+<span class="k">def</span> <span class="nf">secure_token</span>
+  <span class="n">token_file</span> <span class="o">=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'.secret'</span><span class="p">)</span>
+  <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+    <span class="c1"># Use the existing token.</span>
+    <span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span><span class="o">.</span><span class="n">chomp</span>
+  <span class="k">else</span>
+    <span class="c1"># Generate a new token and store it in token_file.</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="no">SecureRandom</span><span class="o">.</span><span class="n">hex</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span>
+    <span class="no">File</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">token_file</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+    <span class="n">token</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">secret_key_base</span> <span class="o">=</span> <span class="n">secure_token</span>
+</pre></div>
+</div>
 <p>接着我们要设置一下让 Rails 使用 RSpec 而不用 <code>Test::Unit</code>。这个设置可以通过 <code>rails generate rspec:install</code> 命令实现：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate rspec:install
@@ -151,7 +182,7 @@
 </div>
 <p>和第一个程序一样，我建议你更新一下 <code>README</code> 文件，更好的描述这个程序，还可以提供一些帮助信息，可参照代码 3.2。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-2"><p class="caption"><span>代码 3.2：</span>示例程序改善后的 <code>README</code> 文件</p><div class="highlight type-text"><pre># Ruby on Rails Tutorial: sample application
+<div class="codeblock has-caption" id="codeblock-3-3"><p class="caption"><span>代码 3.3：</span>示例程序改善后的 <code>README</code> 文件</p><div class="highlight type-text"><pre># Ruby on Rails Tutorial: sample application
 
 This is the sample application for
 the [*Ruby on Rails Tutorial*](http://railstutorial.org/)
@@ -176,7 +207,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>当然我们也可以选择在这个早期阶段将程序部署到 Heroku。和 <a href="chapter2.html#section-2-3-5">2.3.5 节</a>一样，事先要设置 Rails，让其服务静态资源文件，如代码 3.3 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-3"><p class="caption"><span>代码 3.3：</span>设置 Rails，让其服务静态资源文件</p><p class="file"><code>config/environments/production.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-3-4"><p class="caption"><span>代码 3.4：</span>设置 Rails，让其服务静态资源文件</p><p class="file"><code>config/environments/production.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -246,7 +277,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>Rails 提供了一个脚本用来创建控制器，叫做 <code>generate</code>，只要提供控制器的名字就可以运行了。既然我们要创建的控制器是处理静态页面的，那就叫它 StaticPages 吧。我们计划要生成处理“首页”，“帮助”页面和“关于”页面的动作。<code>generate</code> 命令可以接受一个可选的参数，指定要生成的动作，现在我们只提供两个动作，如代码 3.4 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-4"><p class="caption"><span>代码 3.4：</span>生成 StaticPages 控制器</p><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate controller StaticPages home <span class="nb">help</span> --no-test-framework
+<div class="codeblock has-caption" id="codeblock-3-5"><p class="caption"><span>代码 3.5：</span>生成 StaticPages 控制器</p><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate controller StaticPages home <span class="nb">help</span> --no-test-framework
       create  app/controllers/static_pages_controller.rb
        route  get <span class="s2">"static_pages/help"</span>
        route  get <span class="s2">"static_pages/home"</span>
@@ -325,7 +356,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>因为我们生成了 <code>home</code> 和 <code>help</code> 动作，路由文件中已经为它们生成了配置，如代码 3.5。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-5"><p class="caption"><span>代码 3.5：</span>StaticPages 控制器中 <code>home</code> 和 <code>help</code> 动作的路由配置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-rb"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-3-6"><p class="caption"><span>代码 3.6：</span>StaticPages 控制器中 <code>home</code> 和 <code>help</code> 动作的路由配置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-rb"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="o">.</span>
@@ -357,7 +388,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>要想弄明白这个页面是怎么来的，让我们在浏览器中看一下 StaticPages 控制器文件吧，你应该会看到类似代码 3.6 的内容。你可能已经注意到了，不像第 2 章中的 Users 和 Microposts 控制器，StaticPages 控制器没有使用标准的 REST 动作。这对静态页面来说是很常见的，REST 架构并不能解决所有的问题。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-6"><p class="caption"><span>代码 3.6：</span>代码 3.4 生成的 StaticPages 控制器</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="codeblock has-caption" id="codeblock-3-7"><p class="caption"><span>代码 3.7：</span>代码 3.4 生成的 StaticPages 控制器</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">StaticPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
   <span class="k">def</span> <span class="nf">home</span>
   <span class="k">end</span>
@@ -382,13 +413,13 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>如果你再看一下代码 3.4 的输出，或许你能猜到动作和视图之间的对应关系：<code>home</code> 动作对应的视图叫做 <code>home.html.erb</code>。<a href="chapter3.html#section-3-3">3.3 节</a>将告诉你 <code>.erb</code> 是什么意思。看到 <code>.html</code> 你或许就不会奇怪了，它基本上就是 HTML（代码 3.7）。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-7"><p class="caption"><span>代码 3.7：</span>为“首页”生成的视图</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;StaticPages#home&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-8"><p class="caption"><span>代码 3.8：</span>为“首页”生成的视图</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;StaticPages#home&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;Find me in app/views/static_pages/home.html.erb&lt;/p&gt;</span>
 </pre></div>
 </div>
 <p><code>help</code> 动作的视图代码类似（参见代码 3.8）。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-8"><p class="caption"><span>代码 3.8：</span>为“帮助”页面生成的视图</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;StaticPages#help&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-9"><p class="caption"><span>代码 3.9：</span>为“帮助”页面生成的视图</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;StaticPages#help&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;Find me in app/views/static_pages/help.html.erb&lt;/p&gt;</span>
 </pre></div>
 </div>
@@ -427,7 +458,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>上面的代码会在 <code>spec/requests</code> 文件夹中生成 <code>static_pages_spec.rb</code> 文件。自动生成的代码不能满足我们的需求，用文本编辑器打开 <code>static_pages_spec.rb</code>，将其内容替换成代码 3.9 所示的代码。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-9"><p class="caption"><span>代码 3.9：</span>测试“首页”内容的代码</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-3-10"><p class="caption"><span>代码 3.10：</span>测试“首页”内容的代码</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -468,7 +499,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>若要测试正确运行，我们要在 <code>spec_helper.rb</code> 中加入一行代码，如代码 3.10 所示。（在本书后续的草稿中，我计划不再使用这行代码，启用<a href="https://www.relishapp.com/rspec/rspec-rails/docs/feature-specs/feature-spec">功能测试</a>中的新技术。）</p>
 
-<div class="codeblock has-caption" id="codeblock-3-10"><p class="caption"><span>代码 3.10：</span>把 Capybara DSL 加入 RSpec 帮助文件</p><p class="file"><code>spec/spec_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="c1"># This file is copied to spec/ when you run 'rails generate rspec:install'</span>
+<div class="codeblock has-caption" id="codeblock-3-11"><p class="caption"><span>代码 3.11：</span>把 Capybara DSL 加入 RSpec 帮助文件</p><p class="file"><code>spec/spec_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="c1"># This file is copied to spec/ when you run 'rails generate rspec:install'</span>
 <span class="o">.</span>
 <span class="o">.</span>
 <span class="o">.</span>
@@ -492,7 +523,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>要想让测试通过，我们要用代码 3.11 中的 HTML 替换掉默认的“首页”内容。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-11"><p class="caption"><span>代码 3.11：</span>让“首页”测试通过的代码</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Sample App&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-12"><p class="caption"><span>代码 3.12：</span>让“首页”测试通过的代码</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Sample App&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  This is the home page for the</span>
 <span class="x">  &lt;a href="http://railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
@@ -517,7 +548,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>基于上面针对“首页”的例子，或许你已经猜到了“帮助”页面类似的测试和程序代码。我们先来测试一下相应的内容，现在字符串变成“<code>Help</code>”了（参见代码 3.12）。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-12"><p class="caption"><span>代码 3.12：</span>添加测试“帮助”页面内容的代码</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-3-13"><p class="caption"><span>代码 3.13：</span>添加测试“帮助”页面内容的代码</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -548,7 +579,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>程序所需的代码和代码 3.11 类似，如代码 3.13 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-13"><p class="caption"><span>代码 3.13：</span>让“帮助”页面的测试通过的代码</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Help&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-14"><p class="caption"><span>代码 3.14：</span>让“帮助”页面的测试通过的代码</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Help&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  Get help on the Ruby on Rails Tutorial at the</span>
 <span class="x">  &lt;a href="http://railstutorial.org/help"&gt;Rails Tutorial help page&lt;/a&gt;.</span>
@@ -572,7 +603,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>先来到“遇红-变绿”过程中的“遇红”部分，为“关于”页面写一个失败测试。参照代码 3.12 的代码，或许你已经知道如何写这个测试了（参见代码 3.14）。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-14"><p class="caption"><span>代码 3.14：</span>添加测试“关于”页面内容的代码</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-3-15"><p class="caption"><span>代码 3.15：</span>添加测试“关于”页面内容的代码</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -619,7 +650,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>这提醒我们要在路由文件中添加 <code>static_pages/about</code>，我们可以按照代码 3.5 所示的格式添加，结果如代码 3.15 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-15"><p class="caption"><span>代码 3.15：</span>添加“关于”页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-3-16"><p class="caption"><span>代码 3.16：</span>添加“关于”页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="n">get</span> <span class="s2">"static_pages/about"</span>
@@ -641,7 +672,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>为了解决这个问题，我们按照代码 3.6 中 <code>home</code> 和 <code>help</code> 的格式在 StaticPages 控制器中添加 <code>about</code> 动作的代码（如代码 3.16 所示）。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-16"><p class="caption"><span>代码 3.16：</span>添加了 <code>about</code> 动作的 StaticPages 控制器</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-sh"><pre>class StaticPagesController &lt; ApplicationController
+<div class="codeblock has-caption" id="codeblock-3-17"><p class="caption"><span>代码 3.17：</span>添加了 <code>about</code> 动作的 StaticPages 控制器</p><p class="file"><code>app/controllers/static_pages_controller.rb</code></p><div class="highlight type-sh"><pre>class StaticPagesController &lt; ApplicationController
 
   def home
   end
@@ -666,7 +697,7 @@ end
 </div>
 <p>要解决这个问题，我们要添加 <code>about</code> 动作对应的视图。我们需要在 <code>app/views/static_pages</code> 目录下创建一个名为 <code>about.html.erb</code> 的新文件，写入代码 3.17 所示的内容。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-17"><p class="caption"><span>代码 3.17：</span>“关于”页面视图代码</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;About Us&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-18"><p class="caption"><span>代码 3.18：</span>“关于”页面视图代码</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;About Us&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  The &lt;a href="http://railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
 <span class="x">  is a project to make a book and screencasts to teach web development</span>
@@ -713,7 +744,7 @@ end
 
 <p>本节结束后，三个静态页面的标题都会是“Ruby on Rails Tutorial Sample App | Home”这种形式，标题的后面一部分会根据所在的页面而有所不同（参见<a href="chapter3.html#table-3-1">表格 3.1</a>）。我们接着代码 3.14 中的测试，添加代码 3.18 所示测试标题的代码。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-18"><p class="caption"><span>代码 3.18：</span>标题测试</p><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="s2">"should have the right title"</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-3-19"><p class="caption"><span>代码 3.19：</span>标题测试</p><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="s2">"should have the right title"</span> <span class="k">do</span>
   <span class="n">visit</span> <span class="s1">'/static_pages/home'</span>
   <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Home"</span><span class="p">)</span>
 <span class="k">end</span>
@@ -757,7 +788,7 @@ end
     </tr></tbody></table></div>
 <p>我们按照代码 3.18 的格式为三个静态页面都加上测试代码，结果参照代码 3.19。注意，测试中有很多重复，我们会在 <a href="chapter3.html#section-3-4">5.3.4 节</a>重构。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-19"><p class="caption"><span>代码 3.19：</span>StaticPages 控制器的测试文件，包含标题测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-3-20"><p class="caption"><span>代码 3.20：</span>StaticPages 控制器的测试文件，包含标题测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -829,7 +860,7 @@ end
 
 <p>在“首页”中使用这种基本结构后得到的文档如代码 3.20 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-20"><p class="caption"><span>代码 3.20：</span>“首页”的完整 HTML</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-21"><p class="caption"><span>代码 3.21：</span>“首页”的完整 HTML</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;Ruby on Rails Tutorial Sample App | Home&lt;/title&gt;</span>
@@ -852,7 +883,7 @@ end
 </div>
 <p>所以，“首页”的测试现在应该可以通过了。你还会看到红色的错误提示是因为“帮助”页面和“关于”页面的测试还是失败的，我们使用代码 3.21 和代码 3.22 中的代码让它们也通过测试。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-21"><p class="caption"><span>代码 3.21：</span>“帮助”页面的完整 HTML</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-22"><p class="caption"><span>代码 3.22：</span>“帮助”页面的完整 HTML</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;Ruby on Rails Tutorial Sample App | Help&lt;/title&gt;</span>
@@ -869,7 +900,7 @@ end
 <span class="x">&lt;/html&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-3-22"><p class="caption"><span>代码 3.22：</span>“关于”页面的完整 HTML</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-23"><p class="caption"><span>代码 3.23：</span>“关于”页面的完整 HTML</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
 <span class="x">    &lt;title&gt;Ruby on Rails Tutorial Sample App | About Us&lt;/title&gt;</span>
@@ -900,7 +931,7 @@ end
 
 <p>这个过程会在视图中使用嵌入式 Ruby（Embedded Ruby）。既然“首页”、“帮助”页面和“关于”页面的标题有一个变动的部分，那我们就利用一个 Rails 中特别的函数 <code>provide</code> 在每个页面设定不同的标题。通过将视图 <code>home.html.erb</code> 标题中的“Home”换成如代码 3.23 所示的代码，我们可以看一下实现的过程。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-23"><p class="caption"><span>代码 3.23：</span>标题中使用了嵌入式 Ruby 代码的“首页”视图</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Home'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-3-24"><p class="caption"><span>代码 3.24：</span>标题中使用了嵌入式 Ruby 代码的“首页”视图</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Home'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
@@ -936,7 +967,7 @@ end
 </div>
 <p>然后我们要对“帮助”页面和“关于”页面做相应的修改了。（参见代码 3.24 和代码 3.25。）</p>
 
-<div class="codeblock has-caption" id="codeblock-3-24"><p class="caption"><span>代码 3.24：</span>标题中使用了嵌入式 Ruby 代码的“帮助”页面视图</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Help'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-3-25"><p class="caption"><span>代码 3.25：</span>标题中使用了嵌入式 Ruby 代码的“帮助”页面视图</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Help'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
@@ -954,7 +985,7 @@ end
 <span class="x">&lt;/html&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-3-25"><p class="caption"><span>代码 3.25：</span>标题中使用了嵌入式 Ruby 代码的“关于”页面视图</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'About Us'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-3-26"><p class="caption"><span>代码 3.26：</span>标题中使用了嵌入式 Ruby 代码的“关于”页面视图</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'About Us'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">  &lt;head&gt;</span>
@@ -1003,7 +1034,7 @@ end
 </div>
 <p>最终的布局文件如代码 3.26 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-26"><p class="caption"><span>代码 3.26：</span>示例程序的网站布局</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-3-27"><p class="caption"><span>代码 3.27：</span>示例程序的网站布局</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
 <span class="x">&lt;html&gt;</span>
 <span class="x">&lt;head&gt;</span>
 <span class="x">  &lt;title&gt;Ruby on Rails Tutorial Sample App | </span><span class="cp">&lt;%=</span> <span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
@@ -1038,7 +1069,7 @@ end
 
 <p>现在代码 3.23、代码 3.24 和代码 3.25 的内容还是和布局文件中类似的 HTML，所以我们要将内容删除，只保留需要的部分。清理后的视图如代码 3.27、代码 3.28 和代码 3.29 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-27"><p class="caption"><span>代码 3.27：</span>去除完整的 HTML 结构后的“首页”</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Home'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-3-28"><p class="caption"><span>代码 3.28：</span>去除完整的 HTML 结构后的“首页”</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Home'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Sample App&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  This is the home page for the</span>
@@ -1047,7 +1078,7 @@ end
 <span class="x">&lt;/p&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-3-28"><p class="caption"><span>代码 3.28：</span>去除完整的 HTML 结构后的“帮助”页面</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Help'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-3-29"><p class="caption"><span>代码 3.29：</span>去除完整的 HTML 结构后的“帮助”页面</p><p class="file"><code>app/views/static_pages/help.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Help'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Help&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  Get help on the Ruby on Rails Tutorial at the</span>
@@ -1057,7 +1088,7 @@ end
 <span class="x">&lt;/p&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-3-29"><p class="caption"><span>代码 3.29：</span>去除完整的 HTML 结构后的“关于”页面</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'About Us'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-3-30"><p class="caption"><span>代码 3.30：</span>去除完整的 HTML 结构后的“关于”页面</p><p class="file"><code>app/views/static_pages/about.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'About Us'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;About Us&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  The &lt;a href="http://railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
@@ -1111,7 +1142,7 @@ end
   <li>
     <p>（附加题）Heroku 网站中一篇<a href="http://devcenter.heroku.com/articles/how-do-i-use-sqlite3-for-development">介绍如何在开发环境中使用 sqlite3 的文章</a>提到，最好在开发环境、测试环境和生产环境中使用相同类型的数据库。按照 Heroku 网站上介绍<a href="https://devcenter.heroku.com/articles/heroku-postgresql#local-setup">如何在本地环境中安装 PostgreSQL 的文章</a>内容，在你的电脑上安装 PostgreSQL 数据库。修改 <code>Gemfile</code>，删掉 <code>sqlite3</code>，换上 <code>pg</code>，如代码 3.32 所示。你还要知道如何修改 <code>config/database.yml</code> 文件，以及如何在本地运行 PostgreSQL 数据库。（注意，基于安全考虑，应该把 <code>database.yml</code> 加入 <code>.gitignore</code>，如代码 1.7 所示。）这个练习的目标是使用 PostgreSQL 数据库创建并设置开发环境和测试环境中用到的数据库。我特别推荐使用 <a href="http://inductionapp.com/">Induction</a> 连接并查看本地 PostgreSQL 数据库。<strong>注意：</strong>你会发现本题还是有点难度的，我只推荐高级用户做这一题。如果你在某个地方卡住了，不要坚持不放。前面我已经说过了，本教程开发的示例程序完全兼容 SQLite 和 PostgreSQL。</p>
   </li>
-</ol><div class="codeblock has-caption" id="codeblock-3-30"><p class="caption"><span>代码 3.30：</span>“联系”页面的内容</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</ol><div class="codeblock has-caption" id="codeblock-3-31"><p class="caption"><span>代码 3.31：</span>“联系”页面的内容</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Contact&lt;/h1&gt;</span>
 <span class="x">&lt;p&gt;</span>
 <span class="x">  Contact Ruby on Rails Tutorial about the sample app at the</span>
@@ -1119,7 +1150,7 @@ end
 <span class="x">&lt;/p&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-3-31"><p class="caption"><span>代码 3.31：</span>使用了一个通用标题的 StaticPages 测试文件</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<div class="codeblock has-caption" id="codeblock-3-32"><p class="caption"><span>代码 3.32：</span>使用了一个通用标题的 StaticPages 测试文件</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="s2">"Static pages"</span> <span class="k">do</span>
 
@@ -1179,7 +1210,7 @@ end
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-3-32"><p class="caption"><span>代码 3.32：</span>删除 SQLite 使用 PostgreSQL 数据库所需的 <code>Gemfile</code> 文件</p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<div class="codeblock has-caption" id="codeblock-3-33"><p class="caption"><span>代码 3.33：</span>删除 SQLite 使用 PostgreSQL 数据库所需的 <code>Gemfile</code> 文件</p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 <span class="n">ruby</span> <span class="s1">'2.0.0'</span>
 
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
@@ -1250,7 +1281,7 @@ rvm 1.19.5 <span class="o">(</span>stable<span class="o">)</span>
 </div>
 <p>这些命令会通过某种神秘的力量将 RVM 和 Bundler 组合在一起，确保如 <code>rake</code> 和 <code>rspec</code> 等命令可以自动的在正确的环境中执行。因为这些文件是针对你本地环境的，你应该将 <code>bundler_stubs</code> 文件夹加入 <code>.gitignore</code> 文件（参见代码 3.33）。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-33"><p class="caption"><span>代码 3.33：</span>把 <code>bundler_stubs</code> 加入 <code>.gitignore</code> 文件</p><div class="highlight type-text"><pre># Ignore bundler config.
+<div class="codeblock has-caption" id="codeblock-3-34"><p class="caption"><span>代码 3.34：</span>把 <code>bundler_stubs</code> 加入 <code>.gitignore</code> 文件</p><div class="highlight type-text"><pre># Ignore bundler config.
 /.bundle
 
 # Ignore the default SQLite database.
@@ -1307,7 +1338,7 @@ bundler_stubs/
 
 <p>首先我们要把 <code>guard-rspec</code> 加入 <code>Gemfile</code>。（参见代码 3.34）</p>
 
-<div class="codeblock has-caption" id="codeblock-3-34"><p class="caption"><span>代码 3.34：</span>示例程序的 <code>Gemfile</code>，包含 Guard</p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<div class="codeblock has-caption" id="codeblock-3-35"><p class="caption"><span>代码 3.35：</span>示例程序的 <code>Gemfile</code>，包含 Guard</p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 <span class="n">ruby</span> <span class="s1">'2.0.0'</span>
 
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
@@ -1365,7 +1396,7 @@ rspec guard added to Guardfile, feel free to edit it
 </div>
 <p>然后再编辑 <code>Guardfile</code>，这样当集成测试和视图改变后 Guard 才能运行对应的测试。（参见代码 3.35）</p>
 
-<div class="codeblock has-caption" id="codeblock-3-35"><p class="caption"><span>代码 3.35：</span>加入默认 <code>Guardfile</code> 的代码，注意顶部的 <code>require</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'active_support/inflector'</span>
+<div class="codeblock has-caption" id="codeblock-3-36"><p class="caption"><span>代码 3.36：</span>加入默认 <code>Guardfile</code> 的代码，注意顶部的 <code>require</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'active_support/inflector'</span>
 
 <span class="n">guard</span> <span class="s1">'rspec'</span><span class="p">,</span> <span class="n">all_after_pass</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
   <span class="o">.</span>
@@ -1418,7 +1449,7 @@ rspec guard added to Guardfile, feel free to edit it
 
 <p>首先要把 <code>spork</code> 加入 <code>Gemfile</code>。（参见代码 3.36）</p>
 
-<div class="codeblock has-caption" id="codeblock-3-36"><p class="caption"><span>代码 3.36：</span>示例程序的 <code>Gemfile</code></p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<div class="codeblock has-caption" id="codeblock-3-37"><p class="caption"><span>代码 3.37：</span>示例程序的 <code>Gemfile</code></p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 <span class="n">ruby</span> <span class="s1">'2.0.0'</span>
 
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
@@ -1448,7 +1479,7 @@ rspec guard added to Guardfile, feel free to edit it
 </div>
 <p>现在我们要修改名为 <code>spec/spec_helper.rb</code> 的 RSpec 设置文件，让所需的环境在一个预派生（prefork）代码块中加载，这样才能保证环境只被加载一次。（参见代码 3.37）</p>
 
-<div class="codeblock has-caption" id="codeblock-3-37"><p class="caption"><span>代码 3.37：</span>将环境加载代码加入 <code>Spork.prefork</code> 代码块</p><p class="file"><code>spec/spec_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'rubygems'</span>
+<div class="codeblock has-caption" id="codeblock-3-38"><p class="caption"><span>代码 3.38：</span>将环境加载代码加入 <code>Spork.prefork</code> 代码块</p><p class="file"><code>spec/spec_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'rubygems'</span>
 <span class="nb">require</span> <span class="s1">'spork'</span>
 
 <span class="no">Spork</span><span class="o">.</span><span class="n">prefork</span> <span class="k">do</span>
@@ -1536,7 +1567,7 @@ sys 0m0.258s
 </div>
 <p>每次运行 <code>rspec</code> 都要指定 <code>-drb</code> 选项有点麻烦，所以我建议将其加入应用程序根目录下的 <code>.rspec</code> 文件中，如代码 3.38 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-38"><p class="caption"><span>代码 3.38：</span>设置 RSpec 让其自动使用 Spork</p><p class="file"><code>.rspec</code></p><div class="highlight type-text"><pre>--colour
+<div class="codeblock has-caption" id="codeblock-3-39"><p class="caption"><span>代码 3.39：</span>设置 RSpec 让其自动使用 Spork</p><p class="file"><code>.rspec</code></p><div class="highlight type-text"><pre>--colour
 --drb
 </pre></div>
 </div>
@@ -1560,7 +1591,7 @@ Spork is ready and listening on 8989!
 </div>
 <p>然后我们要按照代码 3.39 所示的内容修改 <code>Guardfile</code>。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-39"><p class="caption"><span>代码 3.39：</span>为使用 Spork 而修改的 <code>Guardfile</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'active_support/inflector'</span>
+<div class="codeblock has-caption" id="codeblock-3-40"><p class="caption"><span>代码 3.40：</span>为使用 Spork 而修改的 <code>Guardfile</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'active_support/inflector'</span>
 
 <span class="n">guard</span> <span class="s1">'spork'</span><span class="p">,</span> <span class="ss">:cucumber_env</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="s1">'RAILS_ENV'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span> <span class="p">},</span>
                <span class="ss">:rspec_env</span>    <span class="o">=&gt;</span> <span class="p">{</span> <span class="s1">'RAILS_ENV'</span> <span class="o">=&gt;</span> <span class="s1">'test'</span> <span class="p">}</span> <span class="k">do</span>
