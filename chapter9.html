@@ -1213,13 +1213,15 @@
 <span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p><code>will_paginate</code> 方法有点小神奇，在 Users 控制器的视图中，它会自动寻找名为 <code>@users</code> 的对象，然后显示一个分页导航链接。代码 9.34 所示的视图现在还不能正确显示分页，因为现在 <code>@users</code> 的值是通过 <code>User.all</code> 方法获取的，是个数组；而 <code>will_paginate</code> 方法需要的是 <code>ActiveRecord::Relation</code> 类对象。will_paginate 提供的 <code>paginate</code> 方法正好可以返回 <code>ActiveRecored::Relation</code> 类对象：</p>
+<p><code>will_paginate</code> 方法有点小神奇，在 Users 控制器的视图中，它会自动寻找名为 <code>@users</code> 的对象，然后显示一个分页导航链接。代码 9.34 所示的视图现在还不能正确显示分页，因为现在 <code>@users</code> 的值是通过 <code>User.all</code> 方法获取的，而 <code>will_paginate</code> 的分页需要调用 <code>paginate</code> 方法：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
 &gt;&gt; User.all.class
 <span class="o">=</span>&gt; Array
-&gt;&gt; User.paginate<span class="o">(</span>page: 1<span class="o">)</span>.class
-<span class="o">=</span>&gt; ActiveRecord::Relation
+&gt;&gt; User.paginate<span class="o">(</span>page: 1<span class="o">)</span>
+  User Load <span class="o">(</span>1.5ms<span class="o">)</span>  SELECT <span class="s2">"users"</span>.* FROM <span class="s2">"users"</span> LIMIT 30 OFFSET 0
+   <span class="o">(</span>1.7ms<span class="o">)</span>  SELECT COUNT<span class="o">(</span>*<span class="o">)</span> FROM <span class="s2">"users"</span>
+<span class="o">=</span>&gt; <span class="c">#&lt;ActiveRecord::Relation [#&lt;User id: 1,...</span>
 </pre></div>
 </div>
 <p><code>paginate</code> 方法可以接受一个 Hash 类型的参数，键 <code>:page</code> 的值指定第几页。<code>User.paginate</code> 方法根据 <code>:page</code> 的值，一次取回一系列的用户（默认为 30 个）。所以，第一页显示的是第 1-30 个用户，第二页显示的是第 31-60 个，等。如果指定的页数不存在，<code>paginate</code> 会显示第一页。</p>
@@ -1751,6 +1753,7 @@
       <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_admin</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 <div class="codeblock has-caption" id="codeblock-9-50"><p class="caption"><span>代码 9.50：</span>注册和编辑表单字段的局部视图</p><p class="file"><code>app/views/users/_fields.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/error_messages'</span> <span class="cp">%&gt;</span><span class="x"></span>
