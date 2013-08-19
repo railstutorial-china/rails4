@@ -1136,7 +1136,7 @@
   <span class="o">.</span>
 </pre></div>
 </div>
-<p><code>sequence</code> 方法可以接受一个 Symbol 类型的参数，对应到属性上（例如 <code>:name</code>），其后还可以跟着块，有一个块参数，我们将其命名为 <code>n</code>。<code>FactoryGirl.create(:user)</code> 方法执行成功后，块参数会自动增加 1。因此，创建的第一个用户名字为“Person 1”，Email 地址为“person<em>1@example.com”；第二个用户的名字为 <code>Person 2</code>，Email 地址为“person</em>2@example.com”；依此类推。完整的代码如代码 9.32 所示。</p>
+<p><code>sequence</code> 方法可以接受一个 Symbol 类型的参数，对应到属性上（例如 <code>:name</code>），其后还可以跟着块，有一个块参数，我们将其命名为 <code>n</code>。<code>FactoryGirl.create(:user)</code> 方法执行成功后，块参数会自动增加 1。因此，创建的第一个用户名字为“Person 1”，Email 地址为“person_1@example.com”；第二个用户的名字为 <code>Person 2</code>，Email 地址为“person_2@example.com”；依此类推。完整的代码如代码 9.32 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-32"><p class="caption"><span>代码 9.32：</span>定义 Factory Girl 序列</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
   <span class="n">factory</span> <span class="ss">:user</span> <span class="k">do</span>
