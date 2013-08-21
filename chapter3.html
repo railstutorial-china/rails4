@@ -1398,7 +1398,7 @@ rspec guard added to Guardfile, feel free to edit it
 
 <div class="codeblock has-caption" id="codeblock-3-36"><p class="caption"><span>代码 3.36：</span>加入默认 <code>Guardfile</code> 的代码，注意顶部的 <code>require</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'active_support/inflector'</span>
 
-<span class="n">guard</span> <span class="s1">'rspec'</span><span class="p">,</span> <span class="n">all_after_pass</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
+<span class="n">guard</span> <span class="s1">'rspec'</span><span class="p">,</span> <span class="n">after_all_pass</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1425,7 +1425,7 @@ rspec guard added to Guardfile, feel free to edit it
 </div>
 <p>下面这行</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">guard</span> <span class="s1">'rspec'</span><span class="p">,</span> <span class="n">all_after_pass</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">guard</span> <span class="s1">'rspec'</span><span class="p">,</span> <span class="n">after_all_pass</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
 </pre></div>
 </div>
 <p>确保失败的测试通过后 Guard 不会运行所有的测试（为了加快“遇红，变绿，重构”过程）。</p>
