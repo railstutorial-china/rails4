@@ -1545,7 +1545,7 @@ user  0m7.240s
 sys   0m1.068s
 </pre></div>
 </div>
-<p>我们看到测试组件用了超过 7 秒的时间，测试本身也用了超过 0.1 秒。为了加速这个过程，我们可以打开一个专门的命令行窗口，进入应用程序的根目录，然后启动 Spork 服务器：</p>
+<p>我们看到测试组件用了超过 7 秒的时间，测试本身也用了超过 0.1 秒。为了加速这个过程，我们可以打开一个专门的命令行窗口，进入应用程序的根目录，然后启动 Spork 服务器<sup class="footnote" id="fnref-3-t1"><a href="#fn-3-t1" rel="footnote">12</a></sup>：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>spork
 Using RSpec
@@ -1684,6 +1684,9 @@ Spork is ready and listening on 8989!
     </li>
     <li id="fn-3-12">
       <p>Spork 是 spoon-fork 的合成词。这个项目的名字之所以叫做 Spork 也是取 <a href="http://en.wikipedia.org/wiki/Fork_\(software_development\)">POSIX forks</a> 的双关。<a href="#fnref-3-12" rel="reference">↩</a></p>
+    </li>
+    <li id="fn-3-t1">
+      <p>译者注：若Spork在Ubuntu下无法运行，请参照<a href="https://gist.github.com/zunda/5328483">这个 gist</a> 修改相应文件的权限。<a href="#fnref-3-t1" rel="reference">↩</a></p>
     </li>
   </ol></div>
   	</div>

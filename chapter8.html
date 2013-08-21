@@ -757,7 +757,7 @@
 
 <p>把上述的分析结合起来，最终得到的 User 模型文件如代码 8.18 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-18"><p class="caption"><span>代码 8.18：</span>生成记忆权标的 <code>before_save</code> 回调函数</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-8-18"><p class="caption"><span>代码 8.18：</span>生成记忆权标的 <code>before_create</code> 回调函数</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
   <span class="n">before_create</span> <span class="ss">:create_remember_token</span>
   <span class="o">.</span>
