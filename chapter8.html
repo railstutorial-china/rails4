@@ -710,7 +710,7 @@
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">remember_token</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_blank</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>程序所需的代码会涉及到一些新的知识。其一，我们添加了一个回调函数来生成记忆权标：</p>
+<p>User 模型的代码会涉及到一些新的知识。其一，我们添加了一个回调函数，在用户存入数据库之前生成记忆权标：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">before_create</span> <span class="ss">:create_remember_token</span>
 </pre></div>
@@ -753,7 +753,7 @@
 
 <p>注意，我们使用 <a href="https://en.wikipedia.org/wiki/SHA-1">SHA1</a> 加密了记忆权标。这种哈希算法比 <a href="chapter6.html#section-6-3-1">6.3.1 节</a>中用来加密用户密码的 Bcrypt 速度快得多。之所以看中速度，是因为对登入的用户来说，每个页面都会加密记忆权标（参加<a href="chapter8.html#section-8-2-2">8.2.2 节</a>）。SHA1 的安全性不如 Bcrypt，但能满足现在的需求，加密后的记忆权标是 16 位随机字符，基本无法破解。（上述代码之所以调用 <code>to_s</code>，是为了处理输入为 <code>nil</code> 的情况。对然在浏览器中不会遇到，到测试时偶尔会出现。）</p>
 
-<p><code>encrypt</code> 和 <code>new_remember_token</code> 方法定义在 <code>User</code> 类中，因为二者无需用户实例就可使用，而且还是公开方法（位于 <code>private</code> 上面）。在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中会将这两个方法剥离出 User 模型。</p>
+<p><code>encrypt</code> 和 <code>new_remember_token</code> 方法定义在 <code>User</code> 类中，因为二者无需用户实例就可使用<sup class="footnote" id="fnref-8-6"><a href="#fn-8-6" rel="footnote">6</a></sup>，而且还是公开方法（位于 <code>private</code> 上面）。在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中会将这两个方法剥离出 User 模型。</p>
 
 <p>把上述的分析结合起来，最终得到的 User 模型文件如代码 8.18 所示。</p>
 
@@ -779,7 +779,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>顺便说一下，我们为 <code>create_remember_token</code> 方法增加了一层缩进，这样可以更好的突出这些方法是在 <code>private</code> 之后定义的。（经验表明，这样做是明智地。）<sup class="footnote" id="fnref-8-t3"><a href="#fn-8-t3" rel="footnote">6</a></sup></p>
+<p>顺便说一下，我们为 <code>create_remember_token</code> 方法增加了一层缩进，这样可以更好的突出这些方法是在 <code>private</code> 之后定义的。（经验表明，这样做是明智地。）<sup class="footnote" id="fnref-8-t3"><a href="#fn-8-t3" rel="footnote">7</a></sup></p>
 
 <p>因为加密后的 <code>SecureRandom.urlsafe_base64</code> 方法创建的字符串不可能为空值，所以对 User 模型的测试现在应该可以通过了：</p>
 
@@ -938,7 +938,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>上面的做法其实就是实现了 <code>attr_accessor</code> 方法的功能（<a href="chapter4.html#section-4-4-5">4.4.5 节</a>介绍过）。<sup class="footnote" id="fnref-8-5"><a href="#fn-8-5" rel="footnote">7</a></sup>如果按照代码 8.21 来定义 <code>current_user</code> 方法，会出现一个问题：程序不会记住用户的登录状态。一旦用户转到其他的页面，session 就失效了，会自动退出。若要避免这个问题，我们要使用代码 8.19 中生成的记忆权标查找用户，如代码 8.22 所示。注意，因为数据库中保存的记忆权标是加密的，所以在用来查找用户之前要加密从 cookie 中读取的权标。我们可以使用代码 8.18 中定义的 <code>User.encrypt</code> 方法加密。</p>
+<p>上面的做法其实就是实现了 <code>attr_accessor</code> 方法的功能（<a href="chapter4.html#section-4-4-5">4.4.5 节</a>介绍过）。<sup class="footnote" id="fnref-8-5"><a href="#fn-8-5" rel="footnote">8</a></sup>如果按照代码 8.21 来定义 <code>current_user</code> 方法，会出现一个问题：程序不会记住用户的登录状态。一旦用户转到其他的页面，session 就失效了，会自动退出。若要避免这个问题，我们要使用代码 8.19 中生成的记忆权标查找用户，如代码 8.22 所示。注意，因为数据库中保存的记忆权标是加密的，所以在用来查找用户之前要加密从 cookie 中读取的权标。我们可以使用代码 8.18 中定义的 <code>User.encrypt</code> 方法加密。</p>
 
 <div class="codeblock has-caption" id="codeblock-8-22"><p class="caption"><span>代码 8.22：</span>通过记忆权标查找当前用户</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
   <span class="o">.</span>
@@ -955,12 +955,12 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>代码 8.22 中使用了一个常见但不是很容易理解的 <code>||=</code>（“or equals”）操作符（<a href="chapter8.html#aside-8-2">旁注 8.2</a>中有详细介绍）。使用这个操作符之后，当且仅当 <code>@current_user</code> 未定义时才会把通过记忆权标获取的用户赋值给实例变量 <code>@current_user</code>。<sup class="footnote" id="fnref-8-6"><a href="#fn-8-6" rel="footnote">8</a></sup>也就是说，如下的代码</p>
+<p>代码 8.22 中使用了一个常见但不是很容易理解的 <code>||=</code>（“or equals”）操作符（<a href="chapter8.html#aside-8-2">旁注 8.2</a>中有详细介绍）。使用这个操作符之后，当且仅当 <code>@current_user</code> 未定义时才会把通过记忆权标获取的用户赋值给实例变量 <code>@current_user</code>。<sup class="footnote" id="fnref-8-8"><a href="#fn-8-8" rel="footnote">9</a></sup>也就是说，如下的代码</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">remember_token</span><span class="p">:</span> <span class="n">remember_token</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>只在第一次调用 <code>current_user</code> 方法时调用 <code>find_by</code> 方法，如果后续再调用的话就直接返回 <code>@current_user</code> 的值，而不必再查询数据库。<sup class="footnote" id="fnref-8-7"><a href="#fn-8-7" rel="footnote">9</a></sup>这种方式的优点只有当在一个请求中多次调用 <code>current_user</code> 方法时才能显现。不管怎样，只要用户访问了相应的页面，<code>find_by</code> 方法都至少会执行一次。</p>
+<p>只在第一次调用 <code>current_user</code> 方法时调用 <code>find_by</code> 方法，如果后续再调用的话就直接返回 <code>@current_user</code> 的值，而不必再查询数据库。<sup class="footnote" id="fnref-8-7"><a href="#fn-8-7" rel="footnote">10</a></sup>这种方式的优点只有当在一个请求中多次调用 <code>current_user</code> 方法时才能显现。不管怎样，只要用户访问了相应的页面，<code>find_by</code> 方法都至少会执行一次。</p>
 
           <div class="aside box" id="aside-8-2">
   <h4><span>旁注 8.2：</span>||= 操作符简介</h4>
@@ -1009,7 +1009,7 @@
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; @user <span class="o">||=</span> <span class="s2">"the user"</span>
 <span class="o">=</span>&gt; <span class="s2">"the user"</span>
 </pre></div>
-</div>  <p>不难理解吧！<sup class="footnote" id="fnref-8-t2"><a href="#fn-8-t2" rel="footnote">10</a></sup></p>
+</div>  <p>不难理解吧！<sup class="footnote" id="fnref-8-t2"><a href="#fn-8-t2" rel="footnote">11</a></sup></p>
 
 </div>
 
@@ -1061,7 +1061,7 @@
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>（注意，我们还为退出链接指定了类型为 Hash 的参数，指明点击链接后发送的是 HTTP <code>DELETE</code> 请求。<sup class="footnote" id="fnref-8-8"><a href="#fn-8-8" rel="footnote">11</a></sup>）最后，我们还要添加一个到资料页面的链接：</p>
+<p>（注意，我们还为退出链接指定了类型为 Hash 的参数，指明点击链接后发送的是 HTTP <code>DELETE</code> 请求。<sup class="footnote" id="fnref-8-9"><a href="#fn-8-9" rel="footnote">12</a></sup>）最后，我们还要添加一个到资料页面的链接：</p>
 
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
@@ -1602,23 +1602,26 @@
     <li id="fn-8-t4">
       <p>译者注：其实 <code>private</code> 是方法而不是关键字，请参阅《Ruby 编程语言》P233<a href="#fnref-8-t4" rel="reference">↩</a></p>
     </li>
+    <li id="fn-8-6">
+      <p>其实这两种方式是完全等效的，<code>attr_accessor</code> 会自动创建取值和设定方法。<a href="#fnref-8-6" rel="reference">↩</a></p>
+    </li>
     <li id="fn-8-t3">
       <p>译者注：如果按照 bbatsov 的《<a href="https://github.com/bbatsov/ruby-style-guide">Ruby 编程风格指南</a>》来编写 Ruby 代码的话，就没必要多加一层缩进。<a href="#fnref-8-t3" rel="reference">↩</a></p>
     </li>
     <li id="fn-8-5">
-      <p>其实这两种方式是完全等效的，<code>attr_accessor</code> 会自动创建取值和设定方法。<a href="#fnref-8-5" rel="reference">↩</a></p>
+      <p>如果方法不需要在实例上调用，就要定义为类方法。<a href="#fnref-8-5" rel="reference">↩</a></p>
     </li>
-    <li id="fn-8-6">
-      <p>一般来说，这句话的意思是把初始值为 <code>nil</code> 的变量附上了新值，不过 <code>||=</code> 也会把初始值为 <code>false</code> 的变量附上新值。<a href="#fnref-8-6" rel="reference">↩</a></p>
+    <li id="fn-8-8">
+      <p>这也是一种备忘（memoization），详情参见<a href="chapter6.html#section-6-3">旁注 6.3</a>。<a href="#fnref-8-8" rel="reference">↩</a></p>
     </li>
     <li id="fn-8-7">
-      <p>这也是一种备忘（memoization），详情参见<a href="chapter6.html#section-6-3">旁注 6.3</a>。<a href="#fnref-8-7" rel="reference">↩</a></p>
+      <p>一般来说，这句话的意思是把初始值为 <code>nil</code> 的变量附上了新值，不过 <code>||=</code> 也会把初始值为 <code>false</code> 的变量附上新值。<a href="#fnref-8-7" rel="reference">↩</a></p>
     </li>
     <li id="fn-8-t2">
       <p>译者注：这里对 <code>||=</code> 的分析和 Peter Cooper 的分析有点差异，我推荐你看以下 Ruby Inside 中的《<a href="http://www.rubyinside.com/what-rubys-double-pipe-or-equals-really-does-5488.html">What Ruby’s ||= (Double Pipe / Or Equals) Really Does</a>》一文。<a href="#fnref-8-t2" rel="reference">↩</a></p>
     </li>
-    <li id="fn-8-8">
-      <p>浏览器其实并不能发送 <code>DELETE</code> 请求，Rails 是通过 JavaScript 模仿的。<a href="#fnref-8-8" rel="reference">↩</a></p>
+    <li id="fn-8-9">
+      <p>浏览器其实并不能发送 <code>DELETE</code> 请求，Rails 是通过 JavaScript 模仿的。<a href="#fnref-8-9" rel="reference">↩</a></p>
     </li>
   </ol></div>
   	</div>
