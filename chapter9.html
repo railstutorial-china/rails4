@@ -1216,8 +1216,6 @@
 <p><code>will_paginate</code> 方法有点小神奇，在 Users 控制器的视图中，它会自动寻找名为 <code>@users</code> 的对象，然后显示一个分页导航链接。代码 9.34 所示的视图现在还不能正确显示分页，因为现在 <code>@users</code> 的值是通过 <code>User.all</code> 方法获取的，而 <code>will_paginate</code> 的分页需要调用 <code>paginate</code> 方法：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; User.all.class
-<span class="o">=</span>&gt; Array
 &gt;&gt; User.paginate<span class="o">(</span>page: 1<span class="o">)</span>
   User Load <span class="o">(</span>1.5ms<span class="o">)</span>  SELECT <span class="s2">"users"</span>.* FROM <span class="s2">"users"</span> LIMIT 30 OFFSET 0
    <span class="o">(</span>1.7ms<span class="o">)</span>  SELECT COUNT<span class="o">(</span>*<span class="o">)</span> FROM <span class="s2">"users"</span>
