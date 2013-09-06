@@ -555,7 +555,7 @@
 <h3 id='section-9-2-2'><span>9.2.2</span> 用户只能编辑自己的资料</h3>
 
 
-<p>当然，要求用户必须先登录还是不够的，用户必须只能编辑自己的资料。我们的测试可以这么编写，用其他用户的身份登录，然后访问 <code>edit</code> 和 <code>update</code> 动作，如代码 9.14 所示。注意，用户不应该尝试编辑其他用户的资料，我们没有转向登录页面，而是转到了网站的首页。</p>
+<p>当然，要求用户必须先登录还是不够的，用户必须只能编辑自己的资料。我们的测试可以这么编写，用其他用户的身份登录，然后访问 <code>edit</code> 和 <code>update</code> 动作，如代码 9.14 所示。注意，这段测试我们不用 Capybara（<code>no_capybara: true</code>）,而使用 <code>get</code> 和 <code>patch</code> 方法直接访问 <code>edit</code> 和 <code>update</code> 动作。而且，用户不应该尝试编辑其他用户的资料，我们没有转向登录页面，而是转到了网站的首页。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-14"><p class="caption"><span>代码 9.14：</span>测试只有自己才能访问 <code>edit</code> 和 <code>update</code> 动作</p><p class="file"><code>spec/requests/authentication_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
@@ -572,14 +572,15 @@
       <span class="n">let</span><span class="p">(</span><span class="ss">:wrong_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"wrong@example.com"</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span><span class="p">,</span> <span class="n">no_capybara</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span>
 
-      <span class="n">describe</span> <span class="s2">"visiting Users#edit page"</span> <span class="k">do</span>
-        <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">wrong_user</span><span class="p">)</span> <span class="p">}</span>
-        <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">describe</span> <span class="s2">"submitting a GET request to the Users#edit action"</span> <span class="k">do</span>
+        <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">wrong_user</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">match</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">))</span> <span class="p">}</span>
+        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_url</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
 
       <span class="n">describe</span> <span class="s2">"submitting a PATCH request to the Users#update action"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">patch</span> <span class="n">user_path</span><span class="p">(</span><span class="n">wrong_user</span><span class="p">)</span> <span class="p">}</span>
-        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_url</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -726,12 +727,12 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">store_location</span>
-    <span class="n">session</span><span class="o">[</span><span class="ss">:return_to</span><span class="o">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">fullpath</span>
+    <span class="n">session</span><span class="o">[</span><span class="ss">:return_to</span><span class="o">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">fullpath</span> <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">get?</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>地址的存储使用了 Rails 提供的 <code>session</code>，<code>session</code> 可以理解成和 <a href="chapter8.html#section-8-2-1">8.2.1 节</a>中介绍的 <code>cookies</code> 是类似的东西，会在浏览器关闭后自动失效。（在 <a href="chapter8.html#section-8-5">8.5 节</a>中介绍过，其实 <code>session</code> 的实现方法正是如此。）我们还使用了 <code>request</code> 对象的 <code>fullpath</code> 方法获取了所请求页面的完整地址。在 <code>store_location</code> 方法中，把完整的请求地址存储在 <code>session[:return_to]</code> 中。</p>
+<p>地址的存储使用了 Rails 提供的 <code>session</code>，<code>session</code> 可以理解成和 <a href="chapter8.html#section-8-2-1">8.2.1 节</a>中介绍的 <code>cookies</code> 是类似的东西，会在浏览器关闭后自动失效。（在 <a href="chapter8.html#section-8-5">8.5 节</a>中介绍过，其实 <code>session</code> 的实现方法正是如此。）我们还使用了 <code>request</code> 对象的 <code>fullpath</code> 方法获取了所请求页面的完整地址。在 <code>store_location</code> 方法中，把完整的请求地址存储在 <code>session[:return_to]</code> 中。但这个方法只能在 <code>GET</code> 请求中使用（<code>if request.get?</code>）。这么做，当未登录的用户提交表单时，不会存储转向地址（这种情况虽然很罕见，但在提交表单前，如果用户手动删除了记忆权标，还是会发生的），那么本来期望接收 <code>POST</code>、<code>PATCH</code> 或 <code>DELETE</code> 请求的动作实际收到的却是 <code>GET</code> 请求，就会产生异常。<sup class="footnote" id="fnref-9-5"><a href="#fn-9-5" rel="footnote">5</a></sup></p>
 
 <p>要使用 <code>store_location</code>，我们要把它加入 <code>signed_in_user</code> 事前过滤器中，如代码 9.19 所示。</p>
 
@@ -811,7 +812,7 @@
 <h2 id='section-9-3'><span>9.3</span> 列出所有用户</h2>
 
 
-<p>本节我们要添加计划中的倒数第二个用户动作，<code>index</code>。<code>index</code> 动作不会显示某一个用户，而是显示所有的用户。在这个过程中，我们要学习如何在数据库中生成示例用户数据，以及如何分页显示用户列表，显示任意数量的用户。用户列表、分页链接和“所有用户（Users）”导航链接的构思图如图 9.7 所示。<sup class="footnote" id="fnref-9-5"><a href="#fn-9-5" rel="footnote">5</a></sup>在 <a href="chapter9.html#section-9-4">9.4 节</a> 中，我们还会在用户列表中添加删除链接，这样就可以删除有问题的用户了。</p>
+<p>本节我们要添加计划中的倒数第二个用户动作，<code>index</code>。<code>index</code> 动作不会显示某一个用户，而是显示所有的用户。在这个过程中，我们要学习如何在数据库中生成示例用户数据，以及如何分页显示用户列表，显示任意数量的用户。用户列表、分页链接和“所有用户（Users）”导航链接的构思图如图 9.7 所示。<sup class="footnote" id="fnref-9-6"><a href="#fn-9-6" rel="footnote">6</a></sup>在 <a href="chapter9.html#section-9-4">9.4 节</a> 中，我们还会在用户列表中添加删除链接，这样就可以删除有问题的用户了。</p>
 
 <h3 id='section-9-3-1'><span>9.3.1</span> 用户列表</h3>
 
@@ -1276,7 +1277,7 @@
 <span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>在上述代码中，<code>render</code> 的参数不再是指定局部视图的字符串，而是代表 <code>User</code> 类的 <code>user</code> 变量。<sup class="footnote" id="fnref-9-6"><a href="#fn-9-6" rel="footnote">6</a></sup>Rails 会自定寻找一个名为 <code>_user.html.erb</code> 的局部视图，我们要手动创建这个视图，然后写入代码 9.37 中的内容。</p>
+<p>在上述代码中，<code>render</code> 的参数不再是指定局部视图的字符串，而是代表 <code>User</code> 类的 <code>user</code> 变量。<sup class="footnote" id="fnref-9-7"><a href="#fn-9-7" rel="footnote">7</a></sup>Rails 会自定寻找一个名为 <code>_user.html.erb</code> 的局部视图，我们要手动创建这个视图，然后写入代码 9.37 中的内容。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-37"><p class="caption"><span>代码 9.37：</span>显示单一用户的局部视图</p><p class="file"><code>app/views/users/_user.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li&gt;</span>
 <span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">52</span> <span class="cp">%&gt;</span><span class="x"></span>
@@ -1413,7 +1414,7 @@
 <h4 id='section-9-4-1-1'><span></span>“健壮参数”再探</h4>
 
 
-<p>你可能注意到了，在代码 9.41 中，我们在初始化 Hash 参数中指定了 <code>admin: true</code> 把用户设为管理员。这么做的后果是用户对象暴露在网络中了，如果在请求中提供初始化参数，恶意用户就可以发送如下的 <code>PATCH</code> 请求<sup class="footnote" id="fnref-9-7"><a href="#fn-9-7" rel="footnote">7</a></sup>：</p>
+<p>你可能注意到了，在代码 9.41 中，我们在初始化 Hash 参数中指定了 <code>admin: true</code> 把用户设为管理员。这么做的后果是用户对象暴露在网络中了，如果在请求中提供初始化参数，恶意用户就可以发送如下的 <code>PATCH</code> 请求<sup class="footnote" id="fnref-9-8"><a href="#fn-9-8" rel="footnote">8</a></sup>：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre>patch /users/17?admin<span class="o">=</span>1
 </pre></div>
@@ -1683,6 +1684,7 @@
   <span class="c1"># Uncomment these lines on Windows.</span>
   <span class="c1"># gem 'rb-notifu', '0.0.4'</span>
   <span class="c1"># gem 'win32console', '1.3.2'</span>
+  <span class="c1"># gem 'wdm', '0.1.0'</span>
 <span class="k">end</span>
 
 <span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
@@ -1845,13 +1847,16 @@
       <p>实现的代码来自 thoughtbot 的 Clearance gem。<a href="#fnref-9-4" rel="reference">↩</a></p>
     </li>
     <li id="fn-9-5">
-      <p>婴儿的图片来自 <a href="http://www.flickr.com/photos/glasgows/338937124/">http://www.flickr.com/photos/glasgows/338937124/</a><a href="#fnref-9-5" rel="reference">↩</a></p>
+      <p>感谢读者 Yoel Adler 提出了这个问题，并和我讨论了解决办法。<a href="#fnref-9-5" rel="reference">↩</a></p>
     </li>
     <li id="fn-9-6">
-      <p>我们并不是一定要使用 <code>user</code>，遍历时如果用的是 <code>@users.each do |foobar|</code>，那么就要用 <code>render foobar</code>。这里的关键是要知道对象的类，也就是 <code>User</code>。<a href="#fnref-9-6" rel="reference">↩</a></p>
+      <p>婴儿的图片来自 <a href="http://www.flickr.com/photos/glasgows/338937124/">http://www.flickr.com/photos/glasgows/338937124/</a><a href="#fnref-9-6" rel="reference">↩</a></p>
     </li>
     <li id="fn-9-7">
-      <p>类似 curl 的命令行工具可以发送这种 <code>PATCH</code> 请求。<a href="#fnref-9-7" rel="reference">↩</a></p>
+      <p>我们并不是一定要使用 <code>user</code>，遍历时如果用的是 <code>@users.each do |foobar|</code>，那么就要用 <code>render foobar</code>。这里的关键是要知道对象的类，也就是 <code>User</code>。<a href="#fnref-9-7" rel="reference">↩</a></p>
+    </li>
+    <li id="fn-9-8">
+      <p>类似 curl 的命令行工具可以发送这种 <code>PATCH</code> 请求。<a href="#fnref-9-8" rel="reference">↩</a></p>
     </li>
   </ol></div>
   	</div>
