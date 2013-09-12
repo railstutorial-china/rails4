@@ -762,32 +762,20 @@ updated_at: <span class="s2">"2013-03-06 02:38:54"</span>&gt;<span class="o">]</
 </div>
 <p>通常情况下，你应该经常做一些很小的提交，不过对于本章来说最后做一次大的提交也可以。</p>
 
-<p>然后，你也可以按照 <a href="chapter1.html#section-1-4">1.4 节</a>中介绍的方法将演示程序部署到 Heroku。对这个演示程序来说，需要设置 Rails，让其能够服务于静态资源文件，例如图片和样式表。相关的设置项目默认是关闭的，因为很多 Web 服务器可以自动实现这一功能。要修改默认的设置，我们要编辑 <code>config/environments</code> 文件夹中的 <code>production.rb</code> 文件，如代码 2.17 所示。</p>
+<p>然后，你也可以按照 <a href="chapter1.html#section-1-4">1.4 节</a>中介绍的方法将演示程序部署到 Heroku：</p>
 
-<div class="codeblock has-caption" id="codeblock-2-17"><p class="caption"><span>代码 2.17：</span>设置 Rails，让其在生产环境中服务于静态资源文件</p><p class="file"><code>config/environments/production.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">DemoApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">serve_static_assets</span> <span class="o">=</span> <span class="kp">true</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
-</pre></div>
-</div>
-<p>做好了上述修改后，就可以把程序推送到 Heroku 上了：</p>
-
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git commit -a -m <span class="s2">"Serve static assets"</span>
-<span class="nv">$ </span>heroku create
+<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku create
+<span class="nv">$ </span>rake assets:precompile
+<span class="nv">$ </span>git commit -a -m <span class="s2">"Add precompiled assets for Heroku"</span>
 <span class="nv">$ </span>git push heroku master
 </pre></div>
 </div>
-<p>最后，迁移生产环境中的数据库（如果得到错误提示请参考下面的内容）</p>
+<p>最后，迁移生产环境中的数据库：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku run rake db:migrate
 </pre></div>
 </div>
-<p>上面的代码会用 User 和 Micropost 数据模型更新 Heroku 上的数据库。如果得到与 <code>vendor/plugins</code> 中资源（asset）相关的错误提示，暂且忽略它，因为我们还没使用插件。</p>
+<p>上面的代码会用 User 和 Micropost 数据模型更新 Heroku 上的数据库。</p>
 
 <h2 id='section-2-4'><span>2.4</span> 小结</h2>
 

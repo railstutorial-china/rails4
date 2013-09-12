@@ -208,6 +208,8 @@ by [Michael Hartl](http://michaelhartl.com/).
 <p>当然我们也可以选择在这个早期阶段将程序部署到 Heroku：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku create
+<span class="nv">$ </span>rake assets:precompile
+<span class="nv">$ </span>git commit -a -m <span class="s2">"Add precompiled assets for Heroku"</span>
 <span class="nv">$ </span>git push heroku master
 <span class="nv">$ </span>heroku run rake db:migrate
 </pre></div>

@@ -802,9 +802,9 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>上述代码组找了设定的步骤：首先，创建新权标；随后，把未加密的权标存入浏览器的 cookie；然后，把加密后的权标存入数据库；最后，把制定的用户设为当前登入的用户。注意，保存记忆权标使用的是 <code>update_attribute</code> 方法，这样可以跳过数据验证更新单个属性。我们必须用这个方法，因为我们无法提供用户的密码及密码确认。</p>
+<p>上述代码组找了设定的步骤：首先，创建新权标；随后，把未加密的权标存入浏览器的 cookie；然后，把加密后的权标存入数据库；最后，把制定的用户设为当前登入的用户。我们会在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中看到，现在并不一定要把 <code>user</code> 指定为当前用户，因为 <code>create</code> 动作完成后回立即转向（代码 8.13）。不过指定也好，防止无需转向的登录操作。</p>
 
-<p>代码 8.19 中用到的 <code>cookies</code> 方法是由 Rails 提供的，我们可以把它看成 Hash，其中每个元素又都是一个 Hash，包含两个元素，<code>value</code> 指定 cookie 的文本，<code>expires</code> 指定 cookie 的失效日期。例如，我们可以使用下述代码实现登录功能，把 cookie 的值设为用户的记忆权标，失效日期设为 20 年之后：</p>
+<p>注意，保存记忆权标使用的是 <code>update_attribute</code> 方法，这样可以跳过数据验证更新单个属性。我们必须用这个方法，因为我们无法提供用户的密码及密码确认。代码 8.19 中用到的 <code>cookies</code> 方法是由 Rails 提供的，我们可以把它看成 Hash，其中每个元素又都是一个 Hash，包含两个元素，<code>value</code> 指定 cookie 的文本，<code>expires</code> 指定 cookie 的失效日期。例如，我们可以使用下述代码实现登录功能，把 cookie 的值设为用户的记忆权标，失效日期设为 20 年之后：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">value</span><span class="p">:</span>   <span class="n">remember_token</span><span class="p">,</span>
                              <span class="ss">expires</span><span class="p">:</span> <span class="mi">20</span><span class="o">.</span><span class="n">years</span><span class="o">.</span><span class="n">from_now</span><span class="o">.</span><span class="n">utc</span> <span class="p">}</span>
@@ -873,7 +873,9 @@
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
 </pre></div>
 </div>
-<p>这行代码创建了 <code>current_user</code> 方法，可以在控制器和视图中使用，所以你既可以这样用：</p>
+<p>我们在代码 8.19 后面说过，这行代码并不会真的在这个程序中使用，因为登录后会直接转向。如果 <code>sign_in</code> 方法只考虑转向一种情况也是很危险的。</p>
+
+<p><code>current_user</code> 方法可以在控制器和视图中使用，所以你既可以这样用：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="o">&lt;%=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">name</span> <span class="o">%&gt;</span>
 </pre></div>

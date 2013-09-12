@@ -1088,8 +1088,9 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 </div>
 <p>（如果你使用的是 Ruby 1.9.3，就要改成 <code>ruby 1.9.3</code>，对本教程来说，这两个版本不会有太大区别。）在代码 1.5 的基础上作上述修改，得到代码 1.9：</p>
 
-<div class="codeblock has-caption" id="codeblock-1-9"><p class="caption"><span>代码 1.9：</span>添加了 <code>pg</code> 并指定了 Ruby 版本的 <code>Gemfile</code></p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<div class="codeblock has-caption" id="codeblock-1-9"><p class="caption"><span>代码 1.9：</span>添加了一些 gem，并指定了 Ruby 版本后的 <code>Gemfile</code></p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 <span class="n">ruby</span> <span class="s1">'2.0.0'</span>
+<span class="c1">#ruby-gemset=railstutorial_rails_4_0</span>
 
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
 
@@ -1100,7 +1101,7 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 <span class="n">gem</span> <span class="s1">'sass-rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
 <span class="n">gem</span> <span class="s1">'uglifier'</span><span class="p">,</span> <span class="s1">'2.1.1'</span>
 <span class="n">gem</span> <span class="s1">'coffee-rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
-<span class="n">gem</span> <span class="s1">'jquery-rails'</span><span class="p">,</span> <span class="s1">'2.2.1'</span>
+<span class="n">gem</span> <span class="s1">'jquery-rails'</span><span class="p">,</span> <span class="s1">'3.0.4'</span>
 <span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span> <span class="s1">'1.1.1'</span>
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span> <span class="s1">'1.0.2'</span>
 
@@ -1110,6 +1111,7 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 
 <span class="n">group</span> <span class="ss">:production</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span> <span class="s1">'0.15.1'</span>
+  <span class="n">gem</span> <span class="s1">'rails_12factor'</span><span class="p">,</span> <span class="s1">'0.0.2'</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1118,11 +1120,19 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install --without production
 </pre></div>
 </div>
-<p>指定 <code>--without production</code> 后本地环境就不会安装生产环境所需的 gem 了，对本例来说就只有 <code>pg</code> 一个 gem。（如果 Bundler 显示一个 <code>readline</code> 相关的错误，请把 <code>gem rb-readline</code> 加入 <code>Gemfile</code>。）因为我们添加的 gem 只针对生产环境，所以现在执行这个命令不会在本地安装任何 gem，但这一步却是必须的，因为我们要把 <code>pg</code> 和 Ruby 版本更新到 <code>Gemfile.lock</code> 中，这样 Heroku 才知道应用程序要使用的 Ruby 版本。然后提交上述改动：</p>
+<p>指定 <code>--without production</code> 后本地环境就不会安装生产环境所需的 gem 了，对本例来说有 <code>pg</code> 和 <code>rails_12factor</code> 两个 gem。（如果 Bundler 显示一个 <code>readline</code> 相关的错误，请把 <code>gem rb-readline</code> 加入 <code>Gemfile</code>。）因为我们添加的 gem 只针对生产环境，所以现在执行这个命令不会在本地安装任何 gem，但这一步却是必须的，因为我们要把 <code>pg</code> 和 Ruby 版本更新到 <code>Gemfile.lock</code> 中，这样 Heroku 才知道应用程序要使用的 Ruby 版本。然后提交上述改动：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git commit -a -m <span class="s2">"Update Gemfile.lock for Heroku"</span>
 </pre></div>
 </div>
+<p>随后还要做一些设置，生成 Heroku 服务静态资源所需的文件，例如图片和 CSS：</p>
+
+<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rake assets:precompile
+<span class="nv">$ </span>git commit -a -m <span class="s2">"Add precompiled assets for Heroku"</span>
+</pre></div>
+</div>
+<p>（这里用到了 <code>rake</code> 命令，在 <a href="chapter2.html#section-2-2">2.2 节</a> 会详细介绍。）</p>
+
 <p>然后要注册并设置一个新 Heroku 账户。第一步是<a href="http://api.heroku.com/signup">注册</a>，然后查看邮箱，完成注册，再使用 <a href="https://toolbelt.heroku.com/">Heroku Toolbelt</a> 安装所需的软件。接着打开命令行，通过 <code>heroku</code> 命令登录：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku login
