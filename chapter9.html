@@ -390,8 +390,6 @@
 <span class="n">redirect_to</span> <span class="vi">@user</span>
 </pre></div>
 </div>
-<p>注意，用户资料更新成功之后我们再次登入了用户，因为保存用户时，重设了记忆权标（代码 8.18），之前的 session 就失效了（代码 8.22）。这也是一项安全措施，因为如果用户更新了资料，任何会话劫持都会自动失效。</p>
-
 <div class="codeblock has-caption" id="codeblock-9-10"><p class="caption"><span>代码 9.10：</span>Users 控制器的 <code>update</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -400,7 +398,6 @@
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Profile updated"</span>
-      <span class="n">sign_in</span> <span class="vi">@user</span>
       <span class="n">redirect_to</span> <span class="vi">@user</span>
     <span class="k">else</span>
       <span class="n">render</span> <span class="s1">'edit'</span>
@@ -608,7 +605,6 @@
   <span class="k">def</span> <span class="nf">update</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Profile updated"</span>
-      <span class="n">sign_in</span> <span class="vi">@user</span>
       <span class="n">redirect_to</span> <span class="vi">@user</span>
     <span class="k">else</span>
       <span class="n">render</span> <span class="s1">'edit'</span>
