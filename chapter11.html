@@ -898,7 +898,7 @@
 </div>
 <p>这两个表单都使用了 <code>form_for</code> 来处理 Relationship 模型对象，二者之间主要的不同点是，代码 11.25 中的代码是构建一个新的“关系”，而代码 11.26 是查找现有的“关系”。很显然，第一个表单会向 Relationships 控制器发送 POST 请求，创建“关系”；而第二个表单发送的是 DELETE 请求，销毁“关系”。（两个表单用到的动作会在 <a href="chapter11.html#section-11-2-4">11.2.4 节</a>编写。）你可能还注意到了，这两个表单中除了按钮之外什么内容也没有，但是还要传送 <code>followed_id</code>，我们会调用 <code>hidden_fields</code> 方法将其加入，生成的 HTML 如下：</p>
 
-<div class="codeblock"><div class="highlight type-html"><pre><span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"relationship_followed_id"</span> <span class="na">name=</span><span class="s">"followed_relationship[followed_id]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
+<div class="codeblock"><div class="highlight type-html"><pre><span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"relationship_followed_id"</span> <span class="na">name=</span><span class="s">"relationship[followed_id]"</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
 </pre></div>
 </div>
 <p>隐藏的 <code>input</code> 表单域会把所需的信息包含在表单中，但是在浏览器中不会显示出来。</p>
