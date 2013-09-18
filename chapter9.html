@@ -102,10 +102,7 @@
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"edit"</span> <span class="k">do</span>
     <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">before</span> <span class="k">do</span>
-      <span class="n">sign_in</span> <span class="n">user</span>
-      <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="k">end</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">describe</span> <span class="s2">"page"</span> <span class="k">do</span>
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s2">"Update your profile"</span><span class="p">)</span> <span class="p">}</span>
@@ -523,10 +520,7 @@
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"edit"</span> <span class="k">do</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">before</span> <span class="k">do</span>
-    <span class="n">sign_in</span> <span class="n">user</span>
-    <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-  <span class="k">end</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
