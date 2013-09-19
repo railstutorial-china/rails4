@@ -113,7 +113,7 @@
     <li>撤掉 <code>attr_accessible</code>，换用“健壮参数”（<a href="chapter7.html#section-7-3-2">7.3.2 节</a>）</li>
     <li>换用加密的记忆权标（<a href="chapter8.html#section-8-2-1">8.2.1 节</a>）</li>
     <li>把 <code>before_filter</code> 换成了 <code>before_action</code>（代码 9.21）</li>
-    <li>使用 Capybara 的 <code>match: :first</code> 参数点击第一个匹配的链接（代码 9.43）</li>
+    <li>使用 Capybara 的 <code>match: :first</code> 参数点击第一个匹配的链接（代码 9.42）</li>
     <li>把 <code>default_scope</code> 的参数从 Hash 换成了 lambda（代码 10.11）</li>
     <li>把 <code>dup</code> 换成了 <code>to_a</code> 方法（代码 10.12）</li>
     <li>使用 XPath 测试按钮的状态变化（<a href="chapter11.html#section-11-2-4">11.2.4 节</a>）</li>
@@ -1128,7 +1128,8 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 <p>随后还要做一些设置，生成 Heroku 服务静态资源所需的文件，例如图片和 CSS：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rake assets:precompile
-<span class="nv">$ </span>git commit -a -m <span class="s2">"Add precompiled assets for Heroku"</span>
+<span class="nv">$ </span>git add .
+<span class="nv">$ </span>git commit -m <span class="s2">"Add precompiled assets for Heroku"</span>
 </pre></div>
 </div>
 <p>（这里用到了 <code>rake</code> 命令，在 <a href="chapter2.html#section-2-2">2.2 节</a> 会详细介绍。）</p>

@@ -84,7 +84,7 @@
 </div>
 <p>上面代码中传递给 <code>rails</code> 命令的 <code>--skip-test-unit</code> 选项的意思是让 Rails 不生成默认使用的 <code>Test::Unit</code> 测试框架对应的 <code>test</code> 文件夹。这样做并不是说我们不用写测试，而是从 <a href="chapter3.html#section-3-2">3.2 节</a>开始我们会使用另一个测试框架 RSpec 来写整个的测试用例。</p>
 
-<p>类似 <a href="chapter2.html#section-2-1">2.1 节</a>，接下来我们要用文本编辑器打开并编辑 <code>Gemfile</code>，写入程序所需的 gem。这个示例程序会用到之前没用过的两个 gem：RSpec 所需的 gem 和针对 Rails 的 RSPec 库 gem。代码 3.1 所示的代码会包含这些 gem。（注意：如果此时你想安装这个示例程序用到的所有 gem，你应该使用代码 9.48 中的代码。）</p>
+<p>类似 <a href="chapter2.html#section-2-1">2.1 节</a>，接下来我们要用文本编辑器打开并编辑 <code>Gemfile</code>，写入程序所需的 gem。这个示例程序会用到之前没用过的两个 gem：RSpec 所需的 gem 和针对 Rails 的 RSPec 库 gem。代码 3.1 所示的代码会包含这些 gem。（注意：如果此时你想安装这个示例程序用到的所有 gem，你应该使用代码 9.47 中的代码。）</p>
 
 <div class="codeblock has-caption" id="codeblock-3-1"><p class="caption"><span>代码 3.1：</span>示例程序的 <code>Gemfile</code></p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 <span class="n">ruby</span> <span class="s1">'2.0.0'</span>
@@ -209,7 +209,8 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku create
 <span class="nv">$ </span>rake assets:precompile
-<span class="nv">$ </span>git commit -a -m <span class="s2">"Add precompiled assets for Heroku"</span>
+<span class="nv">$ </span>git add .
+<span class="nv">$ </span>git commit -m <span class="s2">"Add precompiled assets for Heroku"</span>
 <span class="nv">$ </span>git push heroku master
 <span class="nv">$ </span>heroku run rake db:migrate
 </pre></div>

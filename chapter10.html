@@ -688,7 +688,7 @@
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="vi">@microposts</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
 </div>
-<p>如果和用户索引页面中对应的代码（参见代码 9.34）比较的话，会发现，之前所用的代码是：</p>
+<p>如果和用户索引页面中对应的代码（参见代码 9.33）比较的话，会发现，之前所用的代码是：</p>
 
 <div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
 </pre></div>
@@ -905,7 +905,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>上述代码没有使用即将实现的网页界面，而是直接在 Microposts 控制器层面操作：如果向 /microposts 发送 POST 请求（<code>POST microposts_path</code> 访问的是 <code>create</code> 动作），或者向 /microposts/1 发送 DELETE 请求（<code>delete micropost_path(micropost)</code> 访问的是 <code>destroy</code> 动作），则会转向登录页面——我们在代码 9.14 中就用过这种方法。</p>
+<p>上述代码没有使用即将实现的网页界面，而是直接在 Microposts 控制器层面操作：如果向 /microposts 发送 POST 请求（<code>POST microposts_path</code> 访问的是 <code>create</code> 动作），或者向 /microposts/1 发送 DELETE 请求（<code>delete micropost_path(micropost)</code> 访问的是 <code>destroy</code> 动作），则会转向登录页面——我们在代码 9.13 中就用过这种方法。</p>
 
 <p>我们要先对程序的代码做点重构，然后再加入程序中，让代码 10.23 中的测试通过。在 <a href="chapter9.html#section-9-2-1">9.2.1 节</a>中，我们定义了一个名为 <code>signed_in_user</code> 的事前过滤器（参见代码 9.12），确保访问相关的动作之前用户要先登录。那时，我们只需要在 Users 控制器中使用这个事前过滤器，但是现在我们在 Microposts 控制器中也要用到，那么我们就把它移到 Sessions 的帮助方法中，如代码 10.24 所示。<sup class="footnote" id="fnref-10-8"><a href="#fn-10-8" rel="footnote">8</a></sup></p>
 
@@ -1088,7 +1088,7 @@
 <span class="x">&lt;/span&gt;</span>
 </pre></div>
 </div>
-<p>和代码 9.25 一样，代码 10.29 使用了代码 7.30 中定义的 <code>gravatar_for</code> 帮助方法。</p>
+<p>和代码 9.24 一样，代码 10.29 使用了代码 7.30 中定义的 <code>gravatar_for</code> 帮助方法。</p>
 
 <p>注意，和用户资料页面的侧边栏类似（参见代码 10.20），代码 10.29 中的用户信息也显示了用户发布的微博数量。不过显示上有细微的差别，在用户资料页面的侧边栏中，“Microposts” 是作为标签使用的，所以“Microposts (1)”这样的用法是合理的。而在本例中，如果说“1 microposts”的话就有点不合语法了，所以我们调用了 <code>pluralize</code> 方法，显示成“1 micropost”，“2 microposts”等。</p>
 
@@ -1151,7 +1151,7 @@
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/micropost_pages_spec.rb
 </pre></div>
 </div>
-<p>不过，Users 资源相关视图的 request spec 测试却失败了，因为注册和编辑用户的表单使用的仍是旧的错误提示信息局部视图。要想修正这个错误，就要换用新的局部视图，如代码 10.33 和代码 10.34 所示。（注意：如果你加入了 <a href="chapter9.html#section-9-6">9.6 节</a>练习中的代码 9.50 和代码 9.51，那么要修改的代码有点不一样，需要做适当的修改。）</p>
+<p>不过，Users 资源相关视图的 request spec 测试却失败了，因为注册和编辑用户的表单使用的仍是旧的错误提示信息局部视图。要想修正这个错误，就要换用新的局部视图，如代码 10.33 和代码 10.34 所示。（注意：如果你加入了 <a href="chapter9.html#section-9-6">9.6 节</a>练习中的代码 9.49 和代码 9.50，那么要修改的代码有点不一样，需要做适当的修改。）</p>
 
 <div class="codeblock has-caption" id="codeblock-10-33"><p class="caption"><span>代码 10.33：</span>修改用户注册表单的错误提示信息局部视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">&lt;h1&gt;Sign up&lt;/h1&gt;</span>
@@ -1491,7 +1491,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>程序所需的代码还是和代码 9.47 中删除用户时类似，两种情况的主要不同之处是，删除微博不使用 <code>admin_user</code> 事前过滤器了，而是用 <code>correct_user</code> 事前过滤器，检查当前用户是否发布了指定 id 的微博，如代码 10.46 所示。图 10.17 显示的是删除了倒数第二个微博后的页面。</p>
+<p>程序所需的代码还是和代码 9.46 中删除用户时类似，两种情况的主要不同之处是，删除微博不使用 <code>admin_user</code> 事前过滤器了，而是用 <code>correct_user</code> 事前过滤器，检查当前用户是否发布了指定 id 的微博，如代码 10.46 所示。图 10.17 显示的是删除了倒数第二个微博后的页面。</p>
 
 <div class="codeblock has-caption" id="codeblock-10-46"><p class="caption"><span>代码 10.46：</span>Microposts 控制器的 <code>destroy</code> 动作</p><p class="file"><code>app/controllers/microposts_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">MicropostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
