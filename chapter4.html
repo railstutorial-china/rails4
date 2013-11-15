@@ -667,7 +667,7 @@ NoMethodError: undefined method <span class="sb">`</span>to_a<span class="se">\'
 
 <p>数组和 Range 可以响应的方法中有很多都可以跟着一个块（block），这是 Ruby 中最强大也是最难理解的功能：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.each <span class="o">{</span> |i| puts 2 * i <span class="o">}</span>
+<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.each <span class="o">{</span> <span class="p">|</span>i<span class="p">|</span> puts 2 * i <span class="o">}</span>
 2
 4
 6
@@ -680,7 +680,7 @@ NoMethodError: undefined method <span class="sb">`</span>to_a<span class="se">\'
 
 <p>花括号是一种定义块的方法，还有另一种方法可用：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.each <span class="k">do</span> |i|
+<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.each <span class="k">do</span> <span class="p">|</span>i<span class="p">|</span>
 ?&gt;   puts 2 * i
 &gt;&gt; end
 2
@@ -693,7 +693,7 @@ NoMethodError: undefined method <span class="sb">`</span>to_a<span class="se">\'
 </div>
 <p>块可以多于一行，也经常是多于一行的。本书中我们会遵照一个常用的约定，当块只有一行简单的代码时使用花括号形式；当块是一行很长的代码，或者多行时使用 <code>do..end</code> 形式：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.each <span class="k">do</span> |number|
+<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.each <span class="k">do</span> <span class="p">|</span>number<span class="p">|</span>
 ?&gt;   puts 2 * number
 &gt;&gt;   puts <span class="s1">'--'</span>
 &gt;&gt; end
@@ -719,13 +719,13 @@ NoMethodError: undefined method <span class="sb">`</span>to_a<span class="se">\'
 <span class="s2">"Betelgeuse!"</span>
 <span class="s2">"Betelgeuse!"</span>
 <span class="o">=</span>&gt; 3
-&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.map <span class="o">{</span> |i| i**2 <span class="o">}</span>          <span class="c"># ** 表示幂</span>
+&gt;&gt; <span class="o">(</span>1..5<span class="o">)</span>.map <span class="o">{</span> <span class="p">|</span>i<span class="p">|</span> i**2 <span class="o">}</span>          <span class="c"># ** 表示幂</span>
 <span class="o">=</span>&gt; <span class="o">[</span>1, 4, 9, 16, 25<span class="o">]</span>
 &gt;&gt; %w<span class="o">[</span>a b c<span class="o">]</span>                        <span class="c"># 再说一下，%w 可以创建元素为字符串的数组</span>
 <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"a"</span>, <span class="s2">"b"</span>, <span class="s2">"c"</span><span class="o">]</span>
-&gt;&gt; %w<span class="o">[</span>a b c<span class="o">]</span>.map <span class="o">{</span> |char| char.upcase <span class="o">}</span>
+&gt;&gt; %w<span class="o">[</span>a b c<span class="o">]</span>.map <span class="o">{</span> <span class="p">|</span>char<span class="p">|</span> char.upcase <span class="o">}</span>
 <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"A"</span>, <span class="s2">"B"</span>, <span class="s2">"C"</span><span class="o">]</span>
-&gt;&gt; %w<span class="o">[</span>A B C<span class="o">]</span>.map <span class="o">{</span> |char| char.downcase <span class="o">}</span>
+&gt;&gt; %w<span class="o">[</span>A B C<span class="o">]</span>.map <span class="o">{</span> <span class="p">|</span>char<span class="p">|</span> char.downcase <span class="o">}</span>
 <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"a"</span>, <span class="s2">"b"</span>, <span class="s2">"c"</span><span class="o">]</span>
 </pre></div>
 </div>
@@ -838,7 +838,7 @@ NoMethodError: undefined method <span class="sb">`</span>split<span class="s1">'
 
 <div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">flash</span> <span class="o">=</span> <span class="o">{</span> success: <span class="s2">"It worked!"</span>, error: <span class="s2">"It failed."</span> <span class="o">}</span>
 <span class="o">=</span>&gt; <span class="o">{</span>:success<span class="o">=</span>&gt;<span class="s2">"It worked!"</span>, :error<span class="o">=</span>&gt;<span class="s2">"It failed."</span><span class="o">}</span>
-&gt;&gt; flash.each <span class="k">do</span> |key, value|
+&gt;&gt; flash.each <span class="k">do</span> <span class="p">|</span>key, value<span class="p">|</span>
 ?&gt;   puts <span class="s2">"Key #{key.inspect} has value #{value.inspect}"</span>
 &gt;&gt; end
 Key :success has value <span class="s2">"It worked!"</span>

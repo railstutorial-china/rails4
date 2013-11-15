@@ -139,7 +139,7 @@
 </div>
 <p>因为我们没必要显示或编辑 session，所以我们对动作的种类做了限制，为 <code>resources</code> 方法指定了 <code>:only</code> 选项，只创建 <code>new</code>、<code>create</code> 和 <code>destroy</code> 动作。最终的结果，包括登录和退出具名路由的设置，如代码 8.2 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-2"><p class="caption"><span>代码 8.2：</span>设置 session 相关的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-8-2"><p class="caption"><span>代码 8.2：</span>设置 session 相关的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
   <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
@@ -609,7 +609,7 @@
 
 <p>现在我们要开始实现登录功能了，第一步是实现“记住我”这个功能，即用户登录的状态会被“永远”记住，直到用户点击“退出”链接为止。实现登录功能用到的函数已经超越了传统的 MVC 架构，其中一些函数要同时在控制器和视图中使用。在<a href="chapter4.html#section-4-2-5">4.2.5 节</a>中介绍过，Ruby 支持模块（module）功能，打包一系列函数，在不同的地方引入。我们会利用模块来打包用户身份验证相关的函数。我们当然可以创建一个新的模块，不过 Sessions 控制器已经提供了一个名为 <code>SessionsHelper</code> 的模块，而且这个模块中的帮助方法会自动引入 Rails 程序的视图中。所以，我们就直接使用这个现成的模块，然后在 Application 控制器中引入，如代码 8.14 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-14"><p class="caption"><span>代码 8.14：</span>在 Application 控制器中引入 Sessions 控制器的帮助方法模块</p><p class="file"><code>app/controllers/application_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-8-14"><p class="caption"><span>代码 8.14：</span>在 Application 控制器中引入 Sessions 控制器的帮助方法模块</p><p class="file"><code>app/controllers/application_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">protect_from_forgery</span> <span class="ss">with</span><span class="p">:</span> <span class="ss">:exception</span>
   <span class="kp">include</span> <span class="no">SessionsHelper</span>
 <span class="k">end</span>
@@ -653,7 +653,7 @@
 </div>
 <p>然后按照代码 8.16 修改生成的迁移文件。注意，因为我们要使用记忆权标取回用户，所以我们为 <code>remember_token</code> 列加了索引（参见 <a href="chapter6.html#aside-6-2">旁注 6.2</a>）。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-16"><p class="caption"><span>代码 8.16：</span><code>users</code> 表添加 <code>remember_token</code> 列的迁移</p><p class="file"><code>db/migrate/[timestamp]_add_remember_token_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddRememberTokenToUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+<div class="codeblock has-caption" id="codeblock-8-16"><p class="caption"><span>代码 8.16：</span><code>users</code> 表添加 <code>remember_token</code> 列的迁移</p><p class="file"><code>db/migrate/[timestamp]_add_remember_token_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddRememberTokenToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:remember_token</span><span class="p">,</span> <span class="ss">:string</span>
     <span class="n">add_index</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:remember_token</span>
@@ -739,7 +739,7 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-    <span class="ss">Digest</span><span class="p">:</span><span class="ss">:SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+    <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="kp">private</span>
@@ -757,7 +757,7 @@
 
 <p>把上述的分析结合起来，最终得到的 User 模型文件如代码 8.18 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-18"><p class="caption"><span>代码 8.18：</span>生成记忆权标的 <code>before_create</code> 回调函数</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-8-18"><p class="caption"><span>代码 8.18：</span>生成记忆权标的 <code>before_create</code> 回调函数</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
   <span class="n">before_create</span> <span class="ss">:create_remember_token</span>
   <span class="o">.</span>
@@ -768,7 +768,7 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-    <span class="ss">Digest</span><span class="p">:</span><span class="ss">:SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+    <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="kp">private</span>
@@ -1509,7 +1509,7 @@
 </div>
 <p>我们可以在 <a href="chapter5.html#section-5-3-4">5.3.4 节</a> 中定义 <code>full_title</code> 测试帮助方法的文件中定义这个匹配器，代码如下：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="ss">RSpec</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">.</span><span class="n">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">RSpec</span><span class="o">::</span><span class="no">Matchers</span><span class="o">.</span><span class="n">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
   <span class="n">match</span> <span class="k">do</span> <span class="o">|</span><span class="n">page</span><span class="o">|</span>
     <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">message</span><span class="p">)</span>
   <span class="k">end</span>
@@ -1535,7 +1535,7 @@
   <span class="n">click_button</span> <span class="s2">"Sign in"</span>
 <span class="k">end</span>
 
-<span class="ss">RSpec</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">.</span><span class="n">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
+<span class="no">RSpec</span><span class="o">::</span><span class="no">Matchers</span><span class="o">.</span><span class="n">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
   <span class="n">match</span> <span class="k">do</span> <span class="o">|</span><span class="n">page</span><span class="o">|</span>
     <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">message</span><span class="p">)</span>
   <span class="k">end</span>

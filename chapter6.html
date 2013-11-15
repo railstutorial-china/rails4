@@ -148,7 +148,7 @@
 
 <p>代码 6.1 中的 <code>generate</code> 命令带来的结果之一是创建了一个数据库迁移文件。迁移是一种精确修改数据库结构的方式，可以根据需求修改数据模型。本例中 User 模型的迁移文件是直接通过 <code>generate model</code> 命令生成的。迁移文件会创建 <code>users</code> 表，包含两个列，即 <code>name</code> 和 <code>email</code>，如代码 6.2 所示。（我们会在 <a href="chapter6.html#section-6-2-5">6.2.5 节</a>以及 <a href="chapter6.html#section-6-3">6.3 节</a>介绍如何手动创建迁移文件。）</p>
 
-<div class="codeblock has-caption" id="codeblock-6-2"><p class="caption"><span>代码 6.2：</span>User 模型的迁移文件（创建 <code>users</code> 表）</p><p class="file"><code>db/migrate/[timestamp]_create_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+<div class="codeblock has-caption" id="codeblock-6-2"><p class="caption"><span>代码 6.2：</span>User 模型的迁移文件（创建 <code>users</code> 表）</p><p class="file"><code>db/migrate/[timestamp]_create_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
@@ -193,7 +193,7 @@
 
 <p>我们先从 User 模型的代码说起。模型文件存放在 <code>app/models</code> 目录下，名为 <code>user.rb</code>。这个文件的内容很简单（参见代码 6.3）。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-3"><p class="caption"><span>代码 6.3：</span>刚创建的 User 模型文件</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-3"><p class="caption"><span>代码 6.3：</span>刚创建的 User 模型文件</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -502,14 +502,14 @@ Pending:
 
 <p>验证 <code>name</code> 属性是否存在的方法是使用 <code>validates</code> 方法，传入 <code>presence: true</code> 参数，如代码 6.6 所示。参数 <code>presence: true</code> 是只有一个元素的可选 Hash 参数。我们在 <a href="chapter4.html#section-4-3-4">4.3.4 节</a>中介绍过，如果方法的最后一个参数是 Hash 的话，可以省略 Hash 的花括号。（如 <a href="chapter5.html#section-5-1-1">5.1.1 节</a>中提到的，这样的可选 Hash 在 Rails 中很普遍。）</p>
 
-<div class="codeblock has-caption" id="codeblock-6-6"><p class="caption"><span>代码 6.6：</span>验证 <code>name</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-6"><p class="caption"><span>代码 6.6：</span>验证 <code>name</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>代码 6.6 看起来很神奇，其实 <code>validates</code> 只不过是一个方法而已。加上括号后等效的代码如下：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
@@ -534,7 +534,7 @@ Pending:
 
 <p>现在来编写测试用例。为了保证测试是失败的，我们要把验证用到的代码注释掉，如代码 6.7 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-7"><p class="caption"><span>代码 6.7：</span>注释掉验证代码，保证测试是失败的</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-7"><p class="caption"><span>代码 6.7：</span>注释掉验证代码，保证测试是失败的</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="c1"># validates :name, presence: true</span>
 <span class="k">end</span>
 </pre></div>
@@ -630,7 +630,7 @@ Pending:
 </div>
 <p>验证的实现几乎也一样，如代码 6.10 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-10"><p class="caption"><span>代码 6.10：</span>验证 <code>name</code> 和 <code>email</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-10"><p class="caption"><span>代码 6.10：</span>验证 <code>name</code> 和 <code>email</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
   <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
@@ -670,7 +670,7 @@ Pending:
 </div>
 <p>代码 6.11 中的测试应该会失败。为了让测试通过，我们要知道怎么使用限制长度的参数 <code>:length</code>，以及限制上限的 <code>:maximum</code> 参数。验证相关的代码如代码 6.12 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-12"><p class="caption"><span>代码 6.12：</span>为 <code>name</code> 属性添加长度验证</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-12"><p class="caption"><span>代码 6.12：</span>为 <code>name</code> 属性添加长度验证</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
@@ -689,7 +689,7 @@ Pending:
 <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"foo"</span>, <span class="s2">"bar"</span>, <span class="s2">"baz"</span><span class="o">]</span>
 &gt;&gt; <span class="nv">addresses</span> <span class="o">=</span> %w<span class="o">[</span>user@foo.COM THE_US-ER@foo.bar.org first.last@foo.jp<span class="o">]</span>
 <span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"user@foo.COM"</span>, <span class="s2">"THE_US-ER@foo.bar.org"</span>, <span class="s2">"first.last@foo.jp"</span><span class="o">]</span>
-&gt;&gt; addresses.each <span class="k">do</span> |address|
+&gt;&gt; addresses.each <span class="k">do</span> <span class="p">|</span>address<span class="p">|</span>
 ?&gt; puts address
 &gt;&gt; end
 user@foo.COM
@@ -736,7 +736,7 @@ first.last@foo.jp
 
 <p>在应用程序中，我们会使用正则表达式定义要验证的 Email 格式，然后通过 <code>validates</code> 方法的 <code>:format</code> 参数指定合法的格式（参见代码 6.14）。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-14"><p class="caption"><span>代码 6.14：</span>使用正则表达式验证 Email 格式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-14"><p class="caption"><span>代码 6.14：</span>使用正则表达式验证 Email 格式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
   <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with</span><span class="p">:</span> <span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
@@ -819,7 +819,7 @@ first.last@foo.jp
 
 <p>代码 6.16 中的代码可以让代码 6.15 中的测试通过。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-16"><p class="caption"><span>代码 6.16：</span>验证 Email 地址的唯一性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-16"><p class="caption"><span>代码 6.16：</span>验证 Email 地址的唯一性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -865,7 +865,7 @@ first.last@foo.jp
 </div>
 <p>现在 <code>user_with_same_email.valid?</code> 的返回值是 <code>true</code>，因为唯一性验证还是区分大小写的。我们希望得到的结果是 <code>false</code>。幸好 <code>uniqueness</code> 可以指定 <code>:case_sensitive</code> 选项，正好可以解决这个问题，如代码 6.18 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-18"><p class="caption"><span>代码 6.18：</span>验证 Email 地址的唯一性，不区分大小写</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-18"><p class="caption"><span>代码 6.18：</span>验证 Email 地址的唯一性，不区分大小写</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -897,7 +897,7 @@ first.last@foo.jp
 </div>
 <p>和 User 模型的迁移不一样，实现 Email 唯一性的迁移操作没有事先定义的模板可用，所以我们要手动把代码 6.19 中的内容写入迁移文件。<sup class="footnote" id="fnref-6-15"><a href="#fn-6-15" rel="footnote">16</a></sup></p>
 
-<div class="codeblock has-caption" id="codeblock-6-19"><p class="caption"><span>代码 6.19：</span>确保 Email 唯一性的迁移文件</p><p class="file"><code>db/migrate/[timestamp]_add_index_to_users_email.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddIndexToUsersEmail</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+<div class="codeblock has-caption" id="codeblock-6-19"><p class="caption"><span>代码 6.19：</span>确保 Email 唯一性的迁移文件</p><p class="file"><code>db/migrate/[timestamp]_add_index_to_users_email.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddIndexToUsersEmail</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">add_index</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">unique</span><span class="p">:</span> <span class="kp">true</span>
   <span class="k">end</span>
@@ -918,7 +918,7 @@ first.last@foo.jp
 </div>
 <p>为了保证 Email 地址的唯一性，还要做些修改：存入数据库之前把 Email 地址转换成全小写字母的形式，因为不是所有数据库适配器的索引都是区分大小写的。<sup class="footnote" id="fnref-6-16"><a href="#fn-6-16" rel="footnote">17</a></sup> 为此，我们要使用回调函数（callback），在 Active Record 对象生命周期的特定时刻调用（参阅 Rails API 中关于回调函数的文档）。本例中，我们要使用的回调函数是 <code>before_save</code>，在用户存入数据库之前强行把 Email 地址转换成全小写字母形式，如代码 6.20 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-20"><p class="caption"><span>代码 6.20：</span>把 Email 地址转换成全小写形式，确保唯一性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-20"><p class="caption"><span>代码 6.20：</span>把 Email 地址转换成全小写形式，确保唯一性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1002,7 +1002,7 @@ first.last@foo.jp
 </div>
 <p>上述命令的第一个参数是迁移的名字，第二个参数指明要添加列的名字和数据类型。（可以和代码 6.1 中生成 <code>users</code> 表的代码对比一下。）迁移的名字可以随便起，但一般会以 <code>_to_users</code> 结尾，Rails 会自动生成一个向 <code>users</code> 表中增加列的迁移。我们还提供了第二个参数，Rails 就得到了足够的信息，会为我们生成整个迁移文件，如代码 6.23 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-23"><p class="caption"><span>代码 6.23：</span>向 <code>users</code> 表中添加 <code>password_digest</code> 列的迁移</p><p class="file"><code>db/migrate/[ts]_add_password_digest_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddPasswordDigestToUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+<div class="codeblock has-caption" id="codeblock-6-23"><p class="caption"><span>代码 6.23：</span>向 <code>users</code> 表中添加 <code>password_digest</code> 列的迁移</p><p class="file"><code>db/migrate/[ts]_add_password_digest_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddPasswordDigestToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:password_digest</span><span class="p">,</span> <span class="ss">:string</span>
   <span class="k">end</span>
@@ -1121,7 +1121,7 @@ first.last@foo.jp
 </div>
 <p>我们只需添加一行代码就可以让代码 6.25 中的测试通过，如代码 6.26 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-26"><p class="caption"><span>代码 6.26：</span>让密码测试通过</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-26"><p class="caption"><span>代码 6.26：</span>让密码测试通过</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1131,7 +1131,7 @@ first.last@foo.jp
 </div>
 <p><code>has_secure_password</code> 这一行代码是很强大的，可以让所有针对密码的测试都通过，而且作用还不知如此。但是，这行代码的作用太过强大，甚至后面的测试未遇红就变绿了，所以在继续之前，我建议把这行注释掉（如代码 6.27 所示）。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-27"><p class="caption"><span>代码 6.27：</span>为了践行 TDD，注释掉 <code>has_secure_password</code></p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-27"><p class="caption"><span>代码 6.27：</span>为了践行 TDD，注释掉 <code>has_secure_password</code></p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1290,7 +1290,7 @@ first.last@foo.jp
 
 <p>把以上的代码放在一起就得到了如代码 6.29 所示的 User 模型，同时也实现了安全的密码机制。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-29"><p class="caption"><span>代码 6.29：</span>最终实现的安全的密码机制</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-29"><p class="caption"><span>代码 6.29：</span>最终实现的安全的密码机制</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
@@ -1403,7 +1403,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-6-31"><p class="caption"><span>代码 6.31：</span><code>before_save</code> 回调函数的另一种写法</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-31"><p class="caption"><span>代码 6.31：</span><code>before_save</code> 回调函数的另一种写法</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_secure_password</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase!</span> <span class="p">}</span>
   <span class="o">.</span>
@@ -1412,7 +1412,7 @@ first.last@foo.jp
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-6-32"><p class="caption"><span>代码 6.32：</span>不允许 Email 地址中出现连续点号的正则表达式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-6-32"><p class="caption"><span>代码 6.32：</span>不允许 Email 地址中出现连续点号的正则表达式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>

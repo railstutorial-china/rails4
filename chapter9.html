@@ -1021,7 +1021,7 @@
                  <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
                  <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
     <span class="mi">99</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span>
-      <span class="nb">name</span>  <span class="o">=</span> <span class="ss">Faker</span><span class="p">:</span><span class="ss">:Name</span><span class="o">.</span><span class="n">name</span>
+      <span class="nb">name</span>  <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="o">.</span><span class="n">name</span>
       <span class="n">email</span> <span class="o">=</span> <span class="s2">"example-</span><span class="si">#{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">@railstutorial.org"</span>
       <span class="n">password</span>  <span class="o">=</span> <span class="s2">"password"</span>
       <span class="no">User</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="nb">name</span><span class="p">,</span>
@@ -1323,7 +1323,7 @@
 <div class="figure" id="figure-9-13">
   <img src="figures/user_model_admin_31.png" alt="user model admin 31" /><p class="caption"><span>图 9.13：</span>添加了 <code>admin</code> 属性后的 User 模型</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-9-39"><p class="caption"><span>代码 9.39：</span>为 User 模型添加 <code>admin</code> 属性所用的迁移文件</p><p class="file"><code>db/migrate/[timestamp]_add_admin_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddAdminToUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+<div class="codeblock has-caption" id="codeblock-9-39"><p class="caption"><span>代码 9.39：</span>为 User 模型添加 <code>admin</code> 属性所用的迁移文件</p><p class="file"><code>db/migrate/[timestamp]_add_admin_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddAdminToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:boolean</span><span class="p">,</span> <span class="ss">default</span><span class="p">:</span> <span class="kp">false</span>
   <span class="k">end</span>

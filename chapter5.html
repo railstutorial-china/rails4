@@ -285,7 +285,7 @@
 <span class="o">.</span>
 <span class="o">.</span>
 <span class="k">module</span> <span class="nn">SampleApp</span>
-  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="ss">Rails</span><span class="p">:</span><span class="ss">:Application</span>
+  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
@@ -1048,7 +1048,7 @@ images javascripts stylesheets
 </div>
 <p>这里要采用的步骤和 <a href="chapter3.html#section-3-2-2">3.2.2 节</a>中添加“关于”页面的步骤是一致的：先更新路由设置（参见代码 5.19），然后在 StaticPages 控制器中添加 <code>contact</code> 动作（参见代码 5.20），最后再编写“联系”页面的视图（参见代码 5.21）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-19"><p class="caption"><span>代码 5.19：</span>添加“联系”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-19"><p class="caption"><span>代码 5.19：</span>添加“联系”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="n">get</span> <span class="s2">"static_pages/about"</span>
@@ -1202,7 +1202,7 @@ images javascripts stylesheets
 
 <p>其他页面也要做类似修改，结果如代码 5.24 所示。不过“首页”有点特殊，参见代码 5.26。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-24"><p class="caption"><span>代码 5.24：</span>静态页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-24"><p class="caption"><span>代码 5.24：</span>静态页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
   <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
   <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
@@ -1244,7 +1244,7 @@ images javascripts stylesheets
 </div>
 <p>不过没必要这么做。Rails 在路由设置文件的下部为根地址 <code>/</code>（斜线）提供了特别的设置方式（参见代码 5.25）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-25"><p class="caption"><span>代码 5.25：</span>注释掉的根路由设置说明</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-25"><p class="caption"><span>代码 5.25：</span>注释掉的根路由设置说明</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1258,7 +1258,7 @@ images javascripts stylesheets
 </div>
 <p>按照上述说明，我们把根地址 <code>/</code> 映射到“首页”上（参见代码 5.26）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-26"><p class="caption"><span>代码 5.26：</span>添加根地址的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-26"><p class="caption"><span>代码 5.26：</span>添加根地址的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
   <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
   <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
@@ -1594,7 +1594,7 @@ end
 
 <p>我们已经为 Users 控制器生成了 <code>new</code> 动作，如要测试通过，需要正确设置路由，还要有相应内容的视图文件。我们按照代码 5.24 的方式，为“注册”页面加入 <code>match '/signup'</code> 路由设置（参见代码 5.35）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-35"><p class="caption"><span>代码 5.35：</span>“注册”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-35"><p class="caption"><span>代码 5.35：</span>“注册”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"users/new"</span>
 
   <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>

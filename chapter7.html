@@ -271,7 +271,7 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 </div>
 <p>修改后的路由文件如代码 7.3 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-7-3"><p class="caption"><span>代码 7.3：</span>在路由文件中添加 Users 资源设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-7-3"><p class="caption"><span>代码 7.3：</span>在路由文件中添加 Users 资源设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
   <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to</span><span class="p">:</span> <span class="s1">'users#new'</span><span class="p">,</span>            <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
@@ -494,12 +494,12 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 </div>
 <p>使用 Factory Girl 后，明显可以察觉测试变慢了，这不是 Factory Girl 导致的，而是有意为之，并不是 bug。变慢的原因在于 <a href="chapter6.html#section-6-3-1">6.3.1 节</a>中用来加密密码的 BCrypt，其加密算法设计如此，因为慢速加密的密码很难破解。慢速加密的过程会延长测试的运行时间，不过我们可以做个简单的设置改变这种情况。<code>bcrypt-ruby</code> 使用耗时因子（cost factor）设定加密过程的耗时，耗时因子的默认值倾向于安全性而不是速度，在生产环境这种设置很好，但测试时的关注点却有所不同：测试追求的是速度，而不用在意测试数据库中用户的密码强度。我们可以在“测试环境”配置文件 <code>config/environments/test.rb</code> 中加入一行代码来解决速度慢的问题：把耗时因子的默认值修改为最小值，提升加密的速度，如代码 7.11 所示。即使测试量很少，修改设置之后速度的提升也是很明显的，所以我建议每个读者都在 <code>test.rb</code> 文件中加入代码 7.11 的内容。</p>
 
-<div class="codeblock has-caption" id="codeblock-7-11"><p class="caption"><span>代码 7.11：</span>为测试环境重新设置 BCrypt 耗时因子</p><p class="file"><code>config/environments/test.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-7-11"><p class="caption"><span>代码 7.11：</span>为测试环境重新设置 BCrypt 耗时因子</p><p class="file"><code>config/environments/test.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="c1"># Speed up tests by lowering bcrypt's cost function.</span>
-  <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:SecurePassword</span><span class="o">.</span><span class="n">min_cost</span> <span class="o">=</span> <span class="kp">true</span>
+  <span class="no">ActiveModel</span><span class="o">::</span><span class="no">SecurePassword</span><span class="o">.</span><span class="n">min_cost</span> <span class="o">=</span> <span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -539,7 +539,7 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 
   <span class="c1"># Returns the Gravatar (http://gravatar.com/) for the given user.</span>
   <span class="k">def</span> <span class="nf">gravatar_for</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">gravatar_id</span> <span class="o">=</span> <span class="ss">Digest</span><span class="p">:</span><span class="ss">:MD5</span><span class="o">::</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
+    <span class="n">gravatar_id</span> <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">::</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
     <span class="n">gravatar_url</span> <span class="o">=</span> <span class="s2">"https://secure.gravatar.com/avatar/</span><span class="si">#{</span><span class="n">gravatar_id</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">image_tag</span><span class="p">(</span><span class="n">gravatar_url</span><span class="p">,</span> <span class="ss">alt</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"gravatar"</span><span class="p">)</span>
   <span class="k">end</span>
@@ -1258,7 +1258,7 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
 &gt;&gt; <span class="nv">flash</span> <span class="o">=</span> <span class="o">{</span> success: <span class="s2">"It worked!"</span>, error: <span class="s2">"It failed."</span> <span class="o">}</span>
 <span class="o">=</span>&gt; <span class="o">{</span>:success<span class="o">=</span>&gt;<span class="s2">"It worked!"</span>, error: <span class="s2">"It failed."</span><span class="o">}</span>
-&gt;&gt; flash.each <span class="k">do</span> |key, value|
+&gt;&gt; flash.each <span class="k">do</span> <span class="p">|</span>key, value<span class="p">|</span>
 ?&gt; puts <span class="s2">"#{key}"</span>
 ?&gt; puts <span class="s2">"#{value}"</span>
 &gt;&gt; end
@@ -1363,7 +1363,7 @@ password_digest: <span class="s2">"$2a$10$A58/j7wwh3aAffGkMAO9Q.jjh3jshd.6akhDKt
 </div>
 <p>然后我们要设置一下，强制在生产环境中使用 SSL，这里我们要编辑的文件是 <code>config/environments/production.rb</code>，添加的设置如代码 7.29 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-7-29"><p class="caption"><span>代码 7.29：</span>设置程序在生产环境中开启 SSL</p><p class="file"><code>config/environments/production.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-7-29"><p class="caption"><span>代码 7.29：</span>设置程序在生产环境中开启 SSL</p><p class="file"><code>config/environments/production.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1430,7 +1430,7 @@ password_digest: <span class="s2">"$2a$10$A58/j7wwh3aAffGkMAO9Q.jjh3jshd.6akhDKt
 
   <span class="c1"># Returns the Gravatar (http://gravatar.com/) for the given user.</span>
   <span class="k">def</span> <span class="nf">gravatar_for</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">50</span> <span class="p">})</span>
-    <span class="n">gravatar_id</span> <span class="o">=</span> <span class="ss">Digest</span><span class="p">:</span><span class="ss">:MD5</span><span class="o">::</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
+    <span class="n">gravatar_id</span> <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">::</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
     <span class="n">size</span> <span class="o">=</span> <span class="n">options</span><span class="o">[</span><span class="ss">:size</span><span class="o">]</span>
     <span class="n">gravatar_url</span> <span class="o">=</span> <span class="s2">"https://secure.gravatar.com/avatar/</span><span class="si">#{</span><span class="n">gravatar_id</span><span class="si">}</span><span class="s2">.png?s=</span><span class="si">#{</span><span class="n">size</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">image_tag</span><span class="p">(</span><span class="n">gravatar_url</span><span class="p">,</span> <span class="ss">alt</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"gravatar"</span><span class="p">)</span>

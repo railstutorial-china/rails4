@@ -96,7 +96,7 @@
 </div>
 <p>上述命令会生成一个迁移文件，在数据库中生成一个名为 <code>microposts</code> 的表（参见代码 10.1）。读者朋友可以和生成 <code>users</code> 表的迁移文件对照一下（参见代码 6.2）。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-1"><p class="caption"><span>代码 10.1：</span>创建微博模型的迁移文件（注意：为 <code>user_id</code> 和 <code>created_at</code> 列加入了索引）</p><p class="file"><code>db/migrate/[timestamp]_create_microposts.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateMicroposts</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+<div class="codeblock has-caption" id="codeblock-10-1"><p class="caption"><span>代码 10.1：</span>创建微博模型的迁移文件（注意：为 <code>user_id</code> 和 <code>created_at</code> 列加入了索引）</p><p class="file"><code>db/migrate/[timestamp]_create_microposts.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateMicroposts</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:microposts</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:content</span>
@@ -195,7 +195,7 @@
 </div>
 <p>这段代码测试了微博是否能够通过验证，以及是否指定了 <code>user_id</code> 的值。要想让上述测试通过，我们要按照代码 10.4 所示，加入一个简单的存在性验证。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-4"><p class="caption"><span>代码 10.4：</span>对微博 <code>user_id</code> 属性的验证</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-4"><p class="caption"><span>代码 10.4：</span>对微博 <code>user_id</code> 属性的验证</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
@@ -315,13 +315,13 @@
 </div>
 <p>写好了上面的测试，实现用户和微博之间关联就简单了：只需分别加入下面这两行代码，代码 10.5 和代码 10.6 中的测试就可以通过了：<code>belongs_to :user</code>（如代码 10.7 所示）和 <code>has_many :microposts</code>（如代码 10.8 所示）。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-7"><p class="caption"><span>代码 10.7：</span>微博“属于（<code>belongs_to</code>）”用户</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-7"><p class="caption"><span>代码 10.7：</span>微博“属于（<code>belongs_to</code>）”用户</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
   <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-10-8"><p class="caption"><span>代码 10.8：</span>用户“拥有多篇（<code>has_many</code>）”微博</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-8"><p class="caption"><span>代码 10.8：</span>用户“拥有多篇（<code>has_many</code>）”微博</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:microposts</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -418,7 +418,7 @@
 
 <p>要让这个测试通过，我们要使用 Rails 中的 <code>default_scope</code> 方法，还要设定它的 <code>:order</code> 参数，如代码 10.11 所示。（这是我们第一次接触作用域的概念，在<a href="chapter11.html">第 11 章</a>中会介绍作用域更一般的用法。）</p>
 
-<div class="codeblock has-caption" id="codeblock-10-11"><p class="caption"><span>代码 10.11：</span>通过 <code>default_scope</code> 设定微博的排序</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-11"><p class="caption"><span>代码 10.11：</span>通过 <code>default_scope</code> 设定微博的排序</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
   <span class="n">default_scope</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">'created_at DESC'</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
@@ -483,7 +483,7 @@
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span> <span class="k">do</span>
   <span class="no">Micropost</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">micropost</span><span class="p">)</span>
-<span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">raise_error</span><span class="p">(</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:RecordNotFound</span><span class="p">)</span>
+<span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">raise_error</span><span class="p">(</span><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">RecordNotFound</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>完整的测试代码如代码 10.12 所示。</p>
@@ -520,7 +520,7 @@
 </div>
 <p>要让代码 10.12 中的测试通过，我们甚至不需要加入一行完整的代码，只需在 <code>has_many</code> 方法中设定一个参数即可，如代码 10.13 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-13"><p class="caption"><span>代码 10.13：</span>保证用户的微博在删除用户的同时也会被删除</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-13"><p class="caption"><span>代码 10.13：</span>保证用户的微博在删除用户的同时也会被删除</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -588,7 +588,7 @@
 </div>
 <p>Micropost 模型的最终代码如代码 10.15 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-15"><p class="caption"><span>代码 10.15：</span>Micropost 模型的数据验证</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-15"><p class="caption"><span>代码 10.15：</span>Micropost 模型的数据验证</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
   <span class="n">default_scope</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">'created_at DESC'</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
@@ -772,7 +772,7 @@
     <span class="o">.</span>
     <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="ss">limit</span><span class="p">:</span> <span class="mi">6</span><span class="p">)</span>
     <span class="mi">50</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
-      <span class="n">content</span> <span class="o">=</span> <span class="ss">Faker</span><span class="p">:</span><span class="ss">:Lorem</span><span class="o">.</span><span class="n">sentence</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+      <span class="n">content</span> <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Lorem</span><span class="o">.</span><span class="n">sentence</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
       <span class="n">users</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="n">user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="n">content</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -842,7 +842,7 @@
 
 <p>上述功能的实现和之前的惯例有一点是不一样的地方，需要特别注意，那就是，Microposts 资源相关的页面不是通过 Microposts 控制器实现的，而是依赖于 Users 和 StaticPages 控制器。这也就意味着，Microposts 资源的路由设置是很简单的，如代码 10.22 所示。代码 10.22 中的代码所代表的符合 REST 结构的路由如<a href="chapter10.html#table-10-2">表格 10.2</a> 所示，表中的路由只是<a href="chapter2.html#table-2-3">表格 2.3</a> 的一部分。不过，路由虽然简化了，但预示着实现的过程需要更高级的技术，而不会减小代码的复杂度。从<a href="chapter2.html">第 2 章</a>起我们就十分依赖脚手架，不过现在我们将舍弃脚手架的大部分功能。</p>
 
-<div class="codeblock has-caption" id="codeblock-10-22"><p class="caption"><span>代码 10.22：</span>Microposts 资源的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-10-22"><p class="caption"><span>代码 10.22：</span>Microposts 资源的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
   <span class="n">resources</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
@@ -1261,7 +1261,7 @@
 
 <p>在编写 <code>feed</code> 方法时，我们需要从数据库中取出所有 <code>user_id</code> 等于当前用户 id 的微博，要在 <code>Micropost</code> 对象上调用 <code>where</code> 方法，如代码 10.36 所示。<sup class="footnote" id="fnref-10-10"><a href="#fn-10-10" rel="footnote">10</a></sup></p>
 
-<div class="codeblock has-caption" id="codeblock-10-36"><p class="caption"><span>代码 10.36：</span>动态列表的初步实现</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-10-36"><p class="caption"><span>代码 10.36：</span>动态列表的初步实现</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>

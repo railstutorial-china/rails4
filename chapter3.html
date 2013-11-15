@@ -163,7 +163,7 @@
   <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">secret_key_base</span> <span class="o">=</span> <span class="n">secure_token</span>
+<span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">secret_key_base</span> <span class="o">=</span> <span class="n">secure_token</span>
 </pre></div>
 </div>
 <p>接着我们要设置一下让 Rails 使用 RSpec 而不用 <code>Test::Unit</code>。这个设置可以通过 <code>rails generate rspec:install</code> 命令实现：</p>
@@ -347,7 +347,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>因为我们生成了 <code>home</code> 和 <code>help</code> 动作，路由文件中已经为它们生成了配置，如代码 3.5。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-5"><p class="caption"><span>代码 3.5：</span>StaticPages 控制器中 <code>home</code> 和 <code>help</code> 动作的路由配置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-rb"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-3-5"><p class="caption"><span>代码 3.5：</span>StaticPages 控制器中 <code>home</code> 和 <code>help</code> 动作的路由配置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-rb"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="o">.</span>
@@ -501,7 +501,7 @@ by [Michael Hartl](http://michaelhartl.com/).
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="ss">Capybara</span><span class="p">:</span><span class="ss">:DSL</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="no">Capybara</span><span class="o">::</span><span class="no">DSL</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -641,7 +641,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>这提醒我们要在路由文件中添加 <code>static_pages/about</code>，我们可以按照代码 3.5 所示的格式添加，结果如代码 3.15 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-3-15"><p class="caption"><span>代码 3.15：</span>添加“关于”页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">SampleApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-3-15"><p class="caption"><span>代码 3.15：</span>添加“关于”页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="n">get</span> <span class="s2">"static_pages/about"</span>
@@ -1487,7 +1487,7 @@ rspec guard added to Guardfile, feel free to edit it
 
   <span class="c1"># Checks for pending migrations before tests are run.</span>
   <span class="c1"># If you are not using ActiveRecord, you can remove this line.</span>
-  <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span><span class="o">.</span><span class="n">check_pending!</span> <span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span><span class="p">)</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="o">.</span><span class="n">check_pending!</span> <span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">)</span>
 
   <span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
     <span class="c1"># ## Mock Framework</span>
@@ -1516,7 +1516,7 @@ rspec guard added to Guardfile, feel free to edit it
     <span class="c1"># the seed, which is printed after each run.</span>
     <span class="c1">#     --seed 1234</span>
     <span class="n">config</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="s2">"random"</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="ss">Capybara</span><span class="p">:</span><span class="ss">:DSL</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="no">Capybara</span><span class="o">::</span><span class="no">DSL</span>
   <span class="k">end</span>
 <span class="k">end</span>
 

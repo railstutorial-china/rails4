@@ -302,7 +302,7 @@
   <li>控制器将生成的 HTML 发送回浏览器。<sup class="footnote" id="fnref-2-3"><a href="#fn-2-3" rel="footnote">3</a></sup></li>
 </ol><p>首先我们要从浏览器中发起一个请求，你可以直接在浏览器地址栏中敲入地址，也可以点击页面中的链接。（图 2.11 中的第 1 步）接着请求到达 Rails 路由（第 2 步），根据 URL 将其分发到适当的控制器动作（而且还会考量请求的类型，<a href="chapter3.html#aside-3-2">旁注 3.2</a> 中会介绍）。将 Users 资源中相关的 URL 映射到控制器动作的代码如代码 2.2 所示。这些代码会按照表格 2.1 中的对应关系做映射。（<code>:users</code> 是一个 Symbol，<a href="chapter4.html#section-4-3-3">4.3.3 节</a>会介绍）</p>
 
-<div class="codeblock has-caption" id="codeblock-2-2"><p class="caption"><span>代码 2.2：</span>Rails 的路由设置，包含一条 Users 资源的规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">DemoApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-2-2"><p class="caption"><span>代码 2.2：</span>Rails 的路由设置，包含一条 Users 资源的规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">DemoApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -438,7 +438,7 @@
 </div>
 <p><code>index</code> 动作有一行代码是 <code>@users = User.all</code>（图 2.11 中的第 3 步），它要求 User 模型从数据库中取出所有的用户（第 4 步），然后将结果赋值给 <code>@users</code> 变量（第 5 步）。User 模型的代码参见代码 2.5。代码看似简单，不过它通过继承具备了很多功能（参见 <a href="chapter2.html#section-2-3-4">2.3.4 节</a> 和 <a href="chapter4.html#section-4-4">4.4 节</a>）。简单来说就是通过调用 Rails 中叫做 Active Record 的库，代码 2.5 中的 <code>User.all</code> 就会返回所有的用户。</p>
 
-<div class="codeblock has-caption" id="codeblock-2-5"><p class="caption"><span>代码 2.5：</span>演示程序中的 User 模型</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-2-5"><p class="caption"><span>代码 2.5：</span>演示程序中的 User 模型</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -577,7 +577,7 @@
       <td><code>destroy</code></td>
       <td>删除 ID 为 1 的微博</td>
     </tr></tbody></table></div>
-<div class="codeblock has-caption" id="codeblock-2-7"><p class="caption"><span>代码 2.7：</span>Rails 的路由配置，有一条针对 Microposts 资源的新规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="ss">DemoApp</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-2-7"><p class="caption"><span>代码 2.7：</span>Rails 的路由配置，有一条针对 Microposts 资源的新规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">DemoApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:microposts</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="o">.</span>
@@ -651,7 +651,7 @@
 <div class="figure" id="figure-2-13">
   <img src="figures/demo_micropost_index_rails_3.png" alt="demo micropost index rails3" /><p class="caption"><span>图 2.13：</span>微博索引页面（<a href="http://localhost:3000/microposts">/microposts</a>）</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-2-9"><p class="caption"><span>代码 2.9：</span>现在微博的长度最长为 140 个字符</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-2-9"><p class="caption"><span>代码 2.9：</span>现在微博的长度最长为 140 个字符</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
@@ -666,12 +666,12 @@
 <div class="figure" id="figure-2-14">
   <img src="figures/micropost_length_error_rails_3.png" alt="micropost length error rails3" /><p class="caption"><span>图 2.14：</span>创建微博失败后显示的错误信息</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-2-10"><p class="caption"><span>代码 2.10：</span>一个用户有多篇微博</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-2-10"><p class="caption"><span>代码 2.10：</span>一个用户有多篇微博</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:microposts</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-2-11"><p class="caption"><span>代码 2.11：</span>一篇微博只属于一个用户</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-2-11"><p class="caption"><span>代码 2.11：</span>一篇微博只属于一个用户</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
   <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
 <span class="k">end</span>
@@ -705,14 +705,14 @@ updated_at: <span class="s2">"2013-03-06 02:38:54"</span>&gt;<span class="o">]</
 
 <p>我们先介绍模型的继承关系。对比一下代码 2.12 和代码 2.13 中的代码，User 模型和 Micropost 模型都继承自（通过 <code>&lt;</code>）<code>ActiveRecord::Base</code>，它是 ActiveRecord 为模型提供的基类。图 2.16 列出了这种继承关系。通过继承 <code>ActiveRecord::Base</code> 我们的模型对象才能够和数据库通讯、将数据库中的列看做 Ruby 中的属性等。</p>
 
-<div class="codeblock has-caption" id="codeblock-2-12"><p class="caption"><span>代码 2.12：</span><code>User</code> 类，包括继承关系</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-2-12"><p class="caption"><span>代码 2.12：</span><code>User</code> 类，包括继承关系</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-2-13"><p class="caption"><span>代码 2.13：</span><code>Micropost</code> 类，包括继承关系</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-2-13"><p class="caption"><span>代码 2.13：</span><code>Micropost</code> 类，包括继承关系</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -741,7 +741,7 @@ updated_at: <span class="s2">"2013-03-06 02:38:54"</span>&gt;<span class="o">]</
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-2-16"><p class="caption"><span>代码 2.16：</span><code>ApplicationController</code> 类，包含继承关系</p><p class="file"><code>app/controllers/application_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:Base</span>
+<div class="codeblock has-caption" id="codeblock-2-16"><p class="caption"><span>代码 2.16：</span><code>ApplicationController</code> 类，包含继承关系</p><p class="file"><code>app/controllers/application_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
