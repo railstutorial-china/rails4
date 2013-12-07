@@ -751,7 +751,7 @@
 </div>
 <p>Active Record 是把模型的属性和数据库表中的列对应的，如果不指定 <code>self</code> 的话，我们就只是创建了一个名为 <code>remember_token</code> 的局部变量而已，这可不是我们期望得到的结果。加上 <code>self</code> 之后，赋值操作就会把值赋值给用户的 <code>remember_token</code> 属性，保存用户时，随着其他的属性一起存入数据库。（现在你知道了为什么代码 6.20 中的 <code>before_save</code> 为什么要用 <code>self.name</code> 而不直接用 <code>email</code>。）</p>
 
-<p>注意，我们使用 <a href="https://en.wikipedia.org/wiki/SHA-1">SHA1</a> 加密了记忆权标。这种哈希算法比 <a href="chapter6.html#section-6-3-1">6.3.1 节</a>中用来加密用户密码的 Bcrypt 速度快得多。之所以看中速度，是因为对登入的用户来说，每个页面都会加密记忆权标（参加<a href="chapter8.html#section-8-2-2">8.2.2 节</a>）。SHA1 的安全性不如 Bcrypt，但能满足现在的需求，加密后的记忆权标是 16 位随机字符，基本无法破解。（上述代码之所以调用 <code>to_s</code>，是为了处理输入为 <code>nil</code> 的情况。对然在浏览器中不会遇到，到测试时偶尔会出现。）</p>
+<p>注意，我们使用 <a href="https://en.wikipedia.org/wiki/SHA-1">SHA1</a> 加密了记忆权标。这种哈希算法比 <a href="chapter6.html#section-6-3-1">6.3.1 节</a>中用来加密用户密码的 Bcrypt 速度快得多。之所以看中速度，是因为对登入的用户来说，每个页面都会加密记忆权标（参加<a href="chapter8.html#section-8-2-2">8.2.2 节</a>）。SHA1 的安全性不如 Bcrypt，但能满足现在的需求，加密后的记忆权标是 16 位随机字符，基本无法破解。（上述代码之所以调用 <code>to_s</code>，是为了处理输入为 <code>nil</code> 的情况，在浏览器中不会遇到，测试时偶尔会出现。）</p>
 
 <p><code>encrypt</code> 和 <code>new_remember_token</code> 方法定义在 <code>User</code> 类中，因为二者无需用户实例就可使用<sup class="footnote" id="fnref-8-6"><a href="#fn-8-6" rel="footnote">6</a></sup>，而且还是公开方法（位于 <code>private</code> 上面）。在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中会将这两个方法剥离出 User 模型。</p>
 
@@ -802,7 +802,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>上述代码组找了设定的步骤：首先，创建新权标；随后，把未加密的权标存入浏览器的 cookie；然后，把加密后的权标存入数据库；最后，把制定的用户设为当前登入的用户。我们会在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中看到，现在并不一定要把 <code>user</code> 指定为当前用户，因为 <code>create</code> 动作完成后回立即转向（代码 8.13）。不过指定也好，防止无需转向的登录操作。</p>
+<p>上述代码遵照了设定的步骤：首先，创建新权标；随后，把未加密的权标存入浏览器的 cookie；然后，把加密后的权标存入数据库；最后，把制定的用户设为当前登入的用户。我们会在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中看到，现在并不一定要把 <code>user</code> 指定为当前用户，因为 <code>create</code> 动作完成后回立即转向（代码 8.13）。不过指定也好，防止无需转向的登录操作。</p>
 
 <p>注意，保存记忆权标使用的是 <code>update_attribute</code> 方法，这样可以跳过数据验证更新单个属性。我们必须用这个方法，因为我们无法提供用户的密码及密码确认。代码 8.19 中用到的 <code>cookies</code> 方法是由 Rails 提供的，我们可以把它看成 Hash，其中每个元素又都是一个 Hash，包含两个元素，<code>value</code> 指定 cookie 的文本，<code>expires</code> 指定 cookie 的失效日期。例如，我们可以使用下述代码实现登录功能，把 cookie 的值设为用户的记忆权标，失效日期设为 20 年之后：</p>
 
