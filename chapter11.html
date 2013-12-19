@@ -1590,7 +1590,7 @@
 <p>换成了等效的</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">where</span><span class="p">(</span><span class="s2">"user_id IN (:followed_user_ids) OR user_id = :user_id"</span><span class="p">,</span>
-      <span class="n">followed_user_ids</span><span class="p">:</span> <span class="n">followed_user_ids</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="p">))</span>
+      <span class="n">followed_user_ids</span><span class="p">:</span> <span class="n">followed_user_ids</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>使用问号做插值虽然可以，但当我们要在多处插入同一个值时，后一种写法就方便多了。</p>
