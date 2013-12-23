@@ -1231,7 +1231,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>和其他身份验证相关的方法一样，我们会在 Sessions 控制器的帮助方法模块中定义 <code>sign_out</code> 方法。具体的定义如代码 8.30 所示：先在 cookies 上调用 <code>delete</code> 方法从 session 中删除记忆权标；然后修改数据库中保存的记忆权标，以防 cookie 被窃取用来验证用户；最后一行代码是可选的，把当前用户设为 <code>nil</code>。（其实这里没必要把当前用户设为 <code>nil</code>，因为在 <code>destroy</code> 动作中我们加入了转向操作。这里我们之所以这么做是为了兼容不转向的退出操作。）</p>
+<p>和其他身份验证相关的方法一样，我们会在 Sessions 控制器的帮助方法模块中定义 <code>sign_out</code> 方法。具体的定义如代码 8.30 所示：先修改数据库中保存的记忆权标，以防 cookie 被窃取用来验证用户；然后在 cookies 上调用 <code>delete</code> 方法从 session 中删除记忆权标；最后一行代码是可选的，把当前用户设为 <code>nil</code>。（其实这里没必要把当前用户设为 <code>nil</code>，因为在 <code>destroy</code> 动作中我们加入了转向操作。这里我们之所以这么做是为了兼容不转向的退出操作。）</p>
 
 <div class="codeblock has-caption" id="codeblock-8-30"><p class="caption"><span>代码 8.30：</span>Sessions 帮助方法模块中定义的 <code>sign_out</code> 方法</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
 
@@ -1245,10 +1245,10 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">sign_out</span>
-    <span class="n">cookies</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">)</span>
     <span class="n">current_user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span>
                                   <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">))</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="n">cookies</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
