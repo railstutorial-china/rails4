@@ -213,7 +213,7 @@
 
 <p>从图 8.2 我们可以看出，如果提交的数据不正确，我们会重新渲染“注册”页面，还会显示一个错误提示消息。这个错误提示是 Flash 消息，我们可以通过下面的测试验证：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Invalid'</span><span class="p">)</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>这行代码使用了代码 7.32（在第 7 章的练习中）中用过的 <code>have_selector</code> 方法。<code>have_selector</code> 会检查页面中是否出现了指定的元素（例如，一个 HTML 标签，不过在 Capybara 2.0 中只会检查<strong>可见</strong>的元素）
@@ -222,7 +222,7 @@
 <div class="codeblock"><div class="highlight type-text"><pre>div.alert.alert-error
 </pre></div>
 </div>
-<p>上面这行代码会寻找一个 <code>div</code> 标签。前面介绍过，这里的点号代表 CSS 中的 class（参见 <a href="chapter5.html#section-5-1-2">5.1.2 节</a>），你也许猜到了，这里我们要查找的是同时具有 <code>alert</code> 和 <code>alert-error</code> class 的 <code>div</code> 元素。而且我们还检测了错误提示消息中是否包含了 <code>"Invalid"</code> 这个词。所以，上述测试是检测页面中是否有下面这个元素的：</p>
+<p>上面这行代码会寻找一个 <code>div</code> 标签。前面介绍过，这里的点号代表 CSS 中的 class（参见 <a href="chapter5.html#section-5-1-2">5.1.2 节</a>），你也许猜到了，这里我们要查找的是同时具有 <code>alert</code> 和 <code>alert-error</code> class 的 <code>div</code> 元素，如下：</p>
 
 <div class="codeblock"><div class="highlight type-html"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"alert alert-error"</span><span class="nt">&gt;</span>Invalid...<span class="nt">&lt;/div&gt;</span>
 </pre></div>
@@ -245,7 +245,7 @@
       <span class="n">before</span> <span class="p">{</span> <span class="n">click_button</span> <span class="s2">"Sign in"</span> <span class="p">}</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Invalid'</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -529,7 +529,7 @@
       <span class="n">before</span> <span class="p">{</span> <span class="n">click_button</span> <span class="s2">"Sign in"</span> <span class="p">}</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Invalid'</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"after visiting another page"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">click_link</span> <span class="s2">"Home"</span> <span class="p">}</span>
@@ -1463,7 +1463,7 @@
       <span class="n">before</span> <span class="p">{</span> <span class="n">click_button</span> <span class="s2">"Sign in"</span> <span class="p">}</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Invalid'</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">end</span>
 
     <span class="n">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
@@ -1493,7 +1493,7 @@
 <p>表达的意思是，期望看到一个错误提示信息。如下的步骤定义则检测了能否实现这个期望：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">Then</span> <span class="sr">/^he should see an error message$/</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Invalid'</span><span class="p">)</span>
+  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1501,7 +1501,7 @@
 
 <p>那么，如果你只是想检测页面中是否显示有错误提示信息，就不想在多个地方重复的编写下面的测试：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Invalid'</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>如果你真的这么做了，就把测试和具体的实现绑死了，一旦改变了实现方式，就要到处修改测试。在 RSpec 中，可以自定义匹配器来解决这个问题，我们可以直接这么写：</p>
