@@ -250,7 +250,7 @@
 <div class="codeblock"><div class="highlight type-html"><pre><span class="nt">&lt;img</span> <span class="na">alt=</span><span class="s">"Rails"</span> <span class="na">src=</span><span class="s">"/assets/rails.png"</span> <span class="nt">/&gt;</span>
 </pre></div>
 </div>
-<p><code>alt</code> 属性的内容会在图片无法加载时显示，也会在针对视觉障碍人士的屏幕阅读器中显示。人们有时懒得加上 <code>alt</code> 属性，可是在 HTML 标准中却是必须的。幸运的是，Rails 默认会加上 <code>alt</code> 标签，如果你没有在调用 <code>image_tag</code> 时指定的话，Rails 就会使用图片的文件名（不包括扩展名）。本例中，我们自己设定了 <code>alt</code> 文本，显示一个首字母大写的“Rails”。</p>
+<p>（注意，<code>src</code> 中并没有包含 <code>images</code>，Rails 会自动关联 <code>images</code> 文件夹中对应的图片。把静态资源文件放在 <code>assets</code> 文件夹中可以加快网页响应时间。）<code>alt</code> 属性的内容会在图片无法加载时显示，也会在针对视觉障碍人士的屏幕阅读器中显示。人们有时懒得加上 <code>alt</code> 属性，可是在 HTML 标准中却是必须的。幸运的是，Rails 默认会加上 <code>alt</code> 标签，如果你没有在调用 <code>image_tag</code> 时指定的话，Rails 就会使用图片的文件名（不包括扩展名）。本例中，我们自己设定了 <code>alt</code> 文本，显示一个首字母大写的“Rails”。</p>
 
 <p>在 Rails 之前的版本中，每个 Rails 应用程序中都有 <code>rails.png</code> 这个图片，但在最新版中这个图片不会在执行 <code>rails new</code> 命令时生成，所以要手动从 Ruby on Rails 官网下载，地址为 <a href="http://rubyonrails.org/images/rails.png">http://rubyonrails.org/images/rails.png</a>，保存到 <code>app/assets/images/</code> 文件夹中。（或许还要新建这个文件夹，可以使用 <code>mkdir</code> 命令或者图形化文件管理工具。）因为在代码 5.2 中我们使用了 <code>image_tag</code> 帮助方法，所以 Rails 会通过 Asset Pipeline（参见 <a href="chapter5.html#section-5-2">5.2 节</a>）自动在这个文件夹中寻找所需的图片。</p>
 
@@ -1730,9 +1730,9 @@ end
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"Help page"</span> <span class="k">do</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">help_path</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:heading</span><span class="p">)</span>    <span class="p">{</span> <span class="s1">'Help'</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:page_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Help'</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"About page"</span> <span class="k">do</span>

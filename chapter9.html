@@ -1780,7 +1780,7 @@
 
           <span class="n">describe</span> <span class="s2">"when signing in again"</span> <span class="k">do</span>
             <span class="n">before</span> <span class="k">do</span>
-              <span class="n">delete</span> <span class="n">signout_path</span>
+              <span class="n">click_link</span> <span class="s1">'Sign out'</span>
               <span class="n">visit</span> <span class="n">signin_path</span>
               <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
               <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
