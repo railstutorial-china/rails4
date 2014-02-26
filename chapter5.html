@@ -1119,7 +1119,7 @@ images javascripts stylesheets
 
   <span class="n">describe</span> <span class="s2">"Home page"</span> <span class="k">do</span>
 
-    <span class="n">it</span> <span class="s2">"should have the h1 'Sample App'"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">root_path</span>
       <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
     <span class="k">end</span>
@@ -1137,7 +1137,7 @@ images javascripts stylesheets
 
   <span class="n">describe</span> <span class="s2">"Help page"</span> <span class="k">do</span>
 
-    <span class="n">it</span> <span class="s2">"should have the h1 'Help'"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"should have the content 'Help'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">help_path</span>
       <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Help'</span><span class="p">)</span>
     <span class="k">end</span>
@@ -1150,7 +1150,7 @@ images javascripts stylesheets
 
   <span class="n">describe</span> <span class="s2">"About page"</span> <span class="k">do</span>
 
-    <span class="n">it</span> <span class="s2">"should have the h1 'About Us'"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"should have the content 'About Us'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">about_path</span>
       <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">)</span>
     <span class="k">end</span>

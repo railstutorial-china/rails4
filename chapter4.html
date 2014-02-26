@@ -909,7 +909,7 @@ It worked!
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">data</span><span class="o">-</span><span class="n">turbolinks</span><span class="o">-</span><span class="ss">track</span><span class="p">:</span> <span class="kp">true</span>
 </pre></div>
 </div>
-<p>就会尝试创建一个 Symbol <code>:data-turbolinks-track</code>，但是因为包含了连字符，所以这个 Symbol 是不合法的。所以就只能使用旧句法，写成</p>
+<p>因为其中包含了连字符，所以这个 Symbol 是不合法的。所以就只能使用旧句法，写成</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span>
 </pre></div>
