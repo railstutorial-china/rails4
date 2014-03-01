@@ -528,7 +528,7 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 
 <p>默认情况下，所有帮助方法文件中定义的方法都可以直接用在任意的视图中，不过为了便于管理，我们会把 <code>gravatar_for</code> 放在 Users 控制器对应的帮助文件中。Gravatar 的首页中有介绍说，头像的 URL 地址要使用 MD5 加密的 Email 地址。在 Ruby 中，MD5 加密算法由 <code>Digest</code> 库的 <code>hexdigest</code> 方法实现：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">email</span> <span class="o">=</span> <span class="s2">"MHARTL@example.COM"</span>.
+<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">email</span> <span class="o">=</span> <span class="s2">"MHARTL@example.COM"</span>
 &gt;&gt; Digest::MD5::hexdigest<span class="o">(</span>email.downcase<span class="o">)</span>
 <span class="o">=</span>&gt; <span class="s2">"1fda4469bcbec3badf5418269ffc5968"</span>
 </pre></div>
@@ -675,7 +675,7 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <span class="n">click_button</span> <span class="s2">"Create my account"</span>
 </pre></div>
 </div>
-<p>我们测试的最终目的，是要检测点击“Create my account”按钮之后，程序的表现是否正常，即当提交合法的数据时，创建新用户；当提交不合法的数据时，不创建新用户。检测是是否创建了新用户，我们要看用户的数量是否发生了变化，在测试中，我们使用每个 Active Record 对象都可以响应的 <code>count</code> 方法来获取对象的数量，以用户为例，即：</p>
+<p>我们测试的最终目的，是要检测点击“Create my account”按钮之后，程序的表现是否正常，即当提交合法的数据时，创建新用户；当提交不合法的数据时，不创建新用户。检测是否创建了新用户，我们要看用户的数量是否发生了变化，在测试中，我们使用每个 Active Record 对象都可以响应的 <code>count</code> 方法来获取对象的数量，以用户为例，即：</p>
 
 <div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
 &gt;&gt; User.count
@@ -1018,7 +1018,7 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>基本上等同于</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Foo Bar"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"foo@invalid"</span><span class="p">,</span>
-                 <span class="ss">password</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">,</span> <span class="n">password</span> <span class="ss">confirmation</span><span class="p">:</span> <span class="s2">"bar"</span><span class="p">)</span>
+                 <span class="ss">password</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"bar"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>在 Rails 之前的版本中，使用</p>
