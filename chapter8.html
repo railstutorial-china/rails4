@@ -738,14 +738,14 @@
     <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="kp">private</span>
 
     <span class="k">def</span> <span class="nf">create_remember_token</span>
-      <span class="nb">self</span><span class="o">.</span><span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">)</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">)</span>
     <span class="k">end</span>
 </pre></div>
 </div>
@@ -753,7 +753,7 @@
 
 <p>注意，我们使用 <a href="https://en.wikipedia.org/wiki/SHA-1">SHA1</a> 加密了记忆权标。这种哈希算法比 <a href="chapter6.html#section-6-3-1">6.3.1 节</a>中用来加密用户密码的 Bcrypt 速度快得多。之所以看中速度，是因为对登入的用户来说，每个页面都会加密记忆权标（参加<a href="chapter8.html#section-8-2-2">8.2.2 节</a>）。SHA1 的安全性不如 Bcrypt，但能满足现在的需求，加密后的记忆权标是 16 位随机字符，基本无法破解。（上述代码之所以调用 <code>to_s</code>，是为了处理输入为 <code>nil</code> 的情况，在浏览器中不会遇到，测试时偶尔会出现。）</p>
 
-<p><code>encrypt</code> 和 <code>new_remember_token</code> 方法定义在 <code>User</code> 类中，因为二者无需用户实例就可使用<sup class="footnote" id="fnref-8-6"><a href="#fn-8-6" rel="footnote">6</a></sup>，而且还是公开方法（位于 <code>private</code> 上面）。在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中会将这两个方法剥离出 User 模型。</p>
+<p><code>hash</code> 和 <code>new_remember_token</code> 方法定义在 <code>User</code> 类中，因为二者无需用户实例就可使用<sup class="footnote" id="fnref-8-6"><a href="#fn-8-6" rel="footnote">6</a></sup>，而且还是公开方法（位于 <code>private</code> 上面）。在 <a href="chapter8.html#section-8-2-3">8.2.3 节</a>中会将这两个方法剥离出 User 模型。</p>
 
 <p>把上述的分析结合起来，最终得到的 User 模型文件如代码 8.18 所示。</p>
 
@@ -767,14 +767,14 @@
     <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="kp">private</span>
 
     <span class="k">def</span> <span class="nf">create_remember_token</span>
-      <span class="nb">self</span><span class="o">.</span><span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">)</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">)</span>
     <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -796,7 +796,7 @@
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
     <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
     <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -862,7 +862,7 @@
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
     <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
     <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -940,7 +940,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>上面的做法其实就是实现了 <code>attr_accessor</code> 方法的功能（<a href="chapter4.html#section-4-4-5">4.4.5 节</a>介绍过）。<sup class="footnote" id="fnref-8-5"><a href="#fn-8-5" rel="footnote">8</a></sup>如果按照代码 8.21 来定义 <code>current_user</code> 方法，会出现一个问题：程序不会记住用户的登录状态。一旦用户转到其他的页面，session 就失效了，会自动退出。若要避免这个问题，我们要使用代码 8.19 中生成的记忆权标查找用户，如代码 8.22 所示。注意，因为数据库中保存的记忆权标是加密的，所以在用来查找用户之前要加密从 cookie 中读取的权标。我们可以使用代码 8.18 中定义的 <code>User.encrypt</code> 方法加密。</p>
+<p>上面的做法其实就是实现了 <code>attr_accessor</code> 方法的功能（<a href="chapter4.html#section-4-4-5">4.4.5 节</a>介绍过）。<sup class="footnote" id="fnref-8-5"><a href="#fn-8-5" rel="footnote">8</a></sup>如果按照代码 8.21 来定义 <code>current_user</code> 方法，会出现一个问题：程序不会记住用户的登录状态。一旦用户转到其他的页面，session 就失效了，会自动退出。若要避免这个问题，我们要使用代码 8.19 中生成的记忆权标查找用户，如代码 8.22 所示。注意，因为数据库中保存的记忆权标是加密的，所以在用来查找用户之前要加密从 cookie 中读取的权标。我们可以使用代码 8.18 中定义的 <code>User.hash</code> 方法加密。</p>
 
 <div class="codeblock has-caption" id="codeblock-8-22"><p class="caption"><span>代码 8.22：</span>通过记忆权标查找当前用户</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
   <span class="o">.</span>
@@ -951,7 +951,7 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">current_user</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span><span class="p">)</span>
     <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">remember_token</span><span class="p">:</span> <span class="n">remember_token</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1039,7 +1039,7 @@
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
     <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
     <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 
@@ -1238,7 +1238,7 @@
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
     <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
     <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
   <span class="o">.</span>
@@ -1246,7 +1246,7 @@
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">sign_out</span>
     <span class="n">current_user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span>
-                                  <span class="no">User</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">))</span>
+                                  <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">))</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="kp">nil</span>
     <span class="n">cookies</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">)</span>
   <span class="k">end</span>
