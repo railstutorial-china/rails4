@@ -479,7 +479,7 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<p>这里我们用的是 <code>Micropost.where</code>，二没用 <code>Micropost.find</code>，因为如果没有查询到记录 <code>where</code> 会返回一个空值对象，而 <code>find</code> 会抛出异常。测试空值对象要更容易。如果你好奇想知道如何测试异常，可以使用下面的代码：</p>
+<p>这里我们用的是 <code>Micropost.where</code>，而不是 <code>Micropost.find</code>，因为如果没有查询到记录 <code>where</code> 会返回一个空值对象，而 <code>find</code> 会抛出异常。测试空值对象要更容易。如果你好奇想知道如何测试异常，可以使用下面的代码：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span> <span class="k">do</span>
   <span class="no">Micropost</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">micropost</span><span class="p">)</span>
