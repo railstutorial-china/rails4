@@ -717,7 +717,7 @@
 </div>
 <p>上面这行代码叫做“方法引用”。当 Rails 执行到这行代码时，会寻找一个名为 <code>create_remember_token</code> 的方法，在创建用户之前执行。（在代码 6.20 中，我们直接给 <code>before_save</code> 指定了块参数，但更推荐使用这种“方法引用”方式。）而且，<code>create_remember_token</code> 只会在 User 模型内部使用，所以没必要把它开放给用户之外的对象。如 <a href="chapter7.html#section-7-3-2">7.3.2 节</a>中所讲，在 Ruby 中，我们可以使用 <code>private</code> 关键字<sup class="footnote" id="fnref-8-t4"><a href="#fn-8-t4" rel="footnote">5</a></sup>限制方法的可见性：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">pivate</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="kp">private</span>
 
   <span class="k">def</span> <span class="nf">create_remember_token</span>
     <span class="c1"># Create the token.</span>
