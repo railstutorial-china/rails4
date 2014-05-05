@@ -86,7 +86,7 @@
 
 <p>和之前一样，如果你使用 Git 做版本控制的话，现在最好创建一个新分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout -b filling-in-layout
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout -b filling-in-layout
 </pre></div>
 </div>
 <h3 id='section-5-1-1'><span>5.1.1</span> 网站导航</h3>
@@ -94,70 +94,70 @@
 
 <p>在示例程序中加入链接和样式的第一步，要修改布局文件 <code>application.html.erb</code>（上次使用是在代码 4.3 中），添加一些 HTML 结构。我们要添加一些区域，一些 CSS class，以及网站导航。布局文件的内容参见代码 5.1，对各部分代码的说明紧跟其后。如果你迫不及待的想看到结果，请查看图 5.2。（注意：结果（还）不是很让人满意。）</p>
 
-<div class="codeblock has-caption" id="codeblock-5-1"><p class="caption"><span>代码 5.1：</span>添加一些结构后的网站布局文件</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
-                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;!--[if lt IE 9]&gt;</span>
-<span class="x">    &lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;</span>
-<span class="x">    &lt;![endif]--&gt;</span>
-<span class="x">  &lt;/head&gt;</span>
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    &lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
-<span class="x">      &lt;div class="navbar-inner"&gt;</span>
-<span class="x">        &lt;div class="container"&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">          &lt;nav&gt;</span>
-<span class="x">            &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">              &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">              &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">              &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">            &lt;/ul&gt;</span>
-<span class="x">          &lt;/nav&gt;</span>
-<span class="x">        &lt;/div&gt;</span>
-<span class="x">      &lt;/div&gt;</span>
-<span class="x">    &lt;/header&gt;</span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-1"><p class="caption"><span>代码 5.1：</span>添加一些结构后的网站布局文件</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media: </span><span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span>
+    <span class="c">&lt;!--[if lt IE 9]&gt;
+    &lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;
+    &lt;![endif]--&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+          <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+          <span class="nt">&lt;nav&gt;</span>
+            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+              <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+              <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+            <span class="nt">&lt;/ul&gt;</span>
+          <span class="nt">&lt;/nav&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/header&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
 </pre></div>
 </div>
 <p>我们从上往下看一下代码 5.1 中新添加的元素。<a href="chapter3.html#section-3-3-2">3.3.2 节</a>简单的介绍过，Rails 4 默认会使用 HTML5（如 <code>&lt;!DOCTYPE html&gt;</code> 所示），因为 HTML5 标准还很新，有些浏览器（特别是较旧版本的 IE 浏览器）还没有完全支持，所以我们加载了一些 JavaScript 代码（称作“<a href="http://code.google.com/p/html5shim/">HTML5 shim</a>”）来解决这个问题：</p>
 
-<div class="codeblock"><div class="highlight type-html"><pre><span class="c">&lt;!--[if lt IE 9]&gt;</span>
-<span class="c">&lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;</span>
-<span class="c">&lt;![endif]--&gt;</span>
+<div class="codeblock"><div class="highlight type-html"><pre><span class="c">&lt;!--[if lt IE 9]&gt;
+&lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;
+&lt;![endif]--&gt;</span>
 </pre></div>
 </div>
 <p>如下有点古怪的句法</p>
 
-<div class="codeblock"><div class="highlight type-html"><pre><span class="c">&lt;!--[if lt IE 9]&gt;</span>
-</pre></div>
+<div class="codeblock"><div class="highlight type-html"><pre><span class="c">&lt;!--[if lt IE 9]&gt;
+</span></pre></div>
 </div>
 <p>只有当 IE 浏览器的版本小于 9 时（<code>if lt IE 9</code>）才会加载其中的代码。这个奇怪的 <code>[if lt IE 9]</code> 句法不是 Rails 提供的，其实它是 IE 浏览器为了解决兼容性问题而特别支持的<a href="http://en.wikipedia.org/wiki/Conditional_comment">条件注释</a>（conditional comment）。这就带来了一个好处，因为这说明我们只会在 IE9 以前的版本中加载 HTML5 shim，而 Firefox、Chrome 和 Safari 等其他浏览器则不会受到影响。</p>
 
 <p>后面的区域是一个 <code>header</code>，包含网站的 LOGO（纯文本）、一些小区域（使用 <code>div</code> 标签）和一个导航列表元素：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
-<span class="x">  &lt;div class="navbar-inner"&gt;</span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;nav&gt;</span>
-<span class="x">        &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">        &lt;/ul&gt;</span>
-<span class="x">      &lt;/nav&gt;</span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/header&gt;</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;nav&gt;</span>
+        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+      <span class="nt">&lt;/nav&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
 </pre></div>
 </div>
 <p><code>header</code> 标签的意思是放在网页顶部的内容。我们为 <code>header</code> 标签指定了三个 CSS class<sup class="footnote" id="fnref-5-3"><a href="#fn-5-3" rel="footnote">3</a></sup>，<code>navbar</code>、<code>navbar-fixed-top</code> 和 <code>navbar-inverse</code>，用空格分开：</p>
@@ -175,69 +175,69 @@
 
 <p>在这些 <code>div</code> 之后，有一些 ERb 代码：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;nav&gt;</span>
-<span class="x">  &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">    &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">    &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">    &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">  &lt;/ul&gt;</span>
-<span class="x">&lt;/nav&gt;</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;nav&gt;</span>
+  <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+  <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/nav&gt;</span>
 </pre></div>
 </div>
 <p>这里使用了 Rails 中的 <code>link_to</code> 帮助方法来创建链接（在 <a href="chapter3.html#section-3-3-2">3.3.2 节</a>中我们是直接创建 <code>a</code> 标签来实现的）。<code>link_to</code> 的第一个参数是链接文本，第二个参数是链接地址。在 <a href="chapter5.html#section-5-3-3">5.3.3 节</a>中我们会指定链接地址为设置好的路由，这里我们用的是 Web 设计中经常使用的占位符 <code>#</code>。第三个参数是可选的，为一个 Hash，本例使用这个参数为 LOGO 添加了一个 <code>logo</code> id。（其他三个链接没有使用这个 Hash 参数，没关系，因为这个参数是可选的。）Rails 帮助方法经常这样使用 Hash 参数，可以让我们仅使用 Rails 的帮助方法就能灵活的添加 HTML 属性。</p>
 
 <p>第二个 <code>div</code> 中是个导航链接列表，使用无序列表标签 <code>ul</code>，以及列表项目标签 <code>li</code>：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;nav&gt;</span>
-<span class="x">  &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">    &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">    &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">    &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">  &lt;/ul&gt;</span>
-<span class="x">&lt;/nav&gt;</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="nt">&lt;nav&gt;</span>
+  <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+  <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/nav&gt;</span>
 </pre></div>
 </div>
 <p>上面代码中的 <code>nav</code> 标签以前是不需要的，它的目的是显示导航链接。<code>ul</code> 标签指定的 <code>nav</code> 和 <code>pull-right</code> class 在 Bootstrap 中有特殊的意义。 Rails 处理这个布局文件并执行其中的 ERb 代码后，生成的列表如下面的代码所示：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;nav&gt;</span>
-<span class="x">  &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">    &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;</span>
-<span class="x">    &lt;li&gt;&lt;a href="#"&gt;Help&lt;/a&gt;&lt;/li&gt;</span>
-<span class="x">    &lt;li&gt;&lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/li&gt;</span>
-<span class="x">  &lt;/ul&gt;</span>
-<span class="x">&lt;/nav&gt;</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="nt">&lt;nav&gt;</span>
+  <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>Help<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>Sign in<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/nav&gt;</span>
 </pre></div>
 </div>
 <p>布局文件的最后一个 <code>div</code> 是主内容区域：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;div class="container"&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/div&gt;</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>和之前一样，<code>container</code> class 在 Bootstrap 中有特殊的意义。<a href="chapter3.html#section-3-3-4">3.3.4 节</a>已经介绍过，<code>yield</code> 会把各页面中的内容插入网站的布局中。</p>
 
 <p>除了网站的底部（在 <a href="chapter5.html#section-5-1-3">5.1.3 节</a>添加）之外，布局现在就完成了，访问一下“首页”就能看到结果了。为了利用后面添加的样式，我们要向 <code>home.html.erb</code> 视图中加入一些元素。（参见代码 5.2。）</p>
 
-<div class="codeblock has-caption" id="codeblock-5-2"><p class="caption"><span>代码 5.2：</span>“首页”的代码，包含一个到注册页面的链接</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;div class="center hero-unit"&gt;</span>
-<span class="x">  &lt;h1&gt;Welcome to the Sample App&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-2"><p class="caption"><span>代码 5.2：</span>“首页”的代码，包含一个到注册页面的链接</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"center hero-unit"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>Welcome to the Sample App<span class="nt">&lt;/h1&gt;</span>
 
-<span class="x">  &lt;h2&gt;</span>
-<span class="x">    This is the home page for the</span>
-<span class="x">    &lt;a href="http://railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
-<span class="x">    sample application.</span>
-<span class="x">  &lt;/h2&gt;</span>
+  <span class="nt">&lt;h2&gt;</span>
+    This is the home page for the
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://railstutorial.org/"</span><span class="nt">&gt;</span>Ruby on Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+    sample application.
+  <span class="nt">&lt;/h2&gt;</span>
 
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up now!"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/div&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up now!"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">image_tag</span><span class="p">(</span><span class="s2">"rails.png"</span><span class="p">,</span> <span class="ss">alt</span><span class="p">:</span> <span class="s2">"Rails"</span><span class="p">),</span> <span class="s1">'http://rubyonrails.org/'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">image_tag</span><span class="p">(</span><span class="s2">"rails.png"</span><span class="p">,</span> <span class="ss">alt: </span><span class="s2">"Rails"</span><span class="p">),</span> <span class="s1">'http://rubyonrails.org/'</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>上面代码中第一个 <code>link_to</code> 创建了一个占位链接，指向<a href="chapter7.html">第 7 章</a>中创建的用户注册页面</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">&lt;a href="#" class="btn btn-large btn-primary"&gt;Sign up now!&lt;/a&gt;</span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"btn btn-large btn-primary"</span><span class="nt">&gt;</span>Sign up now!<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 </div>
 <p><code>div</code> 标签中的 <code>hero-unit</code> class 在 Bootstrap 中有特殊的意义，注册按钮的 <code>btn</code>、<code>btn-large</code> 和 <code>btn-primary</code> 也是一样。</p>
@@ -275,12 +275,12 @@
 </div>
 <p>像往常一样，运行 <code>bundle install</code> 安装 Bootstrap：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle install
 </pre></div>
 </div>
 <p>然后重启 Web 服务器，改动才能在应用程序中生效。（在大多数系统中可以使用 Ctrl-C 结束服务器，然后再执行 <code>rails server</code> 命令。）最后，对 Rails 4 来说，我们还要在 <code>config/application.rb</code> 中添加一行代码，让 <code>bootstrap-sass</code> 这个 gem 和 Asset Pipeline 兼容，如代码 5.4 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-4"><p class="caption"><span>代码 5.4：</span>添加一行代码，兼容 Asset Pipeline</p><p class="file"><code>config/application.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">'../boot'</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+<div class="codeblock has-caption" id="codeblock-5-4"><p class="caption"><span>代码 5.4：</span>添加一行代码，兼容 Asset Pipeline</p><p class="file"><code>config/application.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'../boot'</span><span class="p">,</span> <span class="kp">__FILE__</span><span class="p">)</span>
 <span class="o">.</span>
 <span class="o">.</span>
 <span class="o">.</span>
@@ -289,19 +289,19 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w(*.png *.jpg *.jpeg *.gif)</span>
+    <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">precompile</span> <span class="o">+=</span> <span class="sx">%w(*.png *.jpg *.jpeg *.gif)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>要向应用程序中添加自定义的 CSS，首先要创建一个 CSS 文件：</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>app/assets/stylesheets/custom.css.scss
+<div class="codeblock"><div class="highlight type-plaintext"><pre>app/assets/stylesheets/custom.css.scss
 </pre></div>
 </div>
 <p>文件存放的目录和文件名都很重要。其中目录</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>app/assets/stylesheets
+<div class="codeblock"><div class="highlight type-plaintext"><pre>app/assets/stylesheets
 </pre></div>
 </div>
 <div class="figure" id="figure-5-3">
@@ -326,41 +326,41 @@
 <span class="cm">/* universal */</span>
 
 <span class="nt">html</span> <span class="p">{</span>
-  <span class="na">overflow-y</span><span class="o">:</span> <span class="no">scroll</span><span class="p">;</span>
+  <span class="nl">overflow-y</span><span class="p">:</span> <span class="nb">scroll</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">body</span> <span class="p">{</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">60</span><span class="kt">px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">60px</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">section</span> <span class="p">{</span>
-  <span class="na">overflow</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span>
+  <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">textarea</span> <span class="p">{</span>
-  <span class="na">resize</span><span class="o">:</span> <span class="n">vertical</span><span class="p">;</span>
+  <span class="nl">resize</span><span class="p">:</span> <span class="n">vertical</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nc">.center</span> <span class="p">{</span>
-  <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nc">.center</span> <span class="nt">h1</span> <span class="p">{</span>
-  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+  <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>注意代码 5.6 中的 CSS 格式是很统一的。一般来说，CSS 规则是通过 class、id、HTML 标签或者三者结合在一起来定义的，后面会跟着一些样式声明。例如：</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nt">body</span> <span class="p">{</span>
-  <span class="k">padding-top</span><span class="o">:</span> <span class="m">60px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">60px</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>把页面的上内边距设为 60 像素。我们在 <code>header</code> 标签上指定了 <code>navbar-fixed-top</code> class，Bootstrap 就把这个导航条固定在页面的顶部。所以页面的上内边距会把主内容区和导航条隔开一段距离。（导航条的颜色在 Bootstrap 2.0 和 2.1 之间是不一样的，所以我们要加入 <code>navbar-inverse</code> class，把亮色变暗。）下面的 CSS 规则：</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nc">.center</span> <span class="p">{</span>
-  <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -379,28 +379,28 @@
 <span class="o">/*</span> <span class="nt">typography</span> <span class="o">*/</span>
 
 <span class="nt">h1</span><span class="o">,</span> <span class="nt">h2</span><span class="o">,</span> <span class="nt">h3</span><span class="o">,</span> <span class="nt">h4</span><span class="o">,</span> <span class="nt">h5</span><span class="o">,</span> <span class="nt">h6</span> <span class="p">{</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">h1</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">3</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-2</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">3em</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-2px</span><span class="p">;</span>
+  <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">30px</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">h2</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.2</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
-  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#999</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.2em</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-1px</span><span class="p">;</span>
+  <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">30px</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+  <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#999</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">p</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.1</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.7</span><span class="kt">em</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.1em</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="mi">.7em</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -417,20 +417,20 @@
 <span class="o">/*</span> <span class="nt">header</span> <span class="o">*/</span>
 
 <span class="nn">#logo</span> <span class="p">{</span>
-  <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-  <span class="na">margin-right</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.7</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#fff</span><span class="p">;</span>
-  <span class="na">text-transform</span><span class="o">:</span> <span class="no">uppercase</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">9</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">font-weight</span><span class="o">:</span> <span class="no">bold</span><span class="p">;</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+  <span class="nl">margin-right</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.7em</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#fff</span><span class="p">;</span>
+  <span class="nl">text-transform</span><span class="p">:</span> <span class="nb">uppercase</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-1px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">9px</span><span class="p">;</span>
+  <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">bold</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nn">#logo</span><span class="nd">:hover</span> <span class="p">{</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#fff</span><span class="p">;</span>
-  <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#fff</span><span class="p">;</span>
+  <span class="nl">text-decoration</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -441,96 +441,96 @@
 
 <p>虽然代码 5.1 中的布局达到了目的，但它的内容看起来有点混乱。HTML shim 就占用了三行，而且使用了只针对 IE 的奇怪句法，所以如果能把它打包放在一个单独的地方就好了。头部的 HTML 自成一个逻辑单元，所以也可以把这部分打包放在某个地方。在 Rails 中我们可以使用局部视图来实现这种想法。先来看一下定义了局部视图之后的布局文件（参见代码 5.9）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-9"><p class="caption"><span>代码 5.9：</span>定义了 HTML shim 和头部局部视图之后的网站布局</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
-                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;/head&gt;</span>
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/header'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-9"><p class="caption"><span>代码 5.9：</span>定义了 HTML shim 和头部局部视图之后的网站布局</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media: </span><span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/header'</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
 </pre></div>
 </div>
 <p>代码 5.9 中，我们把加载 HTML shim 的那几行代码换成了对 Rails 帮助函数 <code>render</code> 的调用：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>这行代码会寻找一个名为 <code>app/views/layouts/_shim.html.erb</code> 的文件，执行文件中的代码，然后把结果插入视图。<sup class="footnote" id="fnref-5-6"><a href="#fn-5-6" rel="footnote">6</a></sup>（回顾一下，执行 Ruby 表达式并将结果插入模板中要使用 <code>&lt;%=...%&gt;</code>。）注意文件名 <code>_shim.html.erb</code> 的开头是个下划线，这个下划线是局部视图的命名约定，可以在目录中快速定位所有的局部视图。</p>
 
 <p>当然，若要局部视图起作用，我们要写入相应的内容。本例中的 HTML shim 局部视图只包含三行代码，如代码 5.10 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-10"><p class="caption"><span>代码 5.10：</span>HTML shim 局部视图</p><p class="file"><code>app/views/layouts/_shim.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!--[if lt IE 9]&gt;</span>
-<span class="x">&lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;</span>
-<span class="x">&lt;![endif]--&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-10"><p class="caption"><span>代码 5.10：</span>HTML shim 局部视图</p><p class="file"><code>app/views/layouts/_shim.html.erb</code></p><div class="highlight type-erb"><pre><span class="c">&lt;!--[if lt IE 9]&gt;
+&lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;
+&lt;![endif]--&gt;</span>
 </pre></div>
 </div>
 <p>类似的，我们可以把头部的内容移入局部视图，如代码 5.11 所示，然后再次调用 <code>render</code> 把这个局部视图插入布局中。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-11"><p class="caption"><span>代码 5.11：</span>网站头部的局部视图</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
-<span class="x">  &lt;div class="navbar-inner"&gt;</span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;nav&gt;</span>
-<span class="x">        &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">        &lt;/ul&gt;</span>
-<span class="x">      &lt;/nav&gt;</span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/header&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-11"><p class="caption"><span>代码 5.11：</span>网站头部的局部视图</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;nav&gt;</span>
+        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+      <span class="nt">&lt;/nav&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
 </pre></div>
 </div>
 <p>现在我们已经知道怎么创建局部视图了，让我们来加入和头部对应的网站底部吧。你或许已经猜到了，我们会把这个局部视图命名为 <code>_footer.html.erb</code>，放在布局目录中（参见代码 5.12）。<sup class="footnote" id="fnref-5-7"><a href="#fn-5-7" rel="footnote">7</a></sup></p>
 
-<div class="codeblock has-caption" id="codeblock-5-12"><p class="caption"><span>代码 5.12：</span>网站底部的局部视图</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
-<span class="x">  &lt;small&gt;</span>
-<span class="x">    &lt;a href="http://railstutorial.org/"&gt;Rails Tutorial&lt;/a&gt;</span>
-<span class="x">    by Michael Hartl</span>
-<span class="x">  &lt;/small&gt;</span>
-<span class="x">  &lt;nav&gt;</span>
-<span class="x">    &lt;ul&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Contact"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;&lt;a href="http://news.railstutorial.org/"&gt;News&lt;/a&gt;&lt;/li&gt;</span>
-<span class="x">    &lt;/ul&gt;</span>
-<span class="x">  &lt;/nav&gt;</span>
-<span class="x">&lt;/footer&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-12"><p class="caption"><span>代码 5.12：</span>网站底部的局部视图</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;footer</span> <span class="na">class=</span><span class="s">"footer"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;small&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://railstutorial.org/"</span><span class="nt">&gt;</span>Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+    by Michael Hartl
+  <span class="nt">&lt;/small&gt;</span>
+  <span class="nt">&lt;nav&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Contact"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"http://news.railstutorial.org/"</span><span class="nt">&gt;</span>News<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/nav&gt;</span>
+<span class="nt">&lt;/footer&gt;</span>
 </pre></div>
 </div>
 <p>和头部类似，在底部我们使用 <code>link_to</code> 创建到“关于”页面和“联系”页面的链接，地址暂时使用占位符 <code>#</code>。（和 <code>header</code> 一样，<code>footer</code> 标签也是 HTML5 新增加的。）</p>
 
 <p>按照 HTML shim 和头部局部视图采用的方式，我们也可以在布局视图中渲染底部局部视图。（参见代码 5.13。）</p>
 
-<div class="codeblock has-caption" id="codeblock-5-13"><p class="caption"><span>代码 5.13：</span>网站的布局，包含底部局部视图</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html&gt;</span>
-<span class="x">  &lt;head&gt;</span>
-<span class="x">    &lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s2">"all"</span><span class="p">,</span>
-                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;/head&gt;</span>
-<span class="x">  &lt;body&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/header'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/footer'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-13"><p class="caption"><span>代码 5.13：</span>网站的布局，包含底部局部视图</p><p class="file"><code>app/views/layouts/application.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">full_title</span><span class="p">(</span><span class="k">yield</span><span class="p">(</span><span class="ss">:title</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="ss">media: </span><span class="s2">"all"</span><span class="p">,</span>
+                                           <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s2">"application"</span><span class="p">,</span> <span class="s2">"data-turbolinks-track"</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">csrf_meta_tags</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/shim'</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/header'</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'layouts/footer'</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
 </pre></div>
 </div>
 <p>当然，如果没有样式的话，底部还是很丑的（样式参见代码 5.14）。添加样式后的效果如图 5.7 所示。</p>
@@ -542,32 +542,32 @@
 <span class="o">/*</span> <span class="nt">footer</span> <span class="o">*/</span>
 
 <span class="nt">footer</span> <span class="p">{</span>
-  <span class="na">margin-top</span><span class="o">:</span> <span class="mi">45</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">border-top</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="mh">#eaeaea</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#999</span><span class="p">;</span>
+  <span class="nl">margin-top</span><span class="p">:</span> <span class="m">45px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="nl">border-top</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="mh">#eaeaea</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#999</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">footer</span> <span class="nt">a</span> <span class="p">{</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#555</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#555</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">footer</span> <span class="nt">a</span><span class="nd">:hover</span> <span class="p">{</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#222</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#222</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">footer</span> <span class="nt">small</span> <span class="p">{</span>
-  <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">footer</span> <span class="nt">ul</span> <span class="p">{</span>
-  <span class="na">float</span><span class="o">:</span> <span class="no">right</span><span class="p">;</span>
-  <span class="na">list-style</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+  <span class="nl">list-style</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">footer</span> <span class="nt">ul</span> <span class="nt">li</span> <span class="p">{</span>
-  <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-  <span class="na">margin-left</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+  <span class="nl">margin-left</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -601,7 +601,7 @@
   <li><code>vendor/assets</code>：存放第三方代码库用到的资源文件</li>
 </ul><p>你可能猜到了，上面的目录中都会有针对不同资源类型的子目录。例如：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>ls app/assets/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>ls app/assets/
 images javascripts stylesheets
 </pre></div>
 </div>
@@ -612,38 +612,38 @@ images javascripts stylesheets
 
 <p>当你把资源文件存放在适当的目录后，要通过清单文件告诉 Rails怎么把它们合并成一个文件（使用 <a href="https://github.com/sstephenson/sprockets">Sprockets</a> gem。只适用于 CSS 和 JavaScript，而不会处理图片。）举个例子，让我们看一下应用程序默认的样式表清单文件（参见代码 5.15）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-15"><p class="caption"><span>代码 5.15：</span>应用程序的样式表清单文件</p><p class="file"><code>app/assets/stylesheets/application.css</code></p><div class="highlight type-css"><pre><span class="c">/*</span>
-<span class="c"> * This is a manifest file that'll automatically include all the stylesheets</span>
-<span class="c"> * available in this directory and any sub-directories. You're free to add</span>
-<span class="c"> * application-wide styles to this file and they'll appear at the top of the</span>
-<span class="c"> * compiled file, but it's generally better to create a new file per style</span>
-<span class="c"> * scope.</span>
-<span class="c"> *= require_self</span>
-<span class="c"> *= require_tree .</span>
-<span class="c">*/</span>
+<div class="codeblock has-caption" id="codeblock-5-15"><p class="caption"><span>代码 5.15：</span>应用程序的样式表清单文件</p><p class="file"><code>app/assets/stylesheets/application.css</code></p><div class="highlight type-css"><pre><span class="c">/*
+ * This is a manifest file that'll automatically include all the stylesheets
+ * available in this directory and any sub-directories. You're free to add
+ * application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style
+ * scope.
+ *= require_self
+ *= require_tree .
+*/</span>
 </pre></div>
 </div>
 <p>这里的关键代码是几行 CSS 注释，Sprockets 会通过这些注释加载相应的文件：</p>
 
-<div class="codeblock"><div class="highlight type-css"><pre><span class="c">/*</span>
-<span class="c"> * .</span>
-<span class="c"> * .</span>
-<span class="c"> * .</span>
-<span class="c"> *= require_self</span>
-<span class="c"> *= require_tree .</span>
-<span class="c">*/</span>
+<div class="codeblock"><div class="highlight type-css"><pre><span class="c">/*
+ * .
+ * .
+ * .
+ *= require_self
+ *= require_tree .
+*/</span>
 </pre></div>
 </div>
 <p>上面代码中的</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>*= require_tree .
+<div class="codeblock"><div class="highlight type-plaintext"><pre>*= require_tree .
 </pre></div>
 </div>
 <p>会把 <code>app/assets/stylesheets</code> 目录中的所有 CSS 文件都引入应用程序的样式表中。</p>
 
 <p>下面这行：</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>*= require_self
+<div class="codeblock"><div class="highlight type-plaintext"><pre>*= require_self
 </pre></div>
 </div>
 <p>会把 <code>application.css</code> 这个文件中的 CSS 也加载进来。</p>
@@ -657,12 +657,12 @@ images javascripts stylesheets
 
 <p>预处理器引擎可以连接在一起使用，因此</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>foobar.js.coffee
+<div class="codeblock"><div class="highlight type-plaintext"><pre>foobar.js.coffee
 </pre></div>
 </div>
 <p>只会使用 CoffeeScript 处理器，而</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>foobar.js.erb.coffee
+<div class="codeblock"><div class="highlight type-plaintext"><pre>foobar.js.erb.coffee
 </pre></div>
 </div>
 <p>会使用 CoffeeScript 和 ERb 处理器（按照扩展名的顺序从右向左处理，所以 CoffeeScript 处理器会先执行）。</p>
@@ -685,20 +685,20 @@ images javascripts stylesheets
 <p>样式表中经常会定义嵌套元素的样式，例如，在代码 5.6 中，定义了 <code>.center</code> 和 <code>.center h1</code> 两个样式：</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nc">.center</span> <span class="p">{</span>
-  <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nc">.center</span> <span class="nt">h1</span> <span class="p">{</span>
-  <span class="k">margin-bottom</span><span class="o">:</span> <span class="m">10px</span><span class="p">;</span>
+  <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>使用 Sass 可将其改写成</p>
 
 <div class="codeblock"><div class="highlight type-scss"><pre><span class="nc">.center</span> <span class="p">{</span>
-  <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
   <span class="nt">h1</span> <span class="p">{</span>
-    <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+    <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -708,38 +708,38 @@ images javascripts stylesheets
 <p>嵌套还有另一种形式，句法稍有不同。在代码 5.8 中，有如下的代码</p>
 
 <div class="codeblock"><div class="highlight type-css"><pre><span class="nf">#logo</span> <span class="p">{</span>
-  <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
-  <span class="k">margin-right</span><span class="o">:</span> <span class="m">10px</span><span class="p">;</span>
-  <span class="k">font-size</span><span class="o">:</span> <span class="m">1.7em</span><span class="p">;</span>
-  <span class="k">color</span><span class="o">:</span> <span class="m">#fff</span><span class="p">;</span>
-  <span class="k">text-transform</span><span class="o">:</span> <span class="k">uppercase</span><span class="p">;</span>
-  <span class="k">letter-spacing</span><span class="o">:</span> <span class="m">-1px</span><span class="p">;</span>
-  <span class="k">padding-top</span><span class="o">:</span> <span class="m">9px</span><span class="p">;</span>
-  <span class="k">font-weight</span><span class="o">:</span> <span class="k">bold</span><span class="p">;</span>
-  <span class="k">line-height</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+  <span class="nl">margin-right</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1.7em</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="m">#fff</span><span class="p">;</span>
+  <span class="nl">text-transform</span><span class="p">:</span> <span class="nb">uppercase</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-1px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">9px</span><span class="p">;</span>
+  <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">bold</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nf">#logo</span><span class="nd">:hover</span> <span class="p">{</span>
-  <span class="k">color</span><span class="o">:</span> <span class="m">#fff</span><span class="p">;</span>
-  <span class="k">text-decoration</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="m">#fff</span><span class="p">;</span>
+  <span class="nl">text-decoration</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>其中 LOGO 的 id <code>#logo</code> 出现了两次，一次是单独出现的，另一次是和 <code>hover</code> 伪类一起出现的（鼠标悬停其上时的样式）。如果要嵌套第二个样式，我们需要引用父级元素 <code>#logo</code>，在 SCSS 中，使用 <code>&amp;</code> 符号实现：</p>
 
 <div class="codeblock"><div class="highlight type-scss"><pre><span class="nn">#logo</span> <span class="p">{</span>
-  <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-  <span class="na">margin-right</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.7</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#fff</span><span class="p">;</span>
-  <span class="na">text-transform</span><span class="o">:</span> <span class="no">uppercase</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">9</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">font-weight</span><span class="o">:</span> <span class="no">bold</span><span class="p">;</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+  <span class="nl">margin-right</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.7em</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#fff</span><span class="p">;</span>
+  <span class="nl">text-transform</span><span class="p">:</span> <span class="nb">uppercase</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-1px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">9px</span><span class="p">;</span>
+  <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">bold</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
   <span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
-    <span class="na">color</span><span class="o">:</span> <span class="mh">#fff</span><span class="p">;</span>
-    <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="mh">#fff</span><span class="p">;</span>
+    <span class="nl">text-decoration</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -749,25 +749,25 @@ images javascripts stylesheets
 <p>这两种嵌套方式都可以用于代码 5.14 中的底部样式上，转换后的样式如下：</p>
 
 <div class="codeblock"><div class="highlight type-scss"><pre><span class="nt">footer</span> <span class="p">{</span>
-  <span class="na">margin-top</span><span class="o">:</span> <span class="mi">45</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">border-top</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="mh">#eaeaea</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#999</span><span class="p">;</span>
+  <span class="nl">margin-top</span><span class="p">:</span> <span class="m">45px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="nl">border-top</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="mh">#eaeaea</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="mh">#999</span><span class="p">;</span>
   <span class="nt">a</span> <span class="p">{</span>
-    <span class="na">color</span><span class="o">:</span> <span class="mh">#555</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="mh">#555</span><span class="p">;</span>
     <span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
-      <span class="na">color</span><span class="o">:</span> <span class="mh">#222</span><span class="p">;</span>
+      <span class="nl">color</span><span class="p">:</span> <span class="mh">#222</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
   <span class="nt">small</span> <span class="p">{</span>
-    <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
+    <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="nt">ul</span> <span class="p">{</span>
-    <span class="na">float</span><span class="o">:</span> <span class="no">right</span><span class="p">;</span>
-    <span class="na">list-style</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+    <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+    <span class="nl">list-style</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
     <span class="nt">li</span> <span class="p">{</span>
-      <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-      <span class="na">margin-left</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+      <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+      <span class="nl">margin-left</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -781,71 +781,71 @@ images javascripts stylesheets
 <p>Sass 允许我们自定义变量来避免重复，这样也可以写出更具表现力的代码。例如，代码 5.7 和代码 5.14 中都重复使用了同一个颜色代码：</p>
 
 <div class="codeblock"><div class="highlight type-scss"><pre><span class="nt">h2</span> <span class="p">{</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#999</span><span class="p">;</span>
+  <span class="err">.
+  .
+  .
+  </span><span class="nl">color</span><span class="p">:</span> <span class="mh">#999</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nt">footer</span> <span class="p">{</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">color</span><span class="o">:</span> <span class="mh">#999</span><span class="p">;</span>
+  <span class="err">.
+  .
+  .
+  </span><span class="nl">color</span><span class="p">:</span> <span class="mh">#999</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>上面代码中的 <code>#999</code> 是淡灰色（ligh gray），我们可以为它定义一个变量：</p>
 
-<div class="codeblock"><div class="highlight type-scss"><pre><span class="nv">$lightGray</span><span class="o">:</span> <span class="mh">#999</span><span class="p">;</span>
+<div class="codeblock"><div class="highlight type-scss"><pre><span class="nv">$lightGray</span><span class="p">:</span> <span class="mh">#999</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>然后我们就可以这样写 SCSS：</p>
 
-<div class="codeblock"><div class="highlight type-scss"><pre><span class="nv">$lightGray</span><span class="o">:</span> <span class="mh">#999</span><span class="p">;</span>
+<div class="codeblock"><div class="highlight type-scss"><pre><span class="nv">$lightGray</span><span class="p">:</span> <span class="mh">#999</span><span class="p">;</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nt">h2</span> <span class="p">{</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">color</span><span class="o">:</span> <span class="nv">$lightGray</span><span class="p">;</span>
+  <span class="err">.
+  .
+  .
+  </span><span class="nl">color</span><span class="p">:</span> <span class="nv">$lightGray</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nt">footer</span> <span class="p">{</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">color</span><span class="o">:</span> <span class="nv">$lightGray</span><span class="p">;</span>
+  <span class="err">.
+  .
+  .
+  </span><span class="nl">color</span><span class="p">:</span> <span class="nv">$lightGray</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>因为像 <code>$lightGray</code> 这样的变量名比 <code>#999</code> 更具说明性，所以为没有重复使用的值定义变量往往也是很有用的。Bootstrap 框架定义了很多颜色变量，<a href="http://bootstrapdocs.com/v2.0.4/docs/less.html">Bootstrap 页面中有这些变量的 LESS 形式</a>。这个页面中的变量使用的是 LESS 句法，而不是 Sass 句法，不过 bootstrap-sass gem 为我们提供了对应的 Sass 形式。二者之间的对应关系也不难猜出，LESS 使用 <code>@</code> 符号定义变量，而 Sass 使用 <code>$</code> 符号。在 Bootstrap 的变量页面我们可以看到为淡灰色定义的变量：</p>
 
-<div class="codeblock"><div class="highlight type-scss"><pre><span class="k">@grayLight</span><span class="nd">:</span> <span class="nn">#999</span><span class="o">;</span>
+<div class="codeblock"><div class="highlight type-scss"><pre><span class="k">@grayLight</span><span class="nd">:</span> <span class="nn">#999</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>也就是说，在 bootstrap-sass gem 中会有一个对应的 SCSS 变量 <code>$grayLight</code>。我们可以用它换掉自己定义的 <code>$lightGray</code> 变量：</p>
 
 <div class="codeblock"><div class="highlight type-scss"><pre><span class="nt">h2</span> <span class="p">{</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">color</span><span class="o">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
+  <span class="err">.
+  .
+  .
+  </span><span class="nl">color</span><span class="p">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nt">footer</span> <span class="p">{</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">.</span>
-  <span class="na">color</span><span class="o">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
+  <span class="err">.
+  .
+  .
+  </span><span class="nl">color</span><span class="p">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -855,101 +855,101 @@ images javascripts stylesheets
 
 <span class="cm">/* mixins, variables, etc. */</span>
 
-<span class="nv">$grayMediumLight</span><span class="o">:</span> <span class="mh">#eaeaea</span><span class="p">;</span>
+<span class="nv">$grayMediumLight</span><span class="p">:</span> <span class="mh">#eaeaea</span><span class="p">;</span>
 
 <span class="cm">/* universal */</span>
 
 <span class="nt">html</span> <span class="p">{</span>
-  <span class="na">overflow-y</span><span class="o">:</span> <span class="no">scroll</span><span class="p">;</span>
+  <span class="nl">overflow-y</span><span class="p">:</span> <span class="nb">scroll</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">body</span> <span class="p">{</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">60</span><span class="kt">px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">60px</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">section</span> <span class="p">{</span>
-  <span class="na">overflow</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span>
+  <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">textarea</span> <span class="p">{</span>
-  <span class="na">resize</span><span class="o">:</span> <span class="n">vertical</span><span class="p">;</span>
+  <span class="nl">resize</span><span class="p">:</span> <span class="n">vertical</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nc">.center</span> <span class="p">{</span>
-  <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
   <span class="nt">h1</span> <span class="p">{</span>
-    <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+    <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="cm">/* typography */</span>
 
 <span class="nt">h1</span><span class="o">,</span> <span class="nt">h2</span><span class="o">,</span> <span class="nt">h3</span><span class="o">,</span> <span class="nt">h4</span><span class="o">,</span> <span class="nt">h5</span><span class="o">,</span> <span class="nt">h6</span> <span class="p">{</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">h1</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">3</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-2</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">3em</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-2px</span><span class="p">;</span>
+  <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">30px</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">h2</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.2</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">text-align</span><span class="o">:</span> <span class="no">center</span><span class="p">;</span>
-  <span class="na">font-weight</span><span class="o">:</span> <span class="no">normal</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.2em</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-1px</span><span class="p">;</span>
+  <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">30px</span><span class="p">;</span>
+  <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+  <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">p</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.1</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.7</span><span class="kt">em</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.1em</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="mi">.7em</span><span class="p">;</span>
 <span class="p">}</span>
 
 
 <span class="cm">/* header */</span>
 
 <span class="nn">#logo</span> <span class="p">{</span>
-  <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-  <span class="na">margin-right</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.7</span><span class="kt">em</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span>
-  <span class="na">text-transform</span><span class="o">:</span> <span class="no">uppercase</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">9</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">font-weight</span><span class="o">:</span> <span class="no">bold</span><span class="p">;</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+  <span class="nl">margin-right</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.7em</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+  <span class="nl">text-transform</span><span class="p">:</span> <span class="nb">uppercase</span><span class="p">;</span>
+  <span class="nl">letter-spacing</span><span class="p">:</span> <span class="m">-1px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">9px</span><span class="p">;</span>
+  <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">bold</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
   <span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
-    <span class="na">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span>
-    <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span>
+    <span class="nl">text-decoration</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="cm">/* footer */</span>
 
 <span class="nt">footer</span> <span class="p">{</span>
-  <span class="na">margin-top</span><span class="o">:</span> <span class="mi">45</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
-  <span class="na">border-top</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="nv">$grayMediumLight</span><span class="p">;</span>
-  <span class="na">color</span><span class="o">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
+  <span class="nl">margin-top</span><span class="p">:</span> <span class="m">45px</span><span class="p">;</span>
+  <span class="nl">padding-top</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="nl">border-top</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nv">$grayMediumLight</span><span class="p">;</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="nv">$grayLight</span><span class="p">;</span>
   <span class="nt">a</span> <span class="p">{</span>
-    <span class="na">color</span><span class="o">:</span> <span class="nv">$gray</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="nv">$gray</span><span class="p">;</span>
     <span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
-      <span class="na">color</span><span class="o">:</span> <span class="nv">$grayDarker</span><span class="p">;</span>
+      <span class="nl">color</span><span class="p">:</span> <span class="nv">$grayDarker</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
   <span class="nt">small</span> <span class="p">{</span>
-    <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
+    <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="nt">ul</span> <span class="p">{</span>
-    <span class="na">float</span><span class="o">:</span> <span class="no">right</span><span class="p">;</span>
-    <span class="na">list-style</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+    <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+    <span class="nl">list-style</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
     <span class="nt">li</span> <span class="p">{</span>
-      <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-      <span class="na">margin-left</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+      <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+      <span class="nl">margin-left</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -967,7 +967,7 @@ images javascripts stylesheets
 </div>
 <p>不过这样不太符合 Rails 风格。一者，“关于”页面的地址如果是 /about 而不是 /static_pages/about 就好了；再者，Rails 习惯使用具名路由（named route）来指定链接地址，相应的代码如下：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span> <span class="n">about_path</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span> <span class="n">about_path</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>使用这种方式能更好的表达链接与 URI 和路由的对应关系，如<a href="chapter5.html#table-5-1">表格 5.1</a> 所示。本章完结之前除了最后一个链接之外，其他的链接都会设定好。（<a href="chapter8.html">第 8 章</a>会添加最后一个。）</p>
@@ -1008,12 +1008,12 @@ images javascripts stylesheets
 
     <span class="n">it</span> <span class="s2">"should have the content 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="s1">'/static_pages/contact'</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="s1">'/static_pages/contact'</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1021,34 +1021,34 @@ images javascripts stylesheets
 </div>
 <p>为保证代码 5.17 中测试失败，我们要把页面底部的“联系”页面链接注释掉，如代码 5.18 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-18"><p class="caption"><span>代码 5.18：</span>注释掉页面底部的“联系”页面链接</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
-<span class="x">  &lt;small&gt;</span>
-<span class="x">    &lt;a href="http://railstutorial.org/"&gt;Rails Tutorial&lt;/a&gt;</span>
-<span class="x">    by Michael Hartl</span>
-<span class="x">  &lt;/small&gt;</span>
-<span class="x">  &lt;nav&gt;</span>
-<span class="x">    &lt;ul&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%#</span><span class="c">= link_to "Contact", '#' </span><span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;&lt;a href="http://news.railstutorial.org/"&gt;News&lt;/a&gt;&lt;/li&gt;</span>
-<span class="x">    &lt;/ul&gt;</span>
-<span class="x">  &lt;/nav&gt;</span>
-<span class="x">&lt;/footer&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-18"><p class="caption"><span>代码 5.18：</span>注释掉页面底部的“联系”页面链接</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;footer</span> <span class="na">class=</span><span class="s">"footer"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;small&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://railstutorial.org/"</span><span class="nt">&gt;</span>Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+    by Michael Hartl
+  <span class="nt">&lt;/small&gt;</span>
+  <span class="nt">&lt;nav&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="c">&lt;%#= link_to "Contact", '#' %&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"http://news.railstutorial.org/"</span><span class="nt">&gt;</span>News<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/nav&gt;</span>
+<span class="nt">&lt;/footer&gt;</span>
 </pre></div>
 </div>
 <p>从代码 5.18 中可以得知在 ERb 中注释代码的方法，即在百分号后面加上 Ruby 中的注释符号。</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%#</span><span class="c">= link_to "Contact", '#' </span><span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="c">&lt;%#= link_to "Contact", '#' %&gt;</span>
 </pre></div>
 </div>
 <p>现在，代码 5.17 中的测试应该是失败的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
 <p>这里要采用的步骤和 <a href="chapter3.html#section-3-2-2">3.2.2 节</a>中添加“关于”页面的步骤是一致的：先更新路由设置（参见代码 5.19），然后在 StaticPages 控制器中添加 <code>contact</code> 动作（参见代码 5.20），最后再编写“联系”页面的视图（参见代码 5.21）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-19"><p class="caption"><span>代码 5.19：</span>添加“联系”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-19"><p class="caption"><span>代码 5.19：</span>添加“联系”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="n">get</span> <span class="s2">"static_pages/about"</span>
@@ -1068,34 +1068,34 @@ images javascripts stylesheets
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-21"><p class="caption"><span>代码 5.21：</span>“联系”页面的视图</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Contact&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;</span>
-<span class="x">  Contact Ruby on Rails Tutorial about the sample app at the</span>
-<span class="x">  &lt;a href="http://railstutorial.org/contact"&gt;contact page&lt;/a&gt;.</span>
-<span class="x">&lt;/p&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-21"><p class="caption"><span>代码 5.21：</span>“联系”页面的视图</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Contact<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+  Contact Ruby on Rails Tutorial about the sample app at the
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://railstutorial.org/contact"</span><span class="nt">&gt;</span>contact page<span class="nt">&lt;/a&gt;</span>.
+<span class="nt">&lt;/p&gt;</span>
 </pre></div>
 </div>
 <p>再看一下测试是否可以通过：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
 <p>通过这个“遇红-变绿”的过程，证明了我们测试的目标是正确地，既然如此，就可以把页面底部“联系”页面链接的注释去掉了（参见代码 5.22）。不过这样做还不完美，如果不小心删除了代码 5.21 中的 <code>h1</code> 标签，测试是无法检测到的。要解决这个问题，就要编写一个针对 <code>h1</code> 标签内容的测试，测试的编写留作练习（参见 <a href="chapter5.html#section-5-6">5.6 节</a>）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-22"><p class="caption"><span>代码 5.22：</span>去掉底部“联系”页面链接的注释</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
-<span class="x">  &lt;small&gt;</span>
-<span class="x">    &lt;a href="http://railstutorial.org/"&gt;Rails Tutorial&lt;/a&gt;</span>
-<span class="x">    by Michael Hartl</span>
-<span class="x">  &lt;/small&gt;</span>
-<span class="x">  &lt;nav&gt;</span>
-<span class="x">    &lt;ul&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Contact"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;&lt;a href="http://news.railstutorial.org/"&gt;News&lt;/a&gt;&lt;/li&gt;</span>
-<span class="x">    &lt;/ul&gt;</span>
-<span class="x">  &lt;/nav&gt;</span>
-<span class="x">&lt;/footer&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-22"><p class="caption"><span>代码 5.22：</span>去掉底部“联系”页面链接的注释</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;footer</span> <span class="na">class=</span><span class="s">"footer"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;small&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://railstutorial.org/"</span><span class="nt">&gt;</span>Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+    by Michael Hartl
+  <span class="nt">&lt;/small&gt;</span>
+  <span class="nt">&lt;nav&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Contact"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"http://news.railstutorial.org/"</span><span class="nt">&gt;</span>News<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/nav&gt;</span>
+<span class="nt">&lt;/footer&gt;</span>
 </pre></div>
 </div>
 <h3 id='section-5-3-1'><span>5.3.1</span> 路由测试</h3>
@@ -1121,17 +1121,17 @@ images javascripts stylesheets
 
     <span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">root_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the base title"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">root_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should not have a custom page title"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">root_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
@@ -1139,12 +1139,12 @@ images javascripts stylesheets
 
     <span class="n">it</span> <span class="s2">"should have the content 'Help'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">help_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Help'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Help'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'Help'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">help_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Help"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Help"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
@@ -1152,12 +1152,12 @@ images javascripts stylesheets
 
     <span class="n">it</span> <span class="s2">"should have the content 'About Us'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">about_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'About Us'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">about_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | About Us"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | About Us"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
@@ -1165,12 +1165,12 @@ images javascripts stylesheets
 
     <span class="n">it</span> <span class="s2">"should have the content 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">contact_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should have the title 'Contact'"</span> <span class="k">do</span>
       <span class="n">visit</span> <span class="n">contact_path</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App | Contact"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1178,7 +1178,7 @@ images javascripts stylesheets
 </div>
 <p>和往常一样，现在应该看一下测试是否是失败的（红色）：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
 <p>顺便说一下，很多人都会觉得代码 5.23 有很多重复，也很啰嗦，我们会在 <a href="chapter5.html#section-5-3-4">5.3.4 节</a>进行重构。</p>
@@ -1195,17 +1195,17 @@ images javascripts stylesheets
 </div>
 <p>修改为</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span> <span class="ss">to: </span><span class="s1">'static_pages#help'</span><span class="p">,</span> <span class="ss">via: </span><span class="s1">'get'</span>
 </pre></div>
 </div>
 <p>这样在 <code>/help</code> 地址上就有了一个可访问的页面（响应 <code>GET</code> 请求），也定义了一个名为 <code>help_path</code> 的具名路由，该函数会返回相应页面的地址。（其实把 <code>match</code> 换成 <code>get</code> 效果是一样的，不过使用 <code>match</code> 更符合约定。）</p>
 
 <p>其他页面也要做类似修改，结果如代码 5.24 所示。不过“首页”有点特殊，参见代码 5.26。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-24"><p class="caption"><span>代码 5.24：</span>静态页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
-  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+<div class="codeblock has-caption" id="codeblock-5-24"><p class="caption"><span>代码 5.24：</span>静态页面的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to: </span><span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to: </span><span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to: </span><span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via: </span><span class="s1">'get'</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1214,7 +1214,7 @@ images javascripts stylesheets
 </div>
 <p>如果认真阅读代码 5.24，或许会发现它的作用。例如，你会发现</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>  <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span> <span class="ss">to: </span><span class="s1">'static_pages#about'</span><span class="p">,</span>  <span class="ss">via: </span><span class="s1">'get'</span>
 </pre></div>
 </div>
 <p>会匹配到 <code>/about</code> 地址的 <code>GET</code> 请求，并将其分发到 StaticPages 控制器的 <code>about</code> 动作上。之前的设置意图更明显，我们用</p>
@@ -1232,19 +1232,19 @@ images javascripts stylesheets
 
 <p>设置了这些路由之后，“帮助”页面、“关于”页面和“联系”页面的测试应该就可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
 <p>不过“首页”的测试还是失败的。</p>
 
 <p>要设置“首页”的路由，可以使用如下的代码：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>match <span class="s1">'/'</span>, to: <span class="s1">'static_pages#home'</span>, via: <span class="s1">'get'</span>
+<div class="codeblock"><div class="highlight type-shell"><pre>match <span class="s1">'/'</span>, to: <span class="s1">'static_pages#home'</span>, via: <span class="s1">'get'</span>
 </pre></div>
 </div>
 <p>不过没必要这么做。Rails 在路由设置文件的下部为根地址 <code>/</code>（斜线）提供了特别的设置方式（参见代码 5.25）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-25"><p class="caption"><span>代码 5.25：</span>注释掉的根路由设置说明</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-25"><p class="caption"><span>代码 5.25：</span>注释掉的根路由设置说明</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1258,11 +1258,11 @@ images javascripts stylesheets
 </div>
 <p>按照上述说明，我们把根地址 <code>/</code> 映射到“首页”上（参见代码 5.26）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-26"><p class="caption"><span>代码 5.26：</span>添加根地址的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
-  <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
-  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+<div class="codeblock has-caption" id="codeblock-5-26"><p class="caption"><span>代码 5.26：</span>添加根地址的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">root</span> <span class="ss">to: </span><span class="s1">'static_pages#home'</span>
+  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to: </span><span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to: </span><span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to: </span><span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via: </span><span class="s1">'get'</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1271,13 +1271,13 @@ images javascripts stylesheets
 </div>
 <p>上面的代码会把根地址 <code>/</code> 映射到 /static_pages/home 页面上，也就是说 <a href="http://localhost:3000/">http://localhost:3000/</a> 中的内容和图 3.1 中的 Rails 默认页面不一样了，同时还生成了两个 URL 地址帮助方法，如下所示：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>root_path -&gt; <span class="s1">'/'</span>
+<div class="codeblock"><div class="highlight type-shell"><pre>root_path -&gt; <span class="s1">'/'</span>
 root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 </pre></div>
 </div>
 <p>至此，所有静态页面的路由都设置好了，而且所有测试应该都可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
 <p>下面，我们要在布局中插入这些链接。</p>
@@ -1287,51 +1287,51 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 
 <p>现在要在布局中使用上一小节设置的路由帮助方法，把 <code>link_to</code> 函数的第二个参数设为相应的具名路由。例如，要把</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>改为</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span> <span class="n">about_path</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span> <span class="n">about_path</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>其他链接以此类推。</p>
 
 <p>先从头部局部视图 <code>_header.html.erb</code> 开始，这个视图中包含了到“首页”和“帮助”页面的链接。既然要对头部视图做修改，顺便就按照网页的惯例为 LOGO 添加一个到“首页”的链接吧（参见代码 5.27）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-27"><p class="caption"><span>代码 5.27：</span>头部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
-<span class="x">  &lt;div class="navbar-inner"&gt;</span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;nav&gt;</span>
-<span class="x">        &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">        &lt;/ul&gt;</span>
-<span class="x">      &lt;/nav&gt;</span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/header&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-27"><p class="caption"><span>代码 5.27：</span>头部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;nav&gt;</span>
+        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span>    <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span>    <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+      <span class="nt">&lt;/nav&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
 </pre></div>
 </div>
 <p><a href="chapter8.html">第 8 章</a>才会为“注册”页面设置具名路由，所以现在还是用占位符 <code>#</code> 代替该页面的地址。</p>
 
 <p>还有一个包含链接的文件是底部局部视图 <code>_footer.html.erb</code>，有到“关于”页面和“联系”页面的链接（参见代码 5.28）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-28"><p class="caption"><span>代码 5.28：</span>底部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;footer class="footer"&gt;</span>
-<span class="x">  &lt;small&gt;</span>
-<span class="x">    &lt;a href="http://railstutorial.org/"&gt;Rails Tutorial&lt;/a&gt;</span>
-<span class="x">    by Michael Hartl</span>
-<span class="x">  &lt;/small&gt;</span>
-<span class="x">  &lt;nav&gt;</span>
-<span class="x">    &lt;ul&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="n">about_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Contact"</span><span class="p">,</span> <span class="n">contact_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">      &lt;li&gt;&lt;a href="http://news.railstutorial.org/"&gt;News&lt;/a&gt;&lt;/li&gt;</span>
-<span class="x">    &lt;/ul&gt;</span>
-<span class="x">  &lt;/nav&gt;</span>
-<span class="x">&lt;/footer&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-28"><p class="caption"><span>代码 5.28：</span>底部局部视图，包含一些链接</p><p class="file"><code>app/views/layouts/_footer.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;footer</span> <span class="na">class=</span><span class="s">"footer"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;small&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://railstutorial.org/"</span><span class="nt">&gt;</span>Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+    by Michael Hartl
+  <span class="nt">&lt;/small&gt;</span>
+  <span class="nt">&lt;nav&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"About"</span><span class="p">,</span>   <span class="n">about_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Contact"</span><span class="p">,</span> <span class="n">contact_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"http://news.railstutorial.org/"</span><span class="nt">&gt;</span>News<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/nav&gt;</span>
+<span class="nt">&lt;/footer&gt;</span>
 </pre></div>
 </div>
 <p>如此一来，<a href="chapter3.html">第 3 章</a>创建的所有静态页面的链接都加入布局了，以“关于”页面为例，输入 /about，就会进入网站的“关于”页面（如图 5.8）。</p>
@@ -1352,17 +1352,17 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 
   <span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should have the base title"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should not have a custom page title"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1373,15 +1373,15 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
   <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">root_path</span> <span class="p">}</span>
 
   <span class="n">it</span> <span class="s2">"should have the content 'Sample App'"</span> <span class="k">do</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should have the base title"</span> <span class="k">do</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Ruby on Rails Tutorial Sample App"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"should not have a custom page title"</span> <span class="k">do</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1400,7 +1400,7 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 </div>
 <p>同时还使用了</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Sample App'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>二者虽然形式不同，要表达的意思却是相同的。而且两个用例都引用了 <code>page</code> 变量。我们可以告诉 RSpec，<code>page</code> 就是要测试的对象（subject），这样就可以避免多次使用 <code>page</code>：</p>
@@ -1430,7 +1430,7 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 </div>
 <p>这样代码看起来就舒服多了，不过标题的测试还有点长。其实，代码 5.23 中大多数标题都是这样的长标题：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">"Ruby on Rails Tutorial Sample App | About"</span>
+<div class="codeblock"><div class="highlight type-erb"><pre>"Ruby on Rails Tutorial Sample App | About"
 </pre></div>
 </div>
 <p><a href="chapter3.html#section-3-5">3.5 节</a>的练习题建议定义一个 <code>base_title</code> 变量，再使用字符串插值来消除这个重复（参见代码 3.31）。我们可以更进一步，定义一个和代码 4.2 中 <code>full_title</code> 类似的方法。</p>
@@ -1439,7 +1439,7 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 
 <div class="codeblock has-caption" id="codeblock-5-29"><p class="caption"><span>代码 5.29：</span>RSpec 通用函数文件，包含 <code>full_title</code> 方法</p><p class="file"><code>spec/support/utilities.rb</code></p><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">full_title</span><span class="p">(</span><span class="n">page_title</span><span class="p">)</span>
   <span class="n">base_title</span> <span class="o">=</span> <span class="s2">"Ruby on Rails Tutorial Sample App"</span>
-  <span class="k">if</span> <span class="n">page_title</span><span class="o">.</span><span class="n">empty?</span>
+  <span class="k">if</span> <span class="n">page_title</span><span class="p">.</span><span class="nf">empty?</span>
     <span class="n">base_title</span>
   <span class="k">else</span>
     <span class="s2">"</span><span class="si">#{</span><span class="n">base_title</span><span class="si">}</span><span class="s2"> | </span><span class="si">#{</span><span class="n">page_title</span><span class="si">}</span><span class="s2">"</span>
@@ -1502,7 +1502,7 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 </div>
 <p>现在应该验证一下测试代码是否还可以通过：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/static_pages_spec.rb
 </pre></div>
 </div>
 <p>代码 5.30 中的 RSpec 测试比代码 5.23 简化多了，其实，还可以变得更简洁，详见 <a href="chapter5.html#section-5-6">5.6 节</a>。在示例程序接下来的开发过程中，只要可以，我们都会使用这种简洁的方式。</p>
@@ -1517,7 +1517,7 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 
 <p>创建第一个控制器 StaticPages 是很久以前的事了，还是在 <a href="chapter3.html#section-3-1">3.1 节</a>中。现在我们要创建第二个了，Users 控制器。和之前一样，我们使用 <code>generate</code> 命令创建所需的控制器骨架，包含用户注册页面所需的动作。遵照 Rails 的 REST 架构约定，我们把这个动作命名为 <code>new</code>，将其传递给 <code>generate controller</code> 就可以自动创建这个动作了（参见代码 5.31）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-31"><p class="caption"><span>代码 5.31：</span>生成 Users 控制器（包含 <code>new</code> 动作）</p><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate controller Users new --no-test-framework
+<div class="codeblock has-caption" id="codeblock-5-31"><p class="caption"><span>代码 5.31：</span>生成 Users 控制器（包含 <code>new</code> 动作）</p><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate controller Users new --no-test-framework
       create  app/controllers/users_controller.rb
        route  get <span class="s2">"users/new"</span>
       invoke  erb
@@ -1534,15 +1534,15 @@ root_url  -&gt; <span class="s1">'http://localhost:3000/'</span>
 </div>
 <p>这个命令会创建 Users 控制器，还有其中的 <code>new</code> 动作（参见代码 5.32）和一个占位用的视图文件（参见代码 5.33）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-32"><p class="caption"><span>代码 5.32：</span>默认生成的 Users 控制器，包含 <code>new</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-sh"><pre>class UsersController &lt; ApplicationController
+<div class="codeblock has-caption" id="codeblock-5-32"><p class="caption"><span>代码 5.32：</span>默认生成的 Users 控制器，包含 <code>new</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-shell"><pre>class UsersController &lt; ApplicationController
   def new
   end
 
 end
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-5-33"><p class="caption"><span>代码 5.33：</span>默认生成的 <code>new</code> 动作视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Users#new&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;Find me in app/views/users/new.html.erb&lt;/p&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-33"><p class="caption"><span>代码 5.33：</span>默认生成的 <code>new</code> 动作视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;h1&gt;</span>Users#new<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>Find me in app/views/users/new.html.erb<span class="nt">&lt;/p&gt;</span>
 </pre></div>
 </div>
 <h3 id='section-5-4-2'><span>5.4.2</span> “注册”页面的 URL 地址</h3>
@@ -1550,7 +1550,7 @@ end
 
 <p><a href="chapter5.html#section-5-4-1">5.4.1 节</a>中生成的代码会在 /users/new 地址上对应一个页面，不过如<a href="chapter5.html#table-5-1">表格 5.1</a>所示，我们希望“注册”页面的地址是 /signup。为此，和 <a href="chapter5.html#section-5-3">5.3 节</a>一样，首先要编写集成测试，可以通过下面的命令生成：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate integration_test user_pages
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate integration_test user_pages
 </pre></div>
 </div>
 <p>然后，按照代码 5.30 中静态页面测试代码的形式，我们要编写测试检测“注册”页面中是否有 <code>h1</code> 和 <code>title</code> 标签，如代码 5.34 所示。</p>
@@ -1572,36 +1572,36 @@ end
 </div>
 <p>和之前一样，可以执行 <code>rspec</code> 命令运行测试：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/user_pages_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/user_pages_spec.rb
 </pre></div>
 </div>
 <p>不过有一点要注意，你还可以指定整个目录来运行所有的 request 测试：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/
 </pre></div>
 </div>
 <p>同理，你可能还想知道怎么运行全部测试：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>为了测试全面，在本书后续内容中，我们一般都会使用这个命令运行所有的测试。顺便说一下，你要知道，你也可以使用 Rake 的 <code>spec</code> 任务运行测试（你可能见过其他人这样使用）：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake spec
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake spec
 </pre></div>
 </div>
 <p>（事实上，你可以只输入 <code>rake</code>，因为 <code>rake</code> 的默认任务就是运行测试。）现在唯一的问题是，运行测试会报错，因为还没有准备好“测试数据库”，我们会在 <a href="chapter6.html#section-6-2-1">6.2.1 节</a> 中详细介绍。</p>
 
 <p>我们已经为 Users 控制器生成了 <code>new</code> 动作，如要测试通过，需要正确设置路由，还要有相应内容的视图文件。我们按照代码 5.24 的方式，为“注册”页面加入 <code>match '/signup'</code> 路由设置（参见代码 5.35）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-35"><p class="caption"><span>代码 5.35：</span>“注册”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-5-35"><p class="caption"><span>代码 5.35：</span>“注册”页面的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"users/new"</span>
 
-  <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
-  <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to</span><span class="p">:</span> <span class="s1">'users#new'</span><span class="p">,</span>            <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="n">root</span> <span class="ss">to: </span><span class="s1">'static_pages#home'</span>
+  <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to: </span><span class="s1">'users#new'</span><span class="p">,</span>            <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/help'</span><span class="p">,</span>    <span class="ss">to: </span><span class="s1">'static_pages#help'</span><span class="p">,</span>    <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/about'</span><span class="p">,</span>   <span class="ss">to: </span><span class="s1">'static_pages#about'</span><span class="p">,</span>   <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="ss">to: </span><span class="s1">'static_pages#contact'</span><span class="p">,</span> <span class="ss">via: </span><span class="s1">'get'</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1612,26 +1612,26 @@ end
 
 <p>要让测试通过，视图中还要有相应的 <code>h1</code> 和 <code>title</code>（参见代码 5.36）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-36"><p class="caption"><span>代码 5.36：</span>“注册”页面视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Sign up&lt;/h1&gt;</span>
-<span class="x">&lt;p&gt;Find me in app/views/users/new.html.erb&lt;/p&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-36"><p class="caption"><span>代码 5.36：</span>“注册”页面视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Sign up<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>Find me in app/views/users/new.html.erb<span class="nt">&lt;/p&gt;</span>
 </pre></div>
 </div>
 <p>现在，代码 5.34 中“注册”页面的测试应该可以通过了。下面要做的就是为“首页”中的注册按钮加上链接。和其他的具名路由一样，<code>match '/signup'</code> 会生成 <code>signup_path</code> 方法，用来链接到“注册”页面（参见代码 5.37）。</p>
 
-<div class="codeblock has-caption" id="codeblock-5-37"><p class="caption"><span>代码 5.37：</span>把按钮链接到“注册”页面</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;div class="center hero-unit"&gt;</span>
-<span class="x">  &lt;h1&gt;Welcome to the Sample App&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-5-37"><p class="caption"><span>代码 5.37：</span>把按钮链接到“注册”页面</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"center hero-unit"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>Welcome to the Sample App<span class="nt">&lt;/h1&gt;</span>
 
-<span class="x">  &lt;h2&gt;</span>
-<span class="x">    This is the home page for the</span>
-<span class="x">    &lt;a href="http://railstutorial.org/"&gt;Ruby on Rails Tutorial&lt;/a&gt;</span>
-<span class="x">    sample application.</span>
-<span class="x">  &lt;/h2&gt;</span>
+  <span class="nt">&lt;h2&gt;</span>
+    This is the home page for the
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://railstutorial.org/"</span><span class="nt">&gt;</span>Ruby on Rails Tutorial<span class="nt">&lt;/a&gt;</span>
+    sample application.
+  <span class="nt">&lt;/h2&gt;</span>
 
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up now!"</span><span class="p">,</span> <span class="n">signup_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/div&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up now!"</span><span class="p">,</span> <span class="n">signup_path</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">image_tag</span><span class="p">(</span><span class="s2">"rails.png"</span><span class="p">,</span> <span class="ss">alt</span><span class="p">:</span> <span class="s2">"Rails"</span><span class="p">),</span> <span class="s1">'http://rubyonrails.org/'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">image_tag</span><span class="p">(</span><span class="s2">"rails.png"</span><span class="p">,</span> <span class="ss">alt: </span><span class="s2">"Rails"</span><span class="p">),</span> <span class="s1">'http://rubyonrails.org/'</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>至此，除了没有设置“登录/退出”路由之外（<a href="chapter8.html">第 8 章</a>会实现），我们已经完成了添加链接和设置路由的任务。注册用户的页面（<a href="http://localhost:3000/signup">/signup</a>）如图 5.9 所示。</p>
@@ -1641,7 +1641,7 @@ end
 </div>
 <p>现在测试应该可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h2 id='section-5-5'><span>5.5</span> 小结</h2>
@@ -1651,30 +1651,30 @@ end
 
 <p>如果使用 Git 的话，现在你应该把本章所做的改动合并到主分支中：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Finish layout and routes"</span>
-<span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git merge filling-in-layout
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Finish layout and routes"</span>
+<span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git merge filling-in-layout
 </pre></div>
 </div>
 <p>还可以把代码推送到 GitHub 上：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git push
 </pre></div>
 </div>
 <p>最后，你可以把应用程序部署到 Heroku：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push heroku
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git push heroku
 </pre></div>
 </div>
 <p>然后在“生产环境”中就得到了一个可以运行的示例程序：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku open
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku open
 </pre></div>
 </div>
 <p>如果遇到问题，运行</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku logs
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku logs
 </pre></div>
 </div>
 <p>试着使用 Heroku 的日志文件排错。同时确保你已经做了代码 2.17 所示的改动。</p>
@@ -1703,7 +1703,7 @@ end
   <span class="n">describe</span> <span class="s2">"Contact page"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">contact_path</span> <span class="p">}</span>
 
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">,</span> <span class="ss">text: </span><span class="s1">'Contact'</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Contact'</span><span class="p">))</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1758,16 +1758,16 @@ end
   <span class="n">it</span> <span class="s2">"should have the right links on the layout"</span> <span class="k">do</span>
     <span class="n">visit</span> <span class="n">root_path</span>
     <span class="n">click_link</span> <span class="s2">"About"</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">))</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'About Us'</span><span class="p">))</span>
     <span class="n">click_link</span> <span class="s2">"Help"</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="c1"># fill in</span>
     <span class="n">click_link</span> <span class="s2">"Contact"</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="c1"># fill in</span>
     <span class="n">click_link</span> <span class="s2">"Home"</span>
     <span class="n">click_link</span> <span class="s2">"Sign up now!"</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="c1"># fill in</span>
     <span class="n">click_link</span> <span class="s2">"sample app"</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="c1"># fill in</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="c1"># fill in</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1778,15 +1778,15 @@ end
 
   <span class="n">describe</span> <span class="s2">"full_title"</span> <span class="k">do</span>
     <span class="n">it</span> <span class="s2">"should include the page title"</span> <span class="k">do</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/foo/</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)).</span><span class="nf">to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/foo/</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should include the base title"</span> <span class="k">do</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/^Ruby on Rails Tutorial Sample App/</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)).</span><span class="nf">to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/^Ruby on Rails Tutorial Sample App/</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should not include a bar for the home page"</span> <span class="k">do</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">""</span><span class="p">))</span><span class="o">.</span><span class="n">not_to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/\|/</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s2">""</span><span class="p">)).</span><span class="nf">not_to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/\|/</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>

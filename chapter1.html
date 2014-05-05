@@ -196,54 +196,54 @@
 
 <p>本书中很多例子都用到了命令行命令，为了行文方便，所有的命令行示例都使用了 Unix 风格的命令行提示符（美元符号），例如：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"hello, world"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"hello, world"</span>
 hello, world
 </pre></div>
 </div>
 <p>Windows 用户要知道在 Windows 中命令行的提示符是 <code>&gt;</code>：</p>
 
-<div class="codeblock"><div class="highlight type-bat"><pre>C:\Sites<span class="p">&gt;</span> <span class="n">echo</span> <span class="s2">"hello, world"</span>
-hello<span class="p">,</span> world
+<div class="codeblock"><div class="highlight type-plaintext"><pre>C:\Sites&gt; echo "hello, world"
+hello, world
 </pre></div>
 </div>
 <p>在 Unix 系统中，一些命令要使用 <code>sudo</code>（超级用户的工作，“substitute user do”）执行。<sup class="footnote" id="fnref-1-14"><a href="#fn-1-14" rel="footnote">5</a></sup>默认情况下，使用 <code>sudo</code> 执行的命令是以管理员的身份执行的，这样就能访问普通用户无法访问的文件和文件夹了。例如 <a href="chapter1.html#section-1-2-2">1.2.2 节</a>中的一个例子：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>sudo ruby setup.rb
+<div class="codeblock"><div class="highlight type-shell"><pre>sudo ruby setup.rb
 </pre></div>
 </div>
 <p>在多数的 Unix/Linux/OS X 系统中默认需要使用 <code>sudo</code>，但是如果使用下面介绍的 Ruby 版本管理工具就没必要使用了，直接使用以下命令即可：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>ruby setup.rb
+<div class="codeblock"><div class="highlight type-shell"><pre>ruby setup.rb
 </pre></div>
 </div>
 <p>Rails 附带了很多可以在命令行中运行的命令。例如，在 <a href="chapter1.html#section-1-2-5">1.2.5 节</a>中将使用下面的命令在本地运行一个开发服务器：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails server
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails server
 </pre></div>
 </div>
 <p>和命令提示符一样，本书也使用了 Unix 风格文件夹分隔符（例如，一个斜线 /）。例如，我的示例程序存放在：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>/Users/mhartl/rails_projects/sample_app
+<div class="codeblock"><div class="highlight type-shell"><pre>/Users/mhartl/rails_projects/sample_app
 </pre></div>
 </div>
 <p>在 Windows 中等价的文件夹可能是：</p>
 
-<div class="codeblock"><div class="highlight type-bat"><pre>C:\Sites\sample_app
+<div class="codeblock"><div class="highlight type-plaintext"><pre>C:\Sites\sample_app
 </pre></div>
 </div>
 <p>一个程序的根目录称为“Rails 根目录”，但是这个称呼很容易让一些人产生困惑，他们以为“Rails 根目录”是指 Rails 框架的根目录。为了避免歧义，本书将使用“程序根目录”替代“Rails 根目录”的称呼，程序中所有文件夹都是相对该目录的。例如，示例程序的 <code>config</code> 目录是：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>/Users/mhartl/rails_projects/sample_app/config
+<div class="codeblock"><div class="highlight type-shell"><pre>/Users/mhartl/rails_projects/sample_app/config
 </pre></div>
 </div>
 <p>这个程序的根目录就是 <code>config</code> 之前的部分：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>/Users/mhartl/rails_projects/sample_app
+<div class="codeblock"><div class="highlight type-shell"><pre>/Users/mhartl/rails_projects/sample_app
 </pre></div>
 </div>
 <p>为了方便，如果需要指向下面这个文件</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>/Users/mhartl/rails_projects/sample_app/config/routes.rb
+<div class="codeblock"><div class="highlight type-shell"><pre>/Users/mhartl/rails_projects/sample_app/config/routes.rb
 </pre></div>
 </div>
 <p>我会省略前面的程序根目录，直接写成 <code>config/routes.rb</code>。</p>
@@ -327,7 +327,7 @@ hello<span class="p">,</span> world
 
 <p>很有可能你使用的系统已经自带了 Ruby，你可以执行下面的命令来看一下：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>ruby -v
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>ruby -v
 </pre></div>
 </div>
 <p>这个命令会显示 Ruby 的版本。Rails 4 需要使用 Ruby 1.9 或以上的版本，但最好是 Ruby 2.0。（基本上无法使用 Ruby 1.8.7。）本教程假设多数的读者使用的是 Ruby 1.9.3 或 2.0.0，不过 Ruby 1.9.2 应该也可以用。</p>
@@ -338,48 +338,48 @@ hello<span class="p">,</span> world
 
 <p>在安装 Ruby 之前，先要<a href="http://rvm.io/rvm/install/">安装 RVM</a>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>curl -sSL https://get.rvm.io <span class="p">|</span> bash -s
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>curl -sSL https://get.rvm.io | bash -s
 </pre></div>
 </div>
 <p>（如果你已经安装了 RVM，应该运行下面的命令</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rvm get stable
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rvm get stable
 </pre></div>
 </div>
 <p>确保安装的是最新版本。）</p>
 
 <p>然后运行下面的命令检查安装 Ruby 的需求条件：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rvm requirements
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rvm requirements
 </pre></div>
 </div>
 <p>如果提示“command not found”，可以运行下面的命令：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span><span class="nb">source</span> ~/.rvm/scripts/rvm
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span><span class="nb">source</span> ~/.rvm/scripts/rvm
 </pre></div>
 </div>
 <p>在我的系统中，要安装以下所示的库（使用 <a href="http://mxcl.github.com/homebrew/">Homebrew</a>，OS X 中的包管理系统）：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>brew install libtool libxslt libksba openssl
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>brew install libtool libxslt libksba openssl
 </pre></div>
 </div>
 <p>在 Linux 中，可以使用 <code>apt-get</code> 或 <code>yum</code>。</p>
 
 <p>我还得安装 <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> 库：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="c"># For Mac with Homebrew</span>
-<span class="nv">$ </span>brew install libyaml
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="c"># For Mac with Homebrew</span>
+<span class="gp">$ </span>brew install libyaml
 
 <span class="c"># For Debian-based Linux systems</span>
-<span class="nv">$ </span>apt-get install libyaml-dev
+<span class="gp">$ </span>apt-get install libyaml-dev
 
 <span class="c"># For Fedora/CentOS/RHEL Linux systems</span>
-<span class="nv">$ </span>yum install libyaml-devel
+<span class="gp">$ </span>yum install libyaml-devel
 </pre></div>
 </div>
 <p>最后，我要告知 RVM，OpenSSL 的安装位置，才能安装 Ruby 2.0.0：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rvm install 2.0.0 --with-openssl-dir<span class="o">=</span><span class="nv">$HOME</span>/.rvm/usr
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rvm install 2.0.0 --with-openssl-dir<span class="o">=</span><span class="nv">$HOME</span>/.rvm/usr
 &lt;<span class="nb">wait </span>a <span class="k">while</span>&gt;
 </pre></div>
 </div>
@@ -389,14 +389,14 @@ hello<span class="p">,</span> world
 
 <p>安装 Ruby 之后，要配置一下你的系统，这样其他程序才能运行 Rails。这个过程会涉及到 gem 的安装，gem 是 Ruby 代码的打包系统。因为不同版本的 gem 会有差异，我们经常要创建一个额外的 gem 集（gemset），包含一系列的 gem。针对本教程，我推荐你创建一个名为 <code>railstutorial_rails_4_0</code> 的 gemset：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rvm use 2.0.0@railstutorial_rails_4_0 --create --default
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rvm use 2.0.0@railstutorial_rails_4_0 --create --default
 Using /Users/mhartl/.rvm/gems/ruby-2.0.0-p0 with gemset railstutorial_rails_4_0
 </pre></div>
 </div>
 <p>上面的命令会使用 Ruby 2.0.0 创建（<code>--create</code>）一个名为 <code>railstutorial_rails_4_0</code> 的 gemset，然后立马就开始使用（<code>use</code>） 这个 gemset，并将其设为默认的（<code>--default</code>） gemset，这样每次打开新的终端就会自动使用 <code>2.0.0@railstutorial_rails_4_0</code> 这个 Ruby 和 gemset 的组合。RVM 提供了大量的命令用来处理 gemset，更多内容可以查看其文档（<a href="http://rvm.io/gemsets/">http://rvm.io/gemsets/</a>）。如果你在使用 RVM 时遇到了问题，可以运行以下的命令显示帮助信息：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rvm <span class="nb">help</span>
-<span class="nv">$ </span>rvm gemset <span class="nb">help</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rvm <span class="nb">help</span>
+<span class="gp">$ </span>rvm gemset <span class="nb">help</span>
 </pre></div>
 </div>
 <h4 id='section-1-2-2-4'><span></span>安装 RubyGems</h4>
@@ -404,32 +404,32 @@ Using /Users/mhartl/.rvm/gems/ruby-2.0.0-p0 with gemset railstutorial_rails_4_0
 
 <p>RubyGems 是 Ruby 项目的包管理程序，有很多有用的代码库（包括 Rails）都可以通过包（或叫做 gem）的形式获取。安装 Ruby 后再安装 RubyGems 就很简单了。如果你安装了 RVM 就已经安装 RubyGems 了，因为 RVM 已经自动将其安装了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>which gem
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>which gem
 /Users/mhartl/.rvm/rubies/ruby-2.0.0-p0/bin/gem
 </pre></div>
 </div>
 <p>如果你还没有安装 RubyGems，可以<a href="http://rubyforge.org/frs/?group_id=126">下载 RubyGems</a>，解压文件，然后进入 <code>rubygems</code> 目录运行安装程序：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>ruby setup.rb
+<div class="codeblock"><div class="highlight type-shell"><pre>ruby setup.rb
 </pre></div>
 </div>
 <p>（如果你遇到了权限错误的提示，参照 <a href="chapter1.html#section-1-1-3">1.1.3</a> 节所说的，要使用 <code>sudo</code>。）</p>
 
 <p>安装 RubyGems 之后，要确保你使用的版本和本书一致：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>gem update --system 2.1.9
+<div class="codeblock"><div class="highlight type-shell"><pre>gem update --system 2.1.9
 </pre></div>
 </div>
 <p>将你的系统定格在这个版本可以避免以后因为 RubyGems 升级而产生的差异。</p>
 
 <p>安装 gem 时，默认情况下 RubyGems 会生成两种不同的文档（ri 和 rdoc），但是很多 Ruby 和 Rails 开发者认为花时间生成这些文档没什么必要。（很多程序员更依靠在线文档，而不是内置的 ri 和 rdoc 文档。）为了禁止自动生成文档，我建议你执行代码 1.1 中的命令，在家目录（home directory）中创建一个名为 <code>.gemrc</code> 的 gem 配置文件，文件的内容参见代码 1.2。（波浪号“~”代表“家目录”，<code>.gemrc</code> 中的点号代表这是个隐藏文件，配置文件一般都是隐藏的。）</p>
 
-<div class="codeblock has-caption" id="codeblock-1-1"><p class="caption"><span>代码 1.1：</span>创建 gem 配置文件</p><div class="highlight type-sh"><pre><span class="nv">$ </span>subl ~/.gemrc
+<div class="codeblock has-caption" id="codeblock-1-1"><p class="caption"><span>代码 1.1：</span>创建 gem 配置文件</p><div class="highlight type-shell"><pre><span class="gp">$ </span>subl ~/.gemrc
 </pre></div>
 </div>
 <p>这里的 <code>subl</code> 是 OS X 中启动 Sublime Text 的命令，你可以参照 Sublime Text 2 文档中的 “<a href="http://www.sublimetext.com/docs/2/osx_command_line.html">OS X 命令</a>”一文进行设置。如果你使用的是其他系统，或者你使用的是其他的编辑器，只需换用其他相应的命令（例如，你可以直接双击来启动程序，或者使用其他的命令，如 <code>mate</code>、<code>vim</code>、<code>gvim</code> 或 <code>mvim</code>）。为了行文简洁，在本书后续的内容中当我说使用 <code>subl</code> 时，我的意思是“使用你喜好的文本编辑器打开”。</p>
 
-<div class="codeblock has-caption" id="codeblock-1-2"><p class="caption"><span>代码 1.2：</span>在 <code>.gemrc</code> 中配置不生成 ri 和 rdoc 文档</p><div class="highlight type-text"><pre>install: --no-rdoc --no-ri
+<div class="codeblock has-caption" id="codeblock-1-2"><p class="caption"><span>代码 1.2：</span>在 <code>.gemrc</code> 中配置不生成 ri 和 rdoc 文档</p><div class="highlight type-plaintext"><pre>install: --no-rdoc --no-ri
 update: --no-rdoc --no-ri
 </pre></div>
 </div>
@@ -438,12 +438,12 @@ update: --no-rdoc --no-ri
 
 <p>安装完 RubyGems 后安装 Rails 也就简单了。本教程使用 Rails 4.0，通过以下命令安装<sup class="footnote" id="fnref-1-t3"><a href="#fn-1-t3" rel="footnote">9</a></sup>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>gem install rails --version 4.0.4 --no-ri --no-rdoc
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>gem install rails --version 4.0.4 --no-ri --no-rdoc
 </pre></div>
 </div>
 <p>（如果你按照上一节所述，设置了 <code>.gemrc</code>，就不必加上最后两个选项了。但是当前的 Rails 4 候选版本<strong>必须</strong>要加上，所以我才写上的。）检查 Rails 是否安装成功，执行以下命令显示 Rails 的版本号：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails -v
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails -v
 Rails 4.0.4
 </pre></div>
 </div>
@@ -451,12 +451,12 @@ Rails 4.0.4
 
 <p>如果你使用的是 Linux，现在或许还需要安装一些其他的代码包：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>sudo apt-get install libxslt-dev libxml2-dev libsqlite3-dev <span class="c"># 只针对 Linux</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>sudo apt-get install libxslt-dev libxml2-dev libsqlite3-dev <span class="c"># 只针对 Linux</span>
 </pre></div>
 </div>
 <p>或者使用 yum：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>sudo yum install libxslt-devel libxml2-devel libsqlite3-devel
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>sudo yum install libxslt-devel libxml2-devel libsqlite3-devel
 </pre></div>
 </div>
 <h3 id='section-1-2-3'><span>1.2.3</span> 第一个程序</h3>
@@ -464,9 +464,9 @@ Rails 4.0.4
 
 <p>Rails 程序一般都是从 <code>rails new</code> 命令开始的，这个命令会在你指定的文件夹中创建一个 Rails 程序模板。首先为你的 Rails 程序新建一个文件夹，然后执行 <code>rails new</code> 命令创建第一个程序（参见代码 1.3）：</p>
 
-<div class="codeblock has-caption" id="codeblock-1-3"><p class="caption"><span>代码 1.3：</span>运行 <code>rails new</code> 生成一个新程序</p><div class="highlight type-sh"><pre><span class="nv">$ </span>mkdir rails_projects
-<span class="nv">$ </span><span class="nb">cd </span>rails_projects
-<span class="nv">$ </span>rails new first_app
+<div class="codeblock has-caption" id="codeblock-1-3"><p class="caption"><span>代码 1.3：</span>运行 <code>rails new</code> 生成一个新程序</p><div class="highlight type-shell"><pre><span class="gp">$ </span>mkdir rails_projects
+<span class="gp">$ </span><span class="nb">cd </span>rails_projects
+<span class="gp">$ </span>rails new first_app
       create
       create  README.rdoc
       create  Rakefile
@@ -484,7 +484,7 @@ Rails 4.0.4
 .
 .
 .
-Your bundle is <span class="nb">complete</span>! Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname<span class="o">]</span><span class="sb">`</span> to see where a bundled
+Your bundle is <span class="nb">complete</span>! Use <span class="sb">`</span>bundle show <span class="o">[</span>gemname]<span class="sb">`</span> to see where a bundled
 gem is installed.
 </pre></div>
 </div>
@@ -547,8 +547,8 @@ gem is installed.
 <div class="figure" id="figure-1-2">
   <img src="figures/directory_structure_rails_4_0.png" alt="directory structure rails40" /><p class="caption"><span>图 1.2：</span>新创建的 Rails 程序的文件结构</p>
 </div>
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span><span class="nb">cd </span>first_app/
-<span class="nv">$ </span>subl Gemfile
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span><span class="nb">cd </span>first_app/
+<span class="gp">$ </span>subl Gemfile
 </pre></div>
 </div>
 <p>该文件内容如代码 1.4。这些代码就是常规的 Ruby 代码，现在无需关注句法，第四章将会详细的介绍 Ruby。</p>
@@ -687,8 +687,8 @@ gem is installed.
 
 <p>修改完 <code>Gemfile</code> 后，运行 <code>bundle update</code><sup class="footnote" id="fnref-1-16"><a href="#fn-1-16" rel="footnote">10</a></sup> 和 <code>bundle install</code> 安装所需的 gem：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle update
-<span class="nv">$ </span>bundle install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle update
+<span class="gp">$ </span>bundle install
 Fetching <span class="nb">source </span>index <span class="k">for </span>https://rubygems.org/
 .
 .
@@ -702,11 +702,11 @@ Fetching <span class="nb">source </span>index <span class="k">for </span>https:/
 
 <p>运行完 <a href="chapter1.html#section-1-2-3">1.2.3 节</a>中介绍的 <code>rails new</code> 和 <a href="chapter1.html#section-1-2-4">1.2.4 节</a> 中介绍的 <code>bundle install</code> 后我们的程序就可以运行了，但怎么运行呢？Rails 自带了一个命令行程序可以在开发电脑上运行一个本地服务器：<sup class="footnote" id="fnref-1-5"><a href="#fn-1-5" rel="footnote">11</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails <span class="nv">server</span>
-<span class="o">=</span>&gt; Booting <span class="nv">WEBrick</span>
-<span class="o">=</span>&gt; Rails application starting on http://0.0.0.0:3000
-<span class="o">=</span>&gt; Call with -d to <span class="nv">detach</span>
-<span class="o">=</span>&gt; Ctrl-C to shutdown server
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails server
+<span class="gp">=&gt; </span>Booting WEBrick
+<span class="gp">=&gt; </span>Rails application starting on http://0.0.0.0:3000
+<span class="gp">=&gt; </span>Call with -d to detach
+<span class="gp">=&gt; </span>Ctrl-C to shutdown server
 </pre></div>
 </div>
 <p>（如果系统提示缺少 JavaScript 运行时，请浏览 <a href="https://github.com/sstephenson/execjs">execjs 位于 github 的页面</a>查看一些可选的运行时，我建议安装 <a href="http://nodejs.org/">Node.js</a>。）上述代码的提示信息告诉我们这个应用程序在 <code>0.0.0.0</code> 地址的 3000<sup class="footnote" id="fnref-1-6"><a href="#fn-1-6" rel="footnote">12</a></sup> 端口运行。这个地址告诉系统监听这台电脑上的每一个可用的 IP 地址。一般来说，我们可以通过一个特殊的地址 <code>127.0.0.1</code> 来查看应用程序，或者也可以使用 <code>localhost</code>。通过 <a href="http://localhost:3000">http://localhost:3000</a> 查看结果，如图 1.3 所示。</p>
@@ -750,20 +750,20 @@ Fetching <span class="nb">source </span>index <span class="k">for </span>https:/
 
 <p>安装 git 后，你应该做一些只需做一次的事情：系统设置——这样的设置在每台电脑上只需做一次：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git config --global user.name <span class="s2">"Your Name"</span>
-<span class="nv">$ </span>git config --global user.email your.email@example.com
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git config --global user.name <span class="s2">"Your Name"</span>
+<span class="gp">$ </span>git config --global user.email your.email@example.com
 </pre></div>
 </div>
 <p>我还想用 <code>co</code> 代替字数较多的 <code>checkout</code> 命令，那么要做如下设置：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git config --global alias.co checkout
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git config --global alias.co checkout
 </pre></div>
 </div>
 <p>本书中我基本上都会使用完整的 <code>checkout</code> 命令，防止你没有做以上的设置，但我自己都是使用 <code>git co</code>。</p>
 
 <p>最后，你还可以设置编辑 git 提交信息时使用的编辑器。如果你使用的是图形界面的编辑器，例如 Sublime Text、TextMate、gVim 或 MacVim，要加上一个旗标确保编辑器会在终端中保持状态而不是立马结束命令：<sup class="footnote" id="fnref-1-7"><a href="#fn-1-7" rel="footnote">13</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git config --global core.editor <span class="s2">"subl -w"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git config --global core.editor <span class="s2">"subl -w"</span>
 </pre></div>
 </div>
 <p>如果使用其他编辑器，请使用以下代码替换 <code>subl -w</code>：TextMate 用 <code>mate -w</code>，gVim 用 <code>gvim -f</code>，MacVim 用 <code>mvim -f</code>。</p>
@@ -773,15 +773,15 @@ Fetching <span class="nb">source </span>index <span class="k">for </span>https:/
 
 <p>下面的步骤你每次新建一个仓库时都要执行。首先进入刚创建的应用程序的根目录，然后初始化一个新仓库：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git init
-Initialized empty Git repository in /Users/mhartl/rails_projects/first_app/.git/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git init
+Initialized empty Git repository <span class="k">in</span> /Users/mhartl/rails_projects/first_app/.git/
 </pre></div>
 </div>
 <p>接下来要将项目的文件添加到仓库中。不过有一点要说明一下：git 默认会跟踪所有文件的变化，但是有些文件我们并不想跟踪。例如，Rails 会创建一些日志文件记录应用程序的动作，这些文件经常变化，我们并不需要版本控制系统跟踪这些文件。git 有忽略文件的机制：在应用程序的根目录创建一个名为 <code>.gitignore</code> 的文件，然后写入一些规则告诉 git 要忽略哪些文件即可。<sup class="footnote" id="fnref-1-8"><a href="#fn-1-8" rel="footnote">14</a></sup></p>
 
 <p>看一下前面的表格 1.1，<code>rails</code> 命令默认会在应用程序的根目录创建 <code>.gitignore</code> 文件，其内容如代码 1.6 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-1-6"><p class="caption"><span>代码 1.6：</span><code>rails</code> 命令默认创建的 <code>.gitignore</code> 文件</p><div class="highlight type-text"><pre># See http://help.github.com/ignore-files/ for more about ignoring files.
+<div class="codeblock has-caption" id="codeblock-1-6"><p class="caption"><span>代码 1.6：</span><code>rails</code> 命令默认创建的 <code>.gitignore</code> 文件</p><div class="highlight type-plaintext"><pre># See http://help.github.com/ignore-files/ for more about ignoring files.
 #
 # If you find yourself ignoring temporary files generated by your text editor
 # or operating system, you probably want to add a global ignore instead:
@@ -803,7 +803,7 @@ Initialized empty Git repository in /Users/mhartl/rails_projects/first_app/.git/
 
 <p>代码 1.6 中的代码只是针对本教程的，但是系统中的一些文件也要忽略，代码 1.7 则更为全面。增强后的 <code>.gitignore</code> 文件会忽略 Rails 应用程序的文档、Vim 和 Emacs 的交换文件（swap file），以及 Mac Finder 程序生成的诡异的 <code>.DS_Store</code> 文件（针对 OS X 用户）。如果你想使用这个更全面的忽略文件，用你喜好的文本编辑器打开 <code>.gitignore</code> 文件，然后写入代码 1.7 中的代码。</p>
 
-<div class="codeblock has-caption" id="codeblock-1-7"><p class="caption"><span>代码 1.7：</span>加强版 <code>.gitignore</code> 文件</p><div class="highlight type-text"><pre># Ignore bundler config.
+<div class="codeblock has-caption" id="codeblock-1-7"><p class="caption"><span>代码 1.7：</span>加强版 <code>.gitignore</code> 文件</p><div class="highlight type-plaintext"><pre># Ignore bundler config.
 /.bundle
 
 # Ignore the default SQLite database.
@@ -830,12 +830,12 @@ doc/
 
 <p>最后我们要把 Rails 项目中的文件添加到 git 中，然后提交结果。你可以使用下述命令添加所有的文件（除了 <code>.gitignore</code> 中忽略的文件）：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git add .
 </pre></div>
 </div>
 <p>这里的点号（.）代表当前目录，git 会自动的将所有的文件，包括子目录中的文件添加到 git 中。这个命令会将项目的文件添加到暂存区域（staging area），这个区域包含未提交的改动。你可以使用 <code>status</code> 命令查看暂存区域有哪些文件：<sup class="footnote" id="fnref-1-9"><a href="#fn-1-9" rel="footnote">15</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git status
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git status
 <span class="c"># On branch master</span>
 <span class="c">#</span>
 <span class="c"># Initial commit</span>
@@ -854,8 +854,8 @@ doc/
 
 <p>用 <code>commit</code> 命令告诉 git 你想保存这些改动：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git commit -m <span class="s2">"Initial commit"</span>
-<span class="o">[</span>master <span class="o">(</span>root-commit<span class="o">)</span> df0a62f<span class="o">]</span> Initial commit
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git commit -m <span class="s2">"Initial commit"</span>
+<span class="o">[</span>master <span class="o">(</span>root-commit<span class="o">)</span> df0a62f] Initial commit
 42 files changed, 8461 insertions<span class="o">(</span>+<span class="o">)</span>, 0 deletions<span class="o">(</span>-<span class="o">)</span>
 create mode 100644 README.rdoc
 create mode 100644 Rakefile
@@ -870,7 +870,7 @@ create mode 100644 Rakefile
 
 <p>顺便说一下，你可以使用 <code>log</code> 命令查看提交的历史信息：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git log
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git log
 commit df0a62f3f091e53ffa799309b3e32c27b0b38eb4
 Author: Michael Hartl &lt;michael@michaelhartl.com&gt;
 Date:   Thu Oct 15 11:36:21 2009 -0700
@@ -885,10 +885,10 @@ Date:   Thu Oct 15 11:36:21 2009 -0700
 
 <p>现在你可能还不是完全清楚将源码纳入版本控制系统有什么好处，那我就举个例子来说明一下吧。（后续章节中还有很多例子）假设你不小心做了一些改动，比如说删除了 <code>app/controllers/</code> 文件夹：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>ls app/controllers/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>ls app/controllers/
 application_controller.rb
-<span class="nv">$ </span>rm -rf app/controllers/
-<span class="nv">$ </span>ls app/controllers/
+<span class="gp">$ </span>rm -rf app/controllers/
+<span class="gp">$ </span>ls app/controllers/
 ls: app/controllers/: No such file or directory
 </pre></div>
 </div>
@@ -896,7 +896,7 @@ ls: app/controllers/: No such file or directory
 
 <p>查看一下状态看看发生了什么：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git status
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git status
 <span class="c"># On branch master</span>
 <span class="c"># Changed but not updated:</span>
 <span class="c">#   (use "git add/rm &lt;file&gt;..." to update what will be committed)</span>
@@ -909,11 +909,11 @@ no changes added to commit <span class="o">(</span>use <span class="s2">"git add
 </div>
 <p>可以看到一个文件被删除了，但是这个改动只发生在工作区，还没有提交。这样我们就可以使用 <code>checkout</code> 命令切换到前一个提交记录来撤销这次改动（其中旗标 <code>-f</code> 意思是覆盖当前的改动）：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout -f
-<span class="nv">$ </span>git status
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout -f
+<span class="gp">$ </span>git status
 <span class="c"># On branch master</span>
 nothing to commit <span class="o">(</span>working directory clean<span class="o">)</span>
-<span class="nv">$ </span>ls app/controllers/
+<span class="gp">$ </span>ls app/controllers/
 application_controller.rb
 </pre></div>
 </div>
@@ -926,8 +926,8 @@ application_controller.rb
 
 <p>GitHub 有一些收费的计划，但是对开源项目的代码是免费的，如果你还没有 GitHub 的账户就赶快注册一个<a href="https://github.com/signup/free">免费的账户</a>吧。（或许你先要参考 GitHub 的“<a href="https://help.github.com/articles/generating-ssh-keys">创建 SSH 密匙</a>”一文）注册后，点击创建仓库的链接（<a href="https://github.com/repositories/new">New repository</a>），然后填入所需的信息，如图 1.6 所示。（注意，不要选择使用 <code>README</code> 文件初始化仓库（Initialize this repository with a README），因为 <code>rails new</code> 已经自动创建了这个文件。）提交表单后，按照下面的方法将你第一个应用程序推送上去：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git remote add origin git@github.com:&lt;username&gt;/first_app.git
-<span class="nv">$ </span>git push -u origin master
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git remote add origin git@github.com:&lt;username&gt;/first_app.git
+<span class="gp">$ </span>git push -u origin master
 </pre></div>
 </div>
 <div class="figure" id="figure-1-6">
@@ -935,7 +935,7 @@ application_controller.rb
 </div>
 <p>上面的代码告诉 Git 你要添加 GitHub 上面的仓库地址为代码的原本，代表本地的主分支（<code>master</code>），然后将本地的仓库推送到 GitHub 上。（先不要关心旗标 <code>-u</code> 的作用，如果你实在好奇可以搜索“git set upstream”。）当然你要把 <code>&lt;username&gt;</code> 换成你真正的用户名。例如，我执行的命令是：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git remote add origin https://github.com/mhartl/first_app.git
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git remote add origin https://github.com/mhartl/first_app.git
 </pre></div>
 </div>
 <p>然后在 GitHub 就有了这个应用程序仓库的页面，页面中有文件浏览功能，包含了完整的提交历史，还有一些其他好玩的功能（如图 1.7）。</p>
@@ -958,11 +958,11 @@ application_controller.rb
 
 <p>Git 中的分支功能很强大，分支是对仓库的复制，在分支中所做的改动（或许是实验性质的）不会影响父级文件。大多数情况下，父级仓库是 <code>master</code> 分支。我们可以使用 <code>checkout</code> 命令，并指定 <code>-b</code> 旗标创建一个新分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout -b modify-README
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout -b modify-README
 Switched to a new branch <span class="s1">'modify-README'</span>
-<span class="nv">$ </span>git branch
+<span class="gp">$ </span>git branch
 master
-* modify-README
+<span class="k">*</span> modify-README
 </pre></div>
 </div>
 <p>第二个命令，<code>git branch</code>，会将本地所有的分支列出来，分支名前面的星号（<code>*</code>）指明当前所在的分支。注意，<code>git checkout -b modify-README</code> 会创建一个新分支，然后切换到这个分支，<code>modify-README</code> 前面的星号证明了这一点。（如果你在 <a href="chapter1.html#section-1-3">1.3 节</a>中设置了别名 <code>co</code>，那么你就要使用 <code>git co -b modify-README</code> 了。）</p>
@@ -976,11 +976,11 @@ master
 
 <p>创建了从分支后，我们要编辑文件让其更好的描述我们的项目。较之默认的 RDoc 格式，我更喜欢 Markdown 标记语言，如果文件扩展名是 <code>.md</code>，GitHub 会自动为你排版。首先我们使用 Unix 命令 <code>mv</code>（移动，move）的 git 版本来修改文件名，然后写入代码 1.8 所示的内容：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git mv README.rdoc README.md
-<span class="nv">$ </span>subl README.md
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git mv README.rdoc README.md
+<span class="gp">$ </span>subl README.md
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-1-8"><p class="caption"><span>代码 1.8：</span>新的 <code>README</code> 文件，<code>README.md</code></p><div class="highlight type-text"><pre># Ruby on Rails Tutorial: first application
+<div class="codeblock has-caption" id="codeblock-1-8"><p class="caption"><span>代码 1.8：</span>新的 <code>README</code> 文件，<code>README.md</code></p><div class="highlight type-plaintext"><pre># Ruby on Rails Tutorial: first application
 
 This is the first application for the
 [*Ruby on Rails Tutorial*](http://railstutorial.org/)
@@ -992,7 +992,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 <p>编辑后，查看一下该分支的状态：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git status
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git status
 <span class="c"># On branch modify-README</span>
 <span class="c"># Changes to be committed:</span>
 <span class="c">#   (use "git reset HEAD &lt;file&gt;..." to unstage)</span>
@@ -1009,7 +1009,7 @@ by [Michael Hartl](http://michaelhartl.com/).
 </div>
 <p>这时，我们可以使用 <a href="chapter1.html#section-1-3-2">1.3.2 节</a>中用到的 <code>git add .</code>，但是 Git 提供了旗标 <code>-a</code>，它的意思是将现有文件的所有改动（包括使用 <code>git mv</code> 创建的文件，对 Git 来说这并不是新的文件）添加进来：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git commit -a -m <span class="s2">"Improve the README file"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git commit -a -m <span class="s2">"Improve the README file"</span>
 2 files changed, 5 insertions<span class="o">(</span>+<span class="o">)</span>, 243 deletions<span class="o">(</span>-<span class="o">)</span>
 delete mode 100644 README.rdoc
 create mode 100644 README.md
@@ -1024,13 +1024,13 @@ create mode 100644 README.md
 
 <p>我们已经修改完了，现在可以将其合并到主分支了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout master
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout master
 Switched to branch <span class="s1">'master'</span>
-<span class="nv">$ </span>git merge modify-README
+<span class="gp">$ </span>git merge modify-README
 Updating 34f06b7..2c92bef
 Fast forward
-README.rdoc     <span class="p">|</span>  243 --------------------------------------------------
-README.md       <span class="p">|</span>    5 +
+README.rdoc     |  243 --------------------------------------------------
+README.md       |    5 +
 2 files changed, 5 insertions<span class="o">(</span>+<span class="o">)</span>, 243 deletions<span class="o">(</span>-<span class="o">)</span>
 delete mode 100644 README.rdoc
 create mode 100644 README.md
@@ -1040,7 +1040,7 @@ create mode 100644 README.md
 
 <p>合并完后，我们可以清理一下分支了，使用 <code>git branch -d</code> 删除这个从分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git branch -d modify-README
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git branch -d modify-README
 Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">)</span>.
 </pre></div>
 </div>
@@ -1048,13 +1048,13 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 
 <p>如前面提到的，你可以使用 <code>git branch -D</code> 放弃对从分支所做的修改：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="c"># For illustration only; don't do this unless you mess up a branch</span>
-<span class="nv">$ </span>git checkout -b topic-branch
-<span class="nv">$ </span>&lt;really screw up the branch&gt;
-<span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -a -m <span class="s2">"Major screw up"</span>
-<span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git branch -D topic-branch
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="c"># For illustration only; don't do this unless you mess up a branch</span>
+<span class="gp">$ </span>git checkout -b topic-branch
+<span class="gp">$ </span>&lt;really screw up the branch&gt;
+<span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -a -m <span class="s2">"Major screw up"</span>
+<span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git branch -D topic-branch
 </pre></div>
 </div>
 <p>和旗标 <code>-d</code> 不同，即使还未合并 <code>-D</code> 也会删除分支。</p>
@@ -1064,7 +1064,7 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 
 <p>我们已经更新了 <code>README</code> 文件，可以将改动推送到 GitHub 看看改动的结果。因为之前我们已经推送过一次了（<a href="chapter1.html#section-1-3-4">1.3.4 节</a>），在大多数系统中我们都可以省略 <code>origin master</code>，只要运行 <code>git push</code>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git push
 </pre></div>
 </div>
 <p>正像我们介绍的，GitHub 使用 Markdown 解析器对文件进行了排版（如图 1.9）。</p>
@@ -1127,33 +1127,33 @@ Deleted branch modify-README <span class="o">(</span>was 2c92bef<span class="o">
 </div>
 <p>安装这些 gem，要执行 <code>bundle install</code>，并指定旗标：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install --without production
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle install --without production
 </pre></div>
 </div>
 <p>指定 <code>--without production</code> 后本地环境就不会安装生产环境所需的 gem 了，对本例来说有 <code>pg</code> 和 <code>rails_12factor</code> 两个 gem。（如果 Bundler 显示一个 <code>readline</code> 相关的错误，请把 <code>gem rb-readline, '~&amp;gt; 0.4.2'</code> 加入 <code>Gemfile</code>。）因为我们添加的 gem 只针对生产环境，所以现在执行这个命令不会在本地安装任何 gem，但这一步却是必须的，因为我们要把 <code>pg</code> 和 Ruby 版本更新到 <code>Gemfile.lock</code> 中，这样 Heroku 才知道应用程序要使用的 Ruby 版本。然后提交上述改动：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git commit -a -m <span class="s2">"Update Gemfile.lock for Heroku"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git commit -a -m <span class="s2">"Update Gemfile.lock for Heroku"</span>
 </pre></div>
 </div>
 <p>随后还要做一些设置，生成 Heroku 服务静态资源所需的文件，例如图片和 CSS：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rake assets:precompile
-<span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Add precompiled assets for Heroku"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rake assets:precompile
+<span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Add precompiled assets for Heroku"</span>
 </pre></div>
 </div>
 <p>（这里用到了 <code>rake</code> 命令，在 <a href="chapter2.html#section-2-2">2.2 节</a> 会详细介绍。）</p>
 
 <p>然后要注册并设置一个新 Heroku 账户。第一步是<a href="http://api.heroku.com/signup">注册</a>，然后查看邮箱，完成注册，再使用 <a href="https://toolbelt.heroku.com/">Heroku Toolbelt</a> 安装所需的软件。接着打开命令行，通过 <code>heroku</code> 命令登录：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku login
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku login
 </pre></div>
 </div>
 <p>最后，回到 Rails 应用程序所在目录，使用 <code>heroku</code> 命令在 Heroku 的服务器上创建一个区域放置你的应用程序（参照代码 1.10）。</p>
 
-<div class="codeblock has-caption" id="codeblock-1-10"><p class="caption"><span>代码 1.10：</span>在 Heroku 上新建一个应用程序</p><div class="highlight type-sh"><pre><span class="nv">$ </span><span class="nb">cd</span> ~/rails_projects/first_app
-<span class="nv">$ </span>heroku create
-Created http://stormy-cloud-5881.herokuapp.com/ <span class="p">|</span>
+<div class="codeblock has-caption" id="codeblock-1-10"><p class="caption"><span>代码 1.10：</span>在 Heroku 上新建一个应用程序</p><div class="highlight type-shell"><pre><span class="gp">$ </span><span class="nb">cd</span> ~/rails_projects/first_app
+<span class="gp">$ </span>heroku create
+Created http://stormy-cloud-5881.herokuapp.com/ |
 git@heroku.com:stormy-cloud-5881.herokuapp.com
 Git remote heroku added
 </pre></div>
@@ -1165,7 +1165,7 @@ Git remote heroku added
 
 <p>要部署到 Heroku，第一步是通过 Git 将应用程序推送到 Heroku 中：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push heroku master
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git push heroku master
 </pre></div>
 </div>
 <div class="figure" id="figure-1-10">
@@ -1176,7 +1176,7 @@ Git remote heroku added
 
 <p>事实上没有第二步了。我们已经完成部署了（如图 1.10）。你可以通过 <code>heroku create</code> 命令给出的地址（参照代码 1.9，但那里的地址是我的应用程序的）查看你刚刚部署的应用程序了。你可以向 <code>heroku</code> 命令传递一个参数来让其自动启动浏览器并打开你的地址：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku open
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku open
 </pre></div>
 </div>
 <p>糟糕，显示的是一个错误页面。对 Rails 4 来说，由于技术原因，Heroku 无法显示默认页面。幸好当我们在 <a href="chapter5.html#sec-5-3-2">5.3.2 节</a> 添加跟路由后错误就会消失了。</p>
@@ -1188,7 +1188,7 @@ Git remote heroku added
 
 <p>Heroku 提供了很多<a href="http://devcenter.heroku.com/heroku-command">命令</a>，本书只介绍了几个基本的。下面再介绍一个命令，用来重命名应用程序：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku rename railstutorial
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku rename railstutorial
 </pre></div>
 </div>
 <div class="figure" id="figure-1-11">
@@ -1196,14 +1196,14 @@ Git remote heroku added
 </div>
 <p>你不要再使用这个名字了，我已经使用了。事实上，现在你无需做这样的修改，使用 Heroku 提供的默认值就行。不过如果你真的想重命名你的应用程序，你可以基于安全的考虑使用一些随机或难猜测到的名字，例如：</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>hwpcbmze.herokuapp.com
+<div class="codeblock"><div class="highlight type-plaintext"><pre>hwpcbmze.herokuapp.com
 seyjhflo.herokuapp.com
 jhyicevg.herokuapp.com
 </pre></div>
 </div>
 <p>使用这样随机的域名，只有你将地址告诉别人他们才能访问你的网站。（顺便说一下，让你一窥 Ruby 的强大，以下是我用来生成随机域名的代码，很精妙吧。）</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="o">(</span><span class="s1">'a'</span>..<span class="s1">'z'</span><span class="o">)</span>.to_a.shuffle<span class="o">[</span>0..7<span class="o">]</span>.join
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="o">(</span><span class="s1">'a'</span>..<span class="s1">'z'</span><span class="o">)</span>.to_a.shuffle[0..7].join
 </pre></div>
 </div>
 <p>除了支持子域名，Heroku 也支持自定义域名。（事实上<a href="http://railstutorial.org/">本书的网站</a><sup class="footnote" id="fnref-1-t4"><a href="#fn-1-t4" rel="footnote">20</a></sup>就放在 Heroku 上。如果你阅读的是本书的在线版，你现在就正在浏览一个托管在 Heroku 上的网站。）在 <a href="http://devcenter.heroku.com/">Heroku 文档</a> 中可以查看更多关于自定义域名的信息以及其他 Heroku 相关的话题。</p>

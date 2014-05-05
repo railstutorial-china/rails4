@@ -79,7 +79,7 @@
 
 <p>在开始之前，我们要新建 <code>updating-users</code> 分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout -b updating-users
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout -b updating-users
 </pre></div>
 </div>
 <h2 id='section-9-1'><span>9.1</span> 更新用户</h2>
@@ -101,13 +101,13 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"edit"</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">describe</span> <span class="s2">"page"</span> <span class="k">do</span>
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s2">"Update your profile"</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="s2">"Edit user"</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'change'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="s1">'http://gravatar.com/emails'</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'change'</span><span class="p">,</span> <span class="ss">href: </span><span class="s1">'http://gravatar.com/emails'</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">end</span>
 
     <span class="n">describe</span> <span class="s2">"with invalid information"</span> <span class="k">do</span>
@@ -129,7 +129,7 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">edit</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -139,40 +139,40 @@
 </div>
 <p>要让测试通过，我们就要编写编辑用户页面的视图，如代码 9.3 所示。仔细观察一下视图代码，它和代码 7.17 中创建新用户页面的视图代码很相似，这就暗示我们要进行重构，把重复的代码移入局部视图。重构会留作练习，详情参见 <a href="chapter9.html#section-9-6">9.6 节</a>。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-3"><p class="caption"><span>代码 9.3：</span>编辑用户页面的视图</p><p class="file"><code>app/views/users/edit.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Edit user"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Update your profile&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-3"><p class="caption"><span>代码 9.3：</span>编辑用户页面的视图</p><p class="file"><code>app/views/users/edit.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Edit user"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Update your profile<span class="nt">&lt;/h1&gt;</span>
 
-<span class="x">&lt;div class="row"&gt;</span>
-<span class="x">  &lt;div class="span6 offset3"&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/error_messages'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"span6 offset3"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/error_messages'</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:name</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:name</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:name</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:email</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:email</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:email</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:email</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:password</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">password_field</span> <span class="ss">:password</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">password_field</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="s2">"Confirm Password"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">password_field</span> <span class="ss">:password_confirmation</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="s2">"Confirm Password"</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">password_field</span> <span class="ss">:password_confirmation</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s2">"Save changes"</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Save changes"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="vi">@user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;a href="http://gravatar.com/emails"&gt;change&lt;/a&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/div&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="vi">@user</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://gravatar.com/emails"</span><span class="nt">&gt;</span>change<span class="nt">&lt;/a&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>在这段代码中我们再次使用了 <a href="chapter7.html#section-7-3-3">7.3.3 节</a>中创建的 <code>error_messages</code> 局部视图。</p>
 
 <p>添加了视图代码，再加上代码 9.2 中定义的 <code>@user</code> 变量，代码 9.1 中的“编辑页面”测试应该就可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/user_pages_spec.rb -e <span class="s2">"edit page"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/user_pages_spec.rb -e <span class="s2">"edit page"</span>
 </pre></div>
 </div>
 <p>编辑用户页面如图 9.2 所示，我们看到 Rails 会自动读取 <code>@user</code> 变量，预先填好了名字和 Email 地址字段。</p>
@@ -199,11 +199,11 @@
 
 <p>还有一个细节需要注意一下，代码 9.3 和代码 7.17 都使用了相同的 <code>form_for(@user)</code> 来构建表单，那么 Rails 是怎么知道创建新用户要发送 <code>POST</code> 请求，而编辑用户时要发送 <code>PATCH</code> 请求的呢？这个问题的答案是，通过 Active Record 提供的 <code>new_record?</code> 方法可以检测用户是新创建的还是已经存在于数据库中的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; User.new.new_record?
-<span class="o">=</span>&gt; <span class="nb">true</span>
-&gt;&gt; User.first.new_record?
-<span class="o">=</span>&gt; <span class="nb">false</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span>User.new.new_record?
+<span class="gp">=&gt; </span><span class="nb">true</span>
+<span class="gp">&gt;&gt; </span>User.first.new_record?
+<span class="gp">=&gt; </span><span class="nb">false</span>
 </pre></div>
 </div>
 <p>所以在使用 <code>form_for(@user)</code> 构建表单时，如果 <code>@user.new_record?</code> 返回 <code>true</code> 则发送 <code>POST</code> 请求，否则就发送 <code>PATCH</code> 请求。</p>
@@ -217,14 +217,14 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span> <span class="p">}</span>
 
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Settings'</span><span class="p">,</span>    <span class="ss">href</span><span class="p">:</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href</span><span class="p">:</span> <span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Settings'</span><span class="p">,</span>    <span class="ss">href: </span><span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href: </span><span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
       <span class="o">.</span>
       <span class="o">.</span>
       <span class="o">.</span>
@@ -241,13 +241,13 @@
 <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{})</span>
   <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:no_capybara</span><span class="o">]</span>
     <span class="c1"># Sign in when not using Capybara.</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span>
     <span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
   <span class="k">else</span>
     <span class="n">visit</span> <span class="n">signin_path</span>
-    <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
-    <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+    <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+    <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
     <span class="n">click_button</span> <span class="s2">"Sign in"</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -257,42 +257,42 @@
 
 <p>在程序中添加“设置”链接很简单，我们就直接使用<a href="chapter7.html#table-7-1">表格 7.1</a> 中列出的 <code>edit_user_path</code> 具名路由，其参数设为代码 8.22 中定义的 <code>current_user</code> 帮助方法：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>完整的代码如代码 9.7 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-7"><p class="caption"><span>代码 9.7：</span>添加“设置”链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
-<span class="x">  &lt;div class="navbar-inner"&gt;</span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;nav&gt;</span>
-<span class="x">        &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span> <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">            &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">            &lt;li id="fat-menu" class="dropdown"&gt;</span>
-<span class="x">              &lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;</span>
-<span class="x">                Account &lt;b class="caret"&gt;&lt;/b&gt;</span>
-<span class="x">              &lt;/a&gt;</span>
-<span class="x">              &lt;ul class="dropdown-menu"&gt;</span>
-<span class="x">                &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">                &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">                &lt;li class="divider"&gt;&lt;/li&gt;</span>
-<span class="x">                &lt;li&gt;</span>
-<span class="x">                  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">                &lt;/li&gt;</span>
-<span class="x">              &lt;/ul&gt;</span>
-<span class="x">            &lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">            &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="n">signin_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">        &lt;/ul&gt;</span>
-<span class="x">      &lt;/nav&gt;</span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/header&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-7"><p class="caption"><span>代码 9.7：</span>添加“设置”链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;nav&gt;</span>
+        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span> <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span>
+            <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+            <span class="nt">&lt;li</span> <span class="na">id=</span><span class="s">"fat-menu"</span> <span class="na">class=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"dropdown-toggle"</span> <span class="na">data-toggle=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+                Account <span class="nt">&lt;b</span> <span class="na">class=</span><span class="s">"caret"</span><span class="nt">&gt;&lt;/b&gt;</span>
+              <span class="nt">&lt;/a&gt;</span>
+              <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"dropdown-menu"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+                <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"divider"</span><span class="nt">&gt;&lt;/li&gt;</span>
+                <span class="nt">&lt;li&gt;</span>
+                  <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span>
+                <span class="nt">&lt;/li&gt;</span>
+              <span class="nt">&lt;/ul&gt;</span>
+            <span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+            <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="n">signin_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+      <span class="nt">&lt;/nav&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
 </pre></div>
 </div>
 <h3 id='section-9-1-2'><span>9.1.2</span> 编辑失败</h3>
@@ -305,12 +305,12 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">edit</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">update</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
       <span class="c1"># Handle a successful update.</span>
     <span class="k">else</span>
       <span class="n">render</span> <span class="s1">'edit'</span>
@@ -329,7 +329,7 @@
 </div>
 <p>提交不合法信息后显示了错误提示信息（如图 9.3），测试就可以通过了，你可以运行测试组件验证一下：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-9-1-3'><span>9.1.3</span> 编辑成功</h3>
@@ -349,7 +349,7 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"edit"</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">before</span> <span class="k">do</span>
       <span class="n">sign_in</span> <span class="n">user</span>
       <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
@@ -361,18 +361,18 @@
       <span class="n">let</span><span class="p">(</span><span class="ss">:new_name</span><span class="p">)</span>  <span class="p">{</span> <span class="s2">"New Name"</span> <span class="p">}</span>
       <span class="n">let</span><span class="p">(</span><span class="ss">:new_email</span><span class="p">)</span> <span class="p">{</span> <span class="s2">"new@example.com"</span> <span class="p">}</span>
       <span class="n">before</span> <span class="k">do</span>
-        <span class="n">fill_in</span> <span class="s2">"Name"</span><span class="p">,</span>             <span class="ss">with</span><span class="p">:</span> <span class="n">new_name</span>
-        <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>            <span class="ss">with</span><span class="p">:</span> <span class="n">new_email</span>
-        <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span>         <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
-        <span class="n">fill_in</span> <span class="s2">"Confirm Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+        <span class="n">fill_in</span> <span class="s2">"Name"</span><span class="p">,</span>             <span class="ss">with: </span><span class="n">new_name</span>
+        <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>            <span class="ss">with: </span><span class="n">new_email</span>
+        <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span>         <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
+        <span class="n">fill_in</span> <span class="s2">"Confirm Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
         <span class="n">click_button</span> <span class="s2">"Save changes"</span>
       <span class="k">end</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-success'</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">to</span>  <span class="n">eq</span> <span class="n">new_name</span> <span class="p">}</span>
-      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="n">new_email</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">reload</span><span class="p">.</span><span class="nf">name</span><span class="p">).</span><span class="nf">to</span>  <span class="n">eq</span> <span class="n">new_name</span> <span class="p">}</span>
+      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">reload</span><span class="p">.</span><span class="nf">email</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="n">new_email</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -380,8 +380,8 @@
 </div>
 <p>上述代码中出现了一个新的方法 <code>reload</code>，出现在检测用户的属性是否已经更新的测试中：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">to</span>  <span class="o">==</span> <span class="n">new_name</span> <span class="p">}</span>
-<span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="n">new_email</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">reload</span><span class="p">.</span><span class="nf">name</span><span class="p">).</span><span class="nf">to</span>  <span class="o">==</span> <span class="n">new_name</span> <span class="p">}</span>
+<span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">reload</span><span class="p">.</span><span class="nf">email</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="n">new_email</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>这两行代码使用 <code>user.reload</code> 从测试数据库中重新加载 <code>user</code> 的数据，然后检测用户的名字和 Email 地址是否更新成了新的值。</p>
@@ -398,8 +398,8 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">update</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Profile updated"</span>
       <span class="n">redirect_to</span> <span class="vi">@user</span>
     <span class="k">else</span>
@@ -416,7 +416,7 @@
 
 <p>添加了本小节的代码之后，编辑用户页面应该可以正常使用了，你可以运行测试组件再确认一下，测试应该是可以通过的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h2 id='section-9-2'><span>9.2</span> 权限限制</h2>
@@ -440,7 +440,7 @@
   <span class="n">describe</span> <span class="s2">"authorization"</span> <span class="k">do</span>
 
     <span class="n">describe</span> <span class="s2">"for non-signed-in users"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"in the Users controller"</span> <span class="k">do</span>
 
@@ -451,7 +451,7 @@
 
         <span class="n">describe</span> <span class="s2">"submitting to the update action"</span> <span class="k">do</span>
           <span class="n">before</span> <span class="p">{</span> <span class="n">patch</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
-          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">end</span>
       <span class="k">end</span>
     <span class="k">end</span>
@@ -463,7 +463,7 @@
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"submitting to the update action"</span> <span class="k">do</span>
   <span class="n">before</span> <span class="p">{</span> <span class="n">patch</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -471,7 +471,7 @@
 
 <p>直接发送某种 HTTP 请求时，我们需要处理更底层的 <code>response</code> 对象。和 Capybara 提供的 <code>page</code> 对象不同，我们可以使用 <code>response</code> 测试服务器的响应。本例我们检测了 <code>update</code> 动作的响应是否转向了登录页面：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
 </pre></div>
 </div>
 <div class="figure" id="figure-9-5">
@@ -480,21 +480,21 @@
 <p>我们要使用 <code>before_action</code> 方法实现权限限制，这个方法会在指定的动作执行之前，先运行指定的方法。为了实现要求用户先登录的限制，我们要定义一个名为 <code>signed_in_user</code> 的方法，然后调用 <code>before_action :signed_in_user</code>，如代码 9.12 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-12"><p class="caption"><span>代码 9.12：</span>添加 <code>signed_in_user</code> 事前过滤器</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="kp">private</span>
 
     <span class="k">def</span> <span class="nf">user_params</span>
-      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
+      <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
                                    <span class="ss">:password_confirmation</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="c1"># Before filters</span>
 
     <span class="k">def</span> <span class="nf">signed_in_user</span>
-      <span class="n">redirect_to</span> <span class="n">signin_url</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s2">"Please sign in."</span> <span class="k">unless</span> <span class="n">signed_in?</span>
+      <span class="n">redirect_to</span> <span class="n">signin_url</span><span class="p">,</span> <span class="ss">notice: </span><span class="s2">"Please sign in."</span> <span class="k">unless</span> <span class="n">signed_in?</span>
     <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -518,7 +518,7 @@
 
 <p>现在所有的测试应该都可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-9-2-2'><span>9.2.2</span> 用户只能编辑自己的资料</h3>
@@ -537,19 +537,19 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"as wrong user"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:wrong_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"wrong@example.com"</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span><span class="p">,</span> <span class="n">no_capybara</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:wrong_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"wrong@example.com"</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span><span class="p">,</span> <span class="ss">no_capybara: </span><span class="kp">true</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"submitting a GET request to the Users#edit action"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">wrong_user</span><span class="p">)</span> <span class="p">}</span>
-        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">match</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">))</span> <span class="p">}</span>
-        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_url</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">body</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">match</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">))</span> <span class="p">}</span>
+        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_url</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
 
       <span class="n">describe</span> <span class="s2">"submitting a PATCH request to the Users#update action"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">patch</span> <span class="n">user_path</span><span class="p">(</span><span class="n">wrong_user</span><span class="p">)</span> <span class="p">}</span>
-        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_url</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_url</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -558,7 +558,7 @@
 </div>
 <p>注意，创建预构件的方法还可以接受第二个参数：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"wrong@example.com"</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"wrong@example.com"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>上述代码会用指定的 Email 替换默认值，然后创建用户。我们的测试要确保其他的用户不能访问原来那个用户的 <code>edit</code> 和 <code>update</code> 动作。</p>
@@ -566,8 +566,8 @@
 <p>我们在控制器中加入了第二个事前过滤器，调用 <code>correct_user</code> 方法，如代码 9.14 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-14"><p class="caption"><span>代码 9.14：</span>保护 <code>edit</code> 和 <code>update</code> 动作的 <code>correct_user</code> 事前过滤器</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
-  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -575,7 +575,7 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">update</span>
-    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Profile updated"</span>
       <span class="n">redirect_to</span> <span class="vi">@user</span>
     <span class="k">else</span>
@@ -588,18 +588,18 @@
   <span class="kp">private</span>
 
     <span class="k">def</span> <span class="nf">user_params</span>
-      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
+      <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
                                    <span class="ss">:password_confirmation</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="c1"># Before filters</span>
 
     <span class="k">def</span> <span class="nf">signed_in_user</span>
-      <span class="n">redirect_to</span> <span class="n">signin_url</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s2">"Please sign in."</span> <span class="k">unless</span> <span class="n">signed_in?</span>
+      <span class="n">redirect_to</span> <span class="n">signin_url</span><span class="p">,</span> <span class="ss">notice: </span><span class="s2">"Please sign in."</span> <span class="k">unless</span> <span class="n">signed_in?</span>
     <span class="k">end</span>
 
     <span class="k">def</span> <span class="nf">correct_user</span>
-      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
       <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span> <span class="k">unless</span> <span class="n">current_user?</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="k">end</span>
 <span class="k">end</span>
@@ -612,8 +612,8 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">current_user</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span><span class="p">)</span>
-    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">remember_token</span><span class="p">:</span> <span class="n">remember_token</span><span class="p">)</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">remember_token: </span><span class="n">remember_token</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">current_user?</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
@@ -628,7 +628,7 @@
 <p>代码 9.14 同时也更新了 <code>edit</code> 和 <code>update</code> 动作的代码。之前在代码 9.2 中，我们是这样写的：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">edit</span>
-  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -636,7 +636,7 @@
 
 <p>在继续阅读之前，你应该验证一下测试是否可以通过：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-9-2-3'><span>9.2.3</span> 更友好的转向</h3>
@@ -655,20 +655,20 @@
   <span class="n">describe</span> <span class="s2">"authorization"</span> <span class="k">do</span>
 
     <span class="n">describe</span> <span class="s2">"for non-signed-in users"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"when attempting to visit a protected page"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="k">do</span>
           <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-          <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
-          <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+          <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+          <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
           <span class="n">click_button</span> <span class="s2">"Sign in"</span>
         <span class="k">end</span>
 
         <span class="n">describe</span> <span class="s2">"after signing in"</span> <span class="k">do</span>
 
           <span class="n">it</span> <span class="s2">"should render the desired protected page"</span> <span class="k">do</span>
-            <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">)</span>
+            <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">)</span>
           <span class="k">end</span>
         <span class="k">end</span>
       <span class="k">end</span>
@@ -691,11 +691,11 @@
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">redirect_back_or</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
     <span class="n">redirect_to</span><span class="p">(</span><span class="n">session</span><span class="o">[</span><span class="ss">:return_to</span><span class="o">]</span> <span class="o">||</span> <span class="n">default</span><span class="p">)</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:return_to</span><span class="p">)</span>
+    <span class="n">session</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:return_to</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">store_location</span>
-    <span class="n">session</span><span class="o">[</span><span class="ss">:return_to</span><span class="o">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">fullpath</span> <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">get?</span>
+    <span class="n">session</span><span class="o">[</span><span class="ss">:return_to</span><span class="o">]</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">fullpath</span> <span class="k">if</span> <span class="n">request</span><span class="p">.</span><span class="nf">get?</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -705,8 +705,8 @@
 <p>要使用 <code>store_location</code>，我们要把它加入 <code>signed_in_user</code> 事前过滤器中，如代码 9.18 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-18"><p class="caption"><span>代码 9.18：</span>把 <code>store_location</code> 加入 <code>signed_in_user</code> 事前过滤器</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
-  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -718,7 +718,7 @@
   <span class="kp">private</span>
 
     <span class="k">def</span> <span class="nf">user_params</span>
-      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
+      <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
                                    <span class="ss">:password_confirmation</span><span class="p">)</span>
     <span class="k">end</span>
 
@@ -727,12 +727,12 @@
     <span class="k">def</span> <span class="nf">signed_in_user</span>
       <span class="k">unless</span> <span class="n">signed_in?</span>
         <span class="n">store_location</span>
-        <span class="n">redirect_to</span> <span class="n">signin_url</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s2">"Please sign in."</span>
+        <span class="n">redirect_to</span> <span class="n">signin_url</span><span class="p">,</span> <span class="ss">notice: </span><span class="s2">"Please sign in."</span>
       <span class="k">end</span>
     <span class="k">end</span>
 
     <span class="k">def</span> <span class="nf">correct_user</span>
-      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
       <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span> <span class="k">unless</span> <span class="n">current_user?</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="k">end</span>
 <span class="k">end</span>
@@ -745,12 +745,12 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">].</span><span class="n">downcase</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">]</span><span class="p">.</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
       <span class="n">sign_in</span> <span class="n">user</span>
       <span class="n">redirect_back_or</span> <span class="n">user</span>
     <span class="k">else</span>
-      <span class="n">flash</span><span class="o">.</span><span class="n">now</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
+      <span class="n">flash</span><span class="p">.</span><span class="nf">now</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
       <span class="n">render</span> <span class="s1">'new'</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -771,7 +771,7 @@
 
 <p>加入上述代码之后，代码 9.16 中对友好转向的集成测试应该可以通过了。至此，我们也就完成了基本的用户身份验证和页面保护机制。和之前一样，在继续阅读之前，最好确认一下所有的测试是否都可以通过：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <div class="figure" id="figure-9-7">
@@ -819,14 +819,14 @@
 <p>若要这个测试通过，我们要把 <code>index</code> 动作加入 <code>signed_in_user</code> 事前过滤器，如代码 9.21 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-21"><p class="caption"><span>代码 9.21：</span>访问 <code>index</code> 动作必须先登录</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
-  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
 
   <span class="k">def</span> <span class="nf">index</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -844,9 +844,9 @@
 
   <span class="n">describe</span> <span class="s2">"index"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
-      <span class="n">sign_in</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
-      <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Bob"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"bob@example.com"</span><span class="p">)</span>
-      <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Ben"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"ben@example.com"</span><span class="p">)</span>
+      <span class="n">sign_in</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
+      <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Bob"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"bob@example.com"</span><span class="p">)</span>
+      <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Ben"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"ben@example.com"</span><span class="p">)</span>
       <span class="n">visit</span> <span class="n">users_path</span>
     <span class="k">end</span>
 
@@ -854,8 +854,8 @@
     <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'All users'</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">it</span> <span class="s2">"should list each user"</span> <span class="k">do</span>
-      <span class="no">User</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-        <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'li'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+      <span class="no">User</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+        <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'li'</span><span class="p">,</span> <span class="ss">text: </span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -868,12 +868,12 @@
 <p>你可能还记得，我们在演示程序的相关代码中介绍过（参见代码 2.4），在程序中我们可以使用 <code>User.all</code> 从数据库中取回所有的用户，赋值给实例变量 <code>@users</code> 在视图中使用，如代码 9.23 所示。（你可能会觉得一次列出所有的用户不太好，你是对的，我们会在 <a href="chapter9.html#section-9-3-3">9.3.3 节</a>中改进。）</p>
 
 <div class="codeblock has-caption" id="codeblock-9-23"><p class="caption"><span>代码 9.23：</span>Users 控制器的 <code>index</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">index</span>
-    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">all</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -883,17 +883,17 @@
 </div>
 <p>要显示用户列表页面，我们要创建一个视图，遍历所有的用户，把单个用户包含在 <code>li</code> 标签中。我们要使用 <code>each</code> 方法遍历所有用户，显示用户的 Gravatar 头像和名字，然后把所有的用户包含在无序列表 <code>ul</code> 标签中，如代码 9.24 所示。在代码 9.24 中，我们用到了 <a href="chapter7.html#section-7-6">7.6 节</a>练习中代码 7.30 的成果，允许向 Gravatar 帮助方法传入第二个参数，指定头像的大小。如果你之前没有做这个练习题，在继续阅读之前请参照代码 7.30 更新 Users 控制器的帮助方法文件。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-24"><p class="caption"><span>代码 9.24：</span>用户列表页面的视图</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;All users&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-24"><p class="caption"><span>代码 9.24：</span>用户列表页面的视图</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>All users<span class="nt">&lt;/h1&gt;</span>
 
-<span class="x">&lt;ul class="users"&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="vi">@users</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;li&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">52</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/li&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/ul&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"users"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%</span> <span class="vi">@users</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;li&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size: </span><span class="mi">52</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
 </pre></div>
 </div>
 <p>我们再添加一些 CSS（更确切的说是 SCSS）美化一下，如代码 9.25。</p>
@@ -904,14 +904,14 @@
 <span class="o">/*</span> <span class="nt">Users</span> <span class="nt">index</span> <span class="o">*/</span>
 
 <span class="nc">.users</span> <span class="p">{</span>
-  <span class="na">list-style</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-  <span class="na">margin</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nl">list-style</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+  <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
   <span class="nt">li</span> <span class="p">{</span>
-    <span class="na">overflow</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span>
-    <span class="na">padding</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="na">border-top</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="nv">$grayLighter</span><span class="p">;</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+    <span class="nl">padding</span><span class="p">:</span> <span class="m">10px</span> <span class="m">0</span><span class="p">;</span>
+    <span class="nl">border-top</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nv">$grayLighter</span><span class="p">;</span>
     <span class="k">&amp;</span><span class="nd">:last-child</span> <span class="p">{</span>
-      <span class="na">border-bottom</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="nv">$grayLighter</span><span class="p">;</span>
+      <span class="nl">border-bottom</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nv">$grayLighter</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -926,15 +926,15 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span> <span class="p">}</span>
 
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Users'</span><span class="p">,</span>       <span class="ss">href</span><span class="p">:</span> <span class="n">users_path</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Settings'</span><span class="p">,</span>    <span class="ss">href</span><span class="p">:</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href</span><span class="p">:</span> <span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Users'</span><span class="p">,</span>       <span class="ss">href: </span><span class="n">users_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Settings'</span><span class="p">,</span>    <span class="ss">href: </span><span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href: </span><span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
       <span class="o">.</span>
       <span class="o">.</span>
       <span class="o">.</span>
@@ -943,42 +943,42 @@
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-9-27"><p class="caption"><span>代码 9.27：</span>添加“Users”链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
-<span class="x">  &lt;div class="navbar-inner"&gt;</span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;nav&gt;</span>
-<span class="x">        &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span> <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">            &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="n">users_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">            &lt;li id="fat-menu" class="dropdown"&gt;</span>
-<span class="x">              &lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;</span>
-<span class="x">                Account &lt;b class="caret"&gt;&lt;/b&gt;</span>
-<span class="x">              &lt;/a&gt;</span>
-<span class="x">              &lt;ul class="dropdown-menu"&gt;</span>
-<span class="x">                &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">                &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">                &lt;li class="divider"&gt;&lt;/li&gt;</span>
-<span class="x">                &lt;li&gt;</span>
-<span class="x">                  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">                &lt;/li&gt;</span>
-<span class="x">              &lt;/ul&gt;</span>
-<span class="x">            &lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">            &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="n">signin_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">        &lt;/ul&gt;</span>
-<span class="x">      &lt;/nav&gt;</span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/header&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-27"><p class="caption"><span>代码 9.27：</span>添加“Users”链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;nav&gt;</span>
+        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span> <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span>
+            <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="n">users_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+            <span class="nt">&lt;li</span> <span class="na">id=</span><span class="s">"fat-menu"</span> <span class="na">class=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"dropdown-toggle"</span> <span class="na">data-toggle=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+                Account <span class="nt">&lt;b</span> <span class="na">class=</span><span class="s">"caret"</span><span class="nt">&gt;&lt;/b&gt;</span>
+              <span class="nt">&lt;/a&gt;</span>
+              <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"dropdown-menu"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+                <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"divider"</span><span class="nt">&gt;&lt;/li&gt;</span>
+                <span class="nt">&lt;li&gt;</span>
+                  <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span>
+                <span class="nt">&lt;/li&gt;</span>
+              <span class="nt">&lt;/ul&gt;</span>
+            <span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+            <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="n">signin_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+      <span class="nt">&lt;/nav&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
 </pre></div>
 </div>
 <p>至此，用户列表页面的功能就实现了，所有的测试也都可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>不过，如图 9.8 所示，页面中只显示了一个用户，有点孤单单。下面，让我们来改变一下这种悲惨状况。</p>
@@ -1008,26 +1008,26 @@
 </div>
 <p>然后和之前一样，运行下面的命令安装：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle install
 </pre></div>
 </div>
 <p>接下来我们要添加一个 Rake 任务创建示例用户。这个 Rake 任务保存在 <code>lib/tasks</code> 文件夹中，而且在 <code>:db</code> 命名空间中定义，如代码 9.29 所示。（代码中涉及到一些高级知识，现在不必深入了解。）</p>
 
 <div class="codeblock has-caption" id="codeblock-9-29"><p class="caption"><span>代码 9.29：</span>在数据库中生成示例用户的 Rake 任务</p><p class="file"><code>lib/tasks/sample_data.rake</code></p><div class="highlight type-ruby"><pre><span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
   <span class="n">desc</span> <span class="s2">"Fill database with sample data"</span>
-  <span class="n">task</span> <span class="ss">populate</span><span class="p">:</span> <span class="ss">:environment</span> <span class="k">do</span>
-    <span class="no">User</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
-                 <span class="ss">email</span><span class="p">:</span> <span class="s2">"example@railstutorial.org"</span><span class="p">,</span>
-                 <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
-                 <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
-    <span class="mi">99</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span>
-      <span class="nb">name</span>  <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="o">.</span><span class="n">name</span>
+  <span class="n">task</span> <span class="ss">populate: :environment</span> <span class="k">do</span>
+    <span class="no">User</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
+                 <span class="ss">email: </span><span class="s2">"example@railstutorial.org"</span><span class="p">,</span>
+                 <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span>
+                 <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
+    <span class="mi">99</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span>
+      <span class="nb">name</span>  <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="p">.</span><span class="nf">name</span>
       <span class="n">email</span> <span class="o">=</span> <span class="s2">"example-</span><span class="si">#{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">@railstutorial.org"</span>
       <span class="n">password</span>  <span class="o">=</span> <span class="s2">"password"</span>
-      <span class="no">User</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="nb">name</span><span class="p">,</span>
-                   <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
-                   <span class="ss">password</span><span class="p">:</span> <span class="n">password</span><span class="p">,</span>
-                   <span class="n">password_confirmation</span><span class="p">:</span> <span class="n">password</span><span class="p">)</span>
+      <span class="no">User</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="nb">name</span><span class="p">,</span>
+                   <span class="ss">email: </span><span class="n">email</span><span class="p">,</span>
+                   <span class="ss">password: </span><span class="n">password</span><span class="p">,</span>
+                   <span class="ss">password_confirmation: </span><span class="n">password</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1038,16 +1038,16 @@
 </div>
 <p>上述代码定义了一个名为 <code>db:populate</code> 的 Rake 任务，先创建一个用户替代之前存在的那个用户，然后还创建了 99 个用户。下面这行代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">task</span> <span class="ss">populate</span><span class="p">:</span> <span class="ss">:environment</span> <span class="k">do</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">task</span> <span class="ss">populate: :environment</span> <span class="k">do</span>
 </pre></div>
 </div>
 <p>确保这个 Rake 任务可以获取 Rails 环境的信息，包括 User 模型，所以才能使用 <code>User.create!</code> 方法。<code>create!</code> 方法和 <code>create</code> 方法的作用一样，只不过如果提供的信息不合法不会返回 <code>false</code> 而是会抛出异常（参见 <a href="chapter6.html#section-6-1-4">6.1.4 节</a>），这样如果出错的话就很容易找到错误发生的地方。</p>
 
 <p>这个任务是定义在 <code>:db</code> 命名空间中的，所以我们要按照如下的方式来执行：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:reset
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:populate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:reset
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:populate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <p>执行这三个任务之后，我们的应用程序就有 100 个用户了，如图 9.9 所示。（我牺牲了一点个人时间为前几个用户上传了头像，这样就不都会显示默认的 Gravatar 头像了。）</p>
@@ -1076,7 +1076,7 @@
 </div>
 <p>然后执行下面的命令安装：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle install
 </pre></div>
 </div>
 <p>安装后你还要重启 Web 服务器，确保成功加载这两个新 gem。</p>
@@ -1085,7 +1085,7 @@
 
 <p>和之前一样，我们要使用 Factory Girl 生成用户，但是我们立马就会遇到一个问题：因为用户的 Email 地址必须是唯一的，那么我们就要手动生成 30 个用户，这可是一件很费事的活儿。而且，在测试用户列表时，用户的名字最好也不一样。幸好 Factory Girl 料事如神，提供了 <code>sequence</code> 方法来解决这种问题。在代码 7.8 中，我们是直接输入名字和 Email 地址来创建预构件的：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">define</span> <span class="k">do</span>
   <span class="n">factory</span> <span class="ss">:user</span> <span class="k">do</span>
     <span class="nb">name</span>     <span class="s2">"Michael Hartl"</span>
     <span class="n">email</span>    <span class="s2">"michael@example.com"</span>
@@ -1107,7 +1107,7 @@
 </div>
 <p><code>sequence</code> 方法可以接受一个 Symbol 类型的参数，对应到属性上（例如 <code>:name</code>），其后还可以跟着块，有一个块参数，我们将其命名为 <code>n</code>。<code>FactoryGirl.create(:user)</code> 方法执行成功后，块参数会自动增加 1。因此，创建的第一个用户名字为“Person 1”，Email 地址为“person_1@example.com”；第二个用户的名字为 <code>Person 2</code>，Email 地址为“person_2@example.com”；依此类推。完整的代码如代码 9.31 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-31"><p class="caption"><span>代码 9.31：</span>定义 Factory Girl 序列</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-9-31"><p class="caption"><span>代码 9.31：</span>定义 Factory Girl 序列</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">define</span> <span class="k">do</span>
   <span class="n">factory</span> <span class="ss">:user</span> <span class="k">do</span>
     <span class="n">sequence</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>  <span class="p">{</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="s2">"Person </span><span class="si">#{</span><span class="n">n</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span>
     <span class="n">sequence</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="s2">"person_</span><span class="si">#{</span><span class="n">n</span><span class="si">}</span><span class="s2">@example.com"</span><span class="p">}</span>
@@ -1119,8 +1119,8 @@
 </div>
 <p>创建了预构件序列后，在测试中就可以生成 30 个用户了，这 30 个用户就可以产生分页了：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span> <span class="p">{</span> <span class="mi">30</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
-<span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span>  <span class="p">{</span> <span class="no">User</span><span class="o">.</span><span class="n">delete_all</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span> <span class="p">{</span> <span class="mi">30</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+<span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span>  <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">delete_all</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>注意，上述代码使用 <code>before(:all)</code> 确保在块中所有测试执行之前，一次性创建 30 个示例用户。这是对速度做的优化，因为在某些系统中每个测试都创建 30 个用户会很慢。对应的，我们调用 <code>after(:all)</code> 方法，在测试结束后一次性删除所有的用户。</p>
@@ -1134,7 +1134,7 @@
   <span class="n">subject</span> <span class="p">{</span> <span class="n">page</span> <span class="p">}</span>
 
   <span class="n">describe</span> <span class="s2">"index"</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">)</span> <span class="k">do</span>
       <span class="n">sign_in</span> <span class="n">user</span>
       <span class="n">visit</span> <span class="n">users_path</span>
@@ -1145,14 +1145,14 @@
 
     <span class="n">describe</span> <span class="s2">"pagination"</span> <span class="k">do</span>
 
-      <span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span> <span class="p">{</span> <span class="mi">30</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
-      <span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span>  <span class="p">{</span> <span class="no">User</span><span class="o">.</span><span class="n">delete_all</span> <span class="p">}</span>
+      <span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span> <span class="p">{</span> <span class="mi">30</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+      <span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">)</span>  <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">delete_all</span> <span class="p">}</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.pagination'</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">it</span> <span class="s2">"should list each user"</span> <span class="k">do</span>
-        <span class="no">User</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">page</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-          <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'li'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="no">User</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">page: </span><span class="mi">1</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+          <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'li'</span><span class="p">,</span> <span class="ss">text: </span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span>
         <span class="k">end</span>
       <span class="k">end</span>
     <span class="k">end</span>
@@ -1165,30 +1165,30 @@
 </div>
 <p>要实现分页，我们要在用户列表页面的视图中加入一些代码，告诉 Rails 要分页显示用户，而且要把 <code>index</code> 动作中的 <code>User.all</code> 换成知道如何分页的方法。我们先在视图中加入特殊的 <code>will_paginate</code> 方法，如代码 9.33 所示。稍后我们会看到为什么要在用户列表的前后都加入分页代码。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-33"><p class="caption"><span>代码 9.33：</span>在用户列表视图中加入分页</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;All users&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-33"><p class="caption"><span>代码 9.33：</span>在用户列表视图中加入分页</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>All users<span class="nt">&lt;/h1&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 
-<span class="x">&lt;ul class="users"&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="vi">@users</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;li&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">52</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/li&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/ul&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"users"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%</span> <span class="vi">@users</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;li&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size: </span><span class="mi">52</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p><code>will_paginate</code> 方法有点小神奇，在 Users 控制器的视图中，它会自动寻找名为 <code>@users</code> 的对象，然后显示一个分页导航链接。代码 9.33 所示的视图现在还不能正确显示分页，因为现在 <code>@users</code> 的值是通过 <code>User.all</code> 方法获取的，而 <code>will_paginate</code> 的分页需要调用 <code>paginate</code> 方法：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; User.paginate<span class="o">(</span>page: 1<span class="o">)</span>
-  User Load <span class="o">(</span>1.5ms<span class="o">)</span>  SELECT <span class="s2">"users"</span>.* FROM <span class="s2">"users"</span> LIMIT 30 OFFSET 0
-   <span class="o">(</span>1.7ms<span class="o">)</span>  SELECT COUNT<span class="o">(</span>*<span class="o">)</span> FROM <span class="s2">"users"</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;ActiveRecord::Relation [#&lt;User id: 1,...</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span>User.paginate<span class="o">(</span>page: 1<span class="o">)</span>
+  User Load <span class="o">(</span>1.5ms<span class="o">)</span>  SELECT <span class="s2">"users"</span>.<span class="k">*</span> FROM <span class="s2">"users"</span> LIMIT 30 OFFSET 0
+   <span class="o">(</span>1.7ms<span class="o">)</span>  SELECT COUNT<span class="o">(</span><span class="k">*</span><span class="o">)</span> FROM <span class="s2">"users"</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;ActiveRecord::Relation [#&lt;User id: 1,...</span>
 </pre></div>
 </div>
 <p><code>paginate</code> 方法可以接受一个 Hash 类型的参数，键 <code>:page</code> 的值指定第几页。<code>User.paginate</code> 方法根据 <code>:page</code> 的值，一次取回一系列的用户（默认为 30 个）。所以，第一页显示的是第 1-30 个用户，第二页显示的是第 31-60 个，等。如果指定的页数不存在，<code>paginate</code> 会显示第一页。</p>
@@ -1196,12 +1196,12 @@
 <p>我们可以把 <code>index</code> 动作中的 <code>all</code> 方法换成 <code>paginate</code>，这样页面中就可以显示分页导航了，如代码 9.34 所示。<code>paginate</code> 方法所需的 <code>:page</code> 参数值由 <code>params[:page]</code> 指定，这个 <code>params</code> 元素是由 <code>will_pagenate</code> 自动生成的。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-34"><p class="caption"><span>代码 9.34：</span>在 <code>index</code> 动作中按分页取回用户</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">index</span>
-    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">page</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">page: </span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1221,7 +1221,7 @@
 </div>
 <p>你还应该验证一下测试是否可以通过：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-9-3-4'><span>9.3.4</span> 视图重构</h3>
@@ -1231,45 +1231,45 @@
 
 <p>重构的第一步，要把代码 9.33 中的 <code>li</code> 换成对 <code>render</code> 方法的调用，如代码 9.35 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-35"><p class="caption"><span>代码 9.35：</span>重构用户列表视图的第一步</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;All users&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-35"><p class="caption"><span>代码 9.35：</span>重构用户列表视图的第一步</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>All users<span class="nt">&lt;/h1&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 
-<span class="x">&lt;ul class="users"&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="vi">@users</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/ul&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"users"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%</span> <span class="vi">@users</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="n">user</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>在上述代码中，<code>render</code> 的参数不再是指定局部视图的字符串，而是代表 <code>User</code> 类的 <code>user</code> 变量。<sup class="footnote" id="fnref-9-7"><a href="#fn-9-7" rel="footnote">7</a></sup>Rails 会自定寻找一个名为 <code>_user.html.erb</code> 的局部视图，我们要手动创建这个视图，然后写入代码 9.36 中的内容。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-36"><p class="caption"><span>代码 9.36：</span>显示单一用户的局部视图</p><p class="file"><code>app/views/users/_user.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">52</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/li&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-36"><p class="caption"><span>代码 9.36：</span>显示单一用户的局部视图</p><p class="file"><code>app/views/users/_user.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;li&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size: </span><span class="mi">52</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/li&gt;</span>
 </pre></div>
 </div>
 <p>这个改进很不错，不过我们还可以做的更好。我们可以直接把 <code>@users</code> 变量传递给 <code>render</code> 方法，如代码 9.37 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-37"><p class="caption"><span>代码 9.37：</span>完全重构后的用户列表视图</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;All users&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-37"><p class="caption"><span>代码 9.37：</span>完全重构后的用户列表视图</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'All users'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>All users<span class="nt">&lt;/h1&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 
-<span class="x">&lt;ul class="users"&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="vi">@users</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/ul&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"users"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="vi">@users</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>Rails 会把 <code>@users</code> 当作一系列的 <code>User</code> 对象，遍历这些对象，然后使用 <code>_user.html.erb</code> 渲染每个对象。所以我们就得到了代码 9.37 这样简洁的代码。每次重构后，你都应该验证一下测试组件是否还是可以通过的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h2 id='section-9-4'><span>9.4</span> 删除用户</h2>
@@ -1299,8 +1299,8 @@
 
   <span class="n">describe</span> <span class="s2">"with admin attribute set to 'true'"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
-      <span class="vi">@user</span><span class="o">.</span><span class="n">save!</span>
-      <span class="vi">@user</span><span class="o">.</span><span class="n">toggle!</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span>
+      <span class="vi">@user</span><span class="p">.</span><span class="nf">save!</span>
+      <span class="vi">@user</span><span class="p">.</span><span class="nf">toggle!</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_admin</span> <span class="p">}</span>
@@ -1315,7 +1315,7 @@
 
 <p>和之前一样，我们要使用迁移添加 <code>admin</code> 属性，在命令行中指定其类型为 <code>boolean</code>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate migration add_admin_to_users admin:boolean
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate migration add_admin_to_users admin:boolean
 </pre></div>
 </div>
 <p>这个命令生成的迁移文件（如代码 9.39 所示）会在 users 表中添加 <code>admin</code> 这一列，得到的数据模型如图 9.13 所示。</p>
@@ -1325,7 +1325,7 @@
 </div>
 <div class="codeblock has-caption" id="codeblock-9-39"><p class="caption"><span>代码 9.39：</span>为 User 模型添加 <code>admin</code> 属性所用的迁移文件</p><p class="file"><code>db/migrate/[timestamp]_add_admin_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddAdminToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:boolean</span><span class="p">,</span> <span class="ss">default</span><span class="p">:</span> <span class="kp">false</span>
+    <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:boolean</span><span class="p">,</span> <span class="ss">default: </span><span class="kp">false</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1334,37 +1334,37 @@
 
 <p>然后，我们要在“开发数据库”中执行迁移操作，还要准备好“测试数据库”：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <p>和预想的一样，Rails 可以自动识别 <code>admin</code> 属性的类型为布尔值，而且自动生成了 <code>admin?</code> 方法：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console --sandbox
-&gt;&gt; <span class="nv">user</span> <span class="o">=</span> User.first
-&gt;&gt; user.admin?
-<span class="o">=</span>&gt; <span class="nb">false</span>
-&gt;&gt; user.toggle!<span class="o">(</span>:admin<span class="o">)</span>
-<span class="o">=</span>&gt; <span class="nb">true</span>
-&gt;&gt; user.admin?
-<span class="o">=</span>&gt; <span class="nb">true</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console --sandbox
+<span class="gp">&gt;&gt; </span>user <span class="o">=</span> User.first
+<span class="gp">&gt;&gt; </span>user.admin?
+<span class="gp">=&gt; </span><span class="nb">false</span>
+<span class="gp">&gt;&gt; </span>user.toggle!<span class="o">(</span>:admin<span class="o">)</span>
+<span class="gp">=&gt; </span><span class="nb">true</span>
+<span class="gp">&gt;&gt; </span>user.admin?
+<span class="gp">=&gt; </span><span class="nb">true</span>
 </pre></div>
 </div>
 <p>执行迁移操作后，针对 <code>admin</code> 属性的测试应该可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
 </pre></div>
 </div>
 <p>最后，我们要修改一下生成示例用户的代码，把第一个用户设为管理员，如代码 9.40 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-40"><p class="caption"><span>代码 9.40：</span>生成示例用户的代码，把第一个用户设为管理员</p><p class="file"><code>lib/tasks/sample_data.rake</code></p><div class="highlight type-ruby"><pre><span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
   <span class="n">desc</span> <span class="s2">"Fill database with sample data"</span>
-  <span class="n">task</span> <span class="ss">populate</span><span class="p">:</span> <span class="ss">:environment</span> <span class="k">do</span>
-    <span class="n">admin</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
-                         <span class="ss">email</span><span class="p">:</span> <span class="s2">"example@railstutorial.org"</span><span class="p">,</span>
-                         <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
-                         <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
-                         <span class="ss">admin</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
+  <span class="n">task</span> <span class="ss">populate: :environment</span> <span class="k">do</span>
+    <span class="n">admin</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
+                         <span class="ss">email: </span><span class="s2">"example@railstutorial.org"</span><span class="p">,</span>
+                         <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span>
+                         <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">,</span>
+                         <span class="ss">admin: </span><span class="kp">true</span><span class="p">)</span>
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
@@ -1374,9 +1374,9 @@
 </div>
 <p>之后还要还原数据库，并且重新生成示例用户：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:reset
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:populate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:reset
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:populate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <h4 id='section-9-4-1-1'><span></span>“健壮参数”再探</h4>
@@ -1384,7 +1384,7 @@
 
 <p>你可能注意到了，在代码 9.40 中，我们在初始化 Hash 参数中指定了 <code>admin: true</code> 把用户设为管理员。这么做的后果是用户对象暴露在网络中了，如果在请求中提供初始化参数，恶意用户就可以发送如下的 <code>PATCH</code> 请求<sup class="footnote" id="fnref-9-8"><a href="#fn-9-8" rel="footnote">8</a></sup>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>patch /users/17?admin<span class="o">=</span>1
+<div class="codeblock"><div class="highlight type-shell"><pre>patch /users/17?admin<span class="o">=</span>1
 </pre></div>
 </div>
 <p>这个请求会把 17 号用户设为管理员，这怎么说也是个潜在的安全隐患。</p>
@@ -1392,7 +1392,7 @@
 <p>鉴于此，必须只允许传入可安全编辑的属性。我们在 <a href="chapter7.html#section-7-3-2">7.3.2 节</a>中说过，可以使用“健壮参数”，在 <code>params</code> Hash 上调用 <code>require</code> 和 <code>permit</code> 方法：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre>    <span class="k">def</span> <span class="nf">user_params</span>
-      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
+      <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span>
                                    <span class="ss">:password_confirmation</span><span class="p">)</span>
     <span class="k">end</span>
 </pre></div>
@@ -1406,7 +1406,7 @@
 
 <p>编写针对删除功能的测试，最好能有个创建管理员的工厂方法，为此，我们可以在预构件中加入一个名为 <code>:admin</code> 的块，如代码 9.41 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-41"><p class="caption"><span>代码 9.41：</span>添加一个创建管理员的工厂方法</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-9-41"><p class="caption"><span>代码 9.41：</span>添加一个创建管理员的工厂方法</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">define</span> <span class="k">do</span>
   <span class="n">factory</span> <span class="ss">:user</span> <span class="k">do</span>
     <span class="n">sequence</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>  <span class="p">{</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="s2">"Person </span><span class="si">#{</span><span class="n">n</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span>
     <span class="n">sequence</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="s2">"person_</span><span class="si">#{</span><span class="n">n</span><span class="si">}</span><span class="s2">@example.com"</span><span class="p">}</span>
@@ -1429,13 +1429,13 @@
 </div>
 <p>只有管理员才能看到删除用户链接，如果管理员点击了删除用户链接，该用户会被删除，用户的数量就会减少 1 个：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">))</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="no">User</span><span class="p">.</span><span class="nf">first</span><span class="p">))</span> <span class="p">}</span>
 <span class="n">it</span> <span class="s2">"should be able to delete another user"</span> <span class="k">do</span>
   <span class="n">expect</span> <span class="k">do</span>
-    <span class="n">click_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">match</span><span class="p">:</span> <span class="ss">:first</span><span class="p">)</span>
-  <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">User</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">click_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">match: :first</span><span class="p">)</span>
+  <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">User</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">end</span>
-<span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">admin</span><span class="p">))</span> <span class="p">}</span>
+<span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">admin</span><span class="p">))</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>上述代码中用到了 <code>match: :first</code>，这个参数告知 Capybara，不管是哪个删除链接，只点击第一个看到的。注意，我们还添加了一个测试，确保管理员不会看到删除自己的链接。针对删除用户的完整测试如代码 9.42 所示。</p>
@@ -1448,7 +1448,7 @@
 
   <span class="n">describe</span> <span class="s2">"index"</span> <span class="k">do</span>
 
-    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">before</span> <span class="k">do</span>
       <span class="n">sign_in</span> <span class="n">user</span>
@@ -1469,19 +1469,19 @@
       <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"as an admin user"</span> <span class="k">do</span>
-        <span class="n">let</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">let</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span> <span class="p">}</span>
         <span class="n">before</span> <span class="k">do</span>
           <span class="n">sign_in</span> <span class="n">admin</span>
           <span class="n">visit</span> <span class="n">users_path</span>
         <span class="k">end</span>
 
-        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">))</span> <span class="p">}</span>
+        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="no">User</span><span class="p">.</span><span class="nf">first</span><span class="p">))</span> <span class="p">}</span>
         <span class="n">it</span> <span class="s2">"should be able to delete another user"</span> <span class="k">do</span>
           <span class="n">expect</span> <span class="k">do</span>
-            <span class="n">click_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">match</span><span class="p">:</span> <span class="ss">:first</span><span class="p">)</span>
-          <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">User</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">click_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">match: :first</span><span class="p">)</span>
+          <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">User</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">end</span>
-        <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">admin</span><span class="p">))</span> <span class="p">}</span>
+        <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">admin</span><span class="p">))</span> <span class="p">}</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -1493,14 +1493,14 @@
 </div>
 <p>然后在视图中加入代码 9.43。注意链接中的 <code>method: delete</code> 参数，它指明点击链接后发送的是 <code>DELETE</code> 请求。我们还把各链接放在了 <code>if</code> 语句中，这样就只有管理员才能看到删除用户链接。管理员看到的页面如图 9.14 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-9-43"><p class="caption"><span>代码 9.43：</span>删除用户的链接（只有管理员才能看到）</p><p class="file"><code>app/views/users/_user.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;li&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">52</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">admin?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">current_user?</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    | </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"delete"</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span><span class="p">,</span>
-                                  <span class="ss">data</span><span class="p">:</span> <span class="p">{</span> <span class="ss">confirm</span><span class="p">:</span> <span class="s2">"You sure?"</span> <span class="p">}</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/li&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-43"><p class="caption"><span>代码 9.43：</span>删除用户的链接（只有管理员才能看到）</p><p class="file"><code>app/views/users/_user.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;li&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="n">user</span><span class="p">,</span> <span class="ss">size: </span><span class="mi">52</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">admin?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">current_user?</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="cp">%&gt;</span>
+    | <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"delete"</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span><span class="p">,</span>
+                                  <span class="ss">data: </span><span class="p">{</span> <span class="ss">confirm: </span><span class="s2">"You sure?"</span> <span class="p">}</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/li&gt;</span>
 </pre></div>
 </div>
 <div class="figure" id="figure-9-14">
@@ -1511,13 +1511,13 @@
 <p>若要删除用户的链接起作用，我们要定义 <code>destroy</code> 动作（参见<a href="chapter7.html#table-7-1">表格 7.1</a>）。在 <code>destroy</code> 动作中，先找到要删除的用户，使用 Active Record 提供的 <code>destroy</code> 方法删除这个用户，然后再转向用户列表页面，如代码 9.44 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-44"><p class="caption"><span>代码 9.44：</span>加入 <code>destroy</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
-  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">destroy</span>
-    <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">destroy</span>
+    <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">).</span><span class="nf">destroy</span>
     <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"User destroyed."</span>
     <span class="n">redirect_to</span> <span class="n">users_url</span>
   <span class="k">end</span>
@@ -1529,7 +1529,7 @@
 </div>
 <p>注意上述 <code>destroy</code> 动作中，把 <code>find</code> 方法和 <code>destroy</code> 方法链在一起使用了：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">destroy</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">).</span><span class="nf">destroy</span>
 </pre></div>
 </div>
 <p>理论上，只有管理员才能看到删除用户的链接，所以只有管理员才能删除用户。但实际上，还是存在一个严重的安全隐患：只要攻击者有足够的经验，就可以在命令行中发送 <code>DELETE</code> 请求，删除网站中的用户。为了保证网站的安全，我们还要限制对 <code>destroy</code> 动作的访问，因此我们在测试中不仅要确保只有管理员才能删除用户，还要保证其他用户不能执行删除操作，如代码 9.45 所示。注意，和代码 9.11 中的 <code>put</code> 方法类似，在这段代码中我们使用 <code>delete</code> 方法向指定的地址（<code>user_path</code>，参见<a href="chapter7.html#table-7-1">表格 7.1</a>）发送了一个 <code>DELETE</code> 请求。</p>
@@ -1545,14 +1545,14 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"as non-admin user"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:non_admin</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:non_admin</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 
-      <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">non_admin</span><span class="p">,</span> <span class="n">no_capybara</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span>
+      <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">non_admin</span><span class="p">,</span> <span class="ss">no_capybara: </span><span class="kp">true</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"submitting a DELETE request to the Users#destroy action"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">delete</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
-        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -1564,9 +1564,9 @@
 <p>你可能已经知道了，我们要使用一个事前过滤器限制对 <code>destroy</code> 动作的访问，如代码 9.46 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-9-46"><p class="caption"><span>代码 9.46：</span>限制只有管理员才能访问 <code>destroy</code> 动作的事前过滤器</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
-  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
-  <span class="n">before_action</span> <span class="ss">:admin_user</span><span class="p">,</span>     <span class="ss">only</span><span class="p">:</span> <span class="ss">:destroy</span>
+  <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:correct_user</span><span class="p">,</span>   <span class="ss">only: </span><span class="o">[</span><span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="o">]</span>
+  <span class="n">before_action</span> <span class="ss">:admin_user</span><span class="p">,</span>     <span class="ss">only: :destroy</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1575,14 +1575,14 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="k">def</span> <span class="nf">admin_user</span>
-      <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span> <span class="k">unless</span> <span class="n">current_user</span><span class="o">.</span><span class="n">admin?</span>
+      <span class="n">redirect_to</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span> <span class="k">unless</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">admin?</span>
     <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>至此，所有的测试应该都可以通过了，而且 Users 相关的资源，包括控制器、模型和视图，都已经实现了。</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h2 id='section-9-5'><span>9.5</span> 小结</h2>
@@ -1594,23 +1594,23 @@
 
 <p>在继续阅读之前，先把本章所做的改动合并到主分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Finish user edit, update, index, and destroy actions"</span>
-<span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git merge updating-users
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Finish user edit, update, index, and destroy actions"</span>
+<span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git merge updating-users
 </pre></div>
 </div>
 <p>你还可以将程序部署到“生产环境”，再生成示例用户（在此之前要使用 <code>pg:reset</code> 命令还原“生产数据库”）：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push heroku
-<span class="nv">$ </span>heroku pg:reset DATABASE
-<span class="nv">$ </span>heroku run rake db:migrate
-<span class="nv">$ </span>heroku run rake db:populate
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git push heroku
+<span class="gp">$ </span>heroku pg:reset DATABASE
+<span class="gp">$ </span>heroku run rake db:migrate
+<span class="gp">$ </span>heroku run rake db:populate
 </pre></div>
 </div>
 <p>若要改动显示出来，可能要在 Heroku 中强制重启应用程序：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku restart
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku restart
 </pre></div>
 </div>
 <p>还有一点需要注意，本章我们加入了程序所需的最后一个 gem，最终的 <code>Gemfile</code> 如代码 9.47 所示。</p>
@@ -1641,7 +1641,7 @@
   <span class="n">gem</span> <span class="s1">'capybara'</span><span class="p">,</span> <span class="s1">'2.1.0'</span>
   <span class="n">gem</span> <span class="s1">'factory_girl_rails'</span><span class="p">,</span> <span class="s1">'4.2.0'</span>
   <span class="n">gem</span> <span class="s1">'cucumber-rails'</span><span class="p">,</span> <span class="s1">'1.4.0'</span><span class="p">,</span> <span class="ss">:require</span> <span class="o">=&gt;</span> <span class="kp">false</span>
-  <span class="n">gem</span> <span class="s1">'database_cleaner'</span><span class="p">,</span> <span class="ss">github</span><span class="p">:</span> <span class="s1">'bmabey/database_cleaner'</span>
+  <span class="n">gem</span> <span class="s1">'database_cleaner'</span><span class="p">,</span> <span class="ss">github: </span><span class="s1">'bmabey/database_cleaner'</span>
 
   <span class="c1"># Uncomment this line on OS X.</span>
   <span class="c1"># gem 'growl', '1.0.3'</span>
@@ -1714,42 +1714,42 @@
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"forbidden attributes"</span> <span class="k">do</span>
       <span class="n">let</span><span class="p">(</span><span class="ss">:params</span><span class="p">)</span> <span class="k">do</span>
-        <span class="p">{</span> <span class="ss">user</span><span class="p">:</span> <span class="p">{</span> <span class="ss">admin</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
-                  <span class="n">password_confirmation</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="p">}</span> <span class="p">}</span>
+        <span class="p">{</span> <span class="ss">user: </span><span class="p">{</span> <span class="ss">admin: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">password: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span><span class="p">,</span>
+                  <span class="ss">password_confirmation: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span> <span class="p">}</span> <span class="p">}</span>
       <span class="k">end</span>
       <span class="n">before</span> <span class="p">{</span> <span class="n">patch</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">),</span> <span class="n">params</span> <span class="p">}</span>
-      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_admin</span> <span class="p">}</span>
+      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">reload</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">be_admin</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-9-49"><p class="caption"><span>代码 9.49：</span>注册和编辑表单字段的局部视图</p><p class="file"><code>app/views/users/_fields.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/error_messages'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-9-49"><p class="caption"><span>代码 9.49：</span>注册和编辑表单字段的局部视图</p><p class="file"><code>app/views/users/_fields.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/error_messages'</span> <span class="cp">%&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:name</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:name</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:name</span> <span class="cp">%&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:email</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:email</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:email</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:email</span> <span class="cp">%&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:password</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">password_field</span> <span class="ss">:password</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">password_field</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="s2">"Confirm Password"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">password_field</span> <span class="ss">:password_confirmation</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="s2">"Confirm Password"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">password_field</span> <span class="ss">:password_confirmation</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-9-50"><p class="caption"><span>代码 9.50：</span>使用局部视图后的注册页面视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Sign up&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-9-50"><p class="caption"><span>代码 9.50：</span>使用局部视图后的注册页面视图</p><p class="file"><code>app/views/users/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Sign up'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Sign up<span class="nt">&lt;/h1&gt;</span>
 
-<span class="x">&lt;div class="row"&gt;</span>
-<span class="x">  &lt;div class="span6 offset3"&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'fields'</span><span class="p">,</span> <span class="ss">f</span><span class="p">:</span> <span class="n">f</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s2">"Create my account"</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"span6 offset3"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'fields'</span><span class="p">,</span> <span class="ss">f: </span><span class="n">f</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Create my account"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 </pre></div>
 </div>
 <div class="codeblock has-caption" id="codeblock-9-51"><p class="caption"><span>代码 9.51：</span>测试友好的转向后，只能转向到默认的页面</p><p class="file"><code>spec/requests/authentication_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
@@ -1767,28 +1767,28 @@
       <span class="n">describe</span> <span class="s2">"when attempting to visit a protected page"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="k">do</span>
           <span class="n">visit</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-          <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
-          <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+          <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+          <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
           <span class="n">click_button</span> <span class="s2">"Sign in"</span>
         <span class="k">end</span>
 
         <span class="n">describe</span> <span class="s2">"after signing in"</span> <span class="k">do</span>
 
           <span class="n">it</span> <span class="s2">"should render the desired protected page"</span> <span class="k">do</span>
-            <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">)</span>
+            <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Edit user'</span><span class="p">)</span>
           <span class="k">end</span>
 
           <span class="n">describe</span> <span class="s2">"when signing in again"</span> <span class="k">do</span>
             <span class="n">before</span> <span class="k">do</span>
               <span class="n">click_link</span> <span class="s1">'Sign out'</span>
               <span class="n">visit</span> <span class="n">signin_path</span>
-              <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
-              <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+              <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+              <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
               <span class="n">click_button</span> <span class="s2">"Sign in"</span>
             <span class="k">end</span>
 
             <span class="n">it</span> <span class="s2">"should render the default (profile) page"</span> <span class="k">do</span>
-              <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+              <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span>
             <span class="k">end</span>
           <span class="k">end</span>
         <span class="k">end</span>

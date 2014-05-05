@@ -90,7 +90,7 @@
 
 <p>和之前章节一样，Git 用户应该创建一个新的分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout -b following-users
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout -b following-users
 </pre></div>
 </div>
 <p>因为本章的内容比较有挑战性，在开始编写代码之前，我们先来思考一下网站的界面。 和之前的章节一样，在开发的早期阶段我们会通过构思图来呈现页面。<sup class="footnote" id="fnref-11-1"><a href="#fn-11-1" rel="footnote">1</a></sup>完整的页面流程是这样的：一名用户 (John Calvin) 从他的个人资料页面（如图 11.1 ）浏览到用户索引页面（如图 11.2），关注了一个用户。Calvin 打开另一个用户 Thomas Hobbes 的个人主页（如图 11.3），点击“Follow（关注）”按钮 关注该用户，然后，这个“Follow”按钮会变为“Unfollow（取消关注）” ，而且 Hobbes 的关注人数会增加 1 个（如图 11.4）。接着，Calvin 回到自己的主页，看到关注人数增加了 1 个，在动态列表中也能看到 Hobbes 的状态更新（如图 11.5）。接下来的整章内容就是要实现这样的页面流程。</p>
@@ -121,7 +121,7 @@
 
 <p>为了得到一个由所有被关注用户组成的 <code>followed_users</code> 数组，我们可以先获取由 <code>followed_id</code> 属性组成的数组，再查找每个用户。不过，如你所想，Rails 为我们提供了一种更简单的方式，那就是 <code>has_many through</code>。我们将在 <a href="chapter11.html#section-11-1-4">11.1.4 节</a>介绍， Rails 允许我们使用下面这行清晰简洁的代码，通过 <code>relationships</code> 表来描述一个用户关注了很多其他用户：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:followed_users</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="s2">"followed_id"</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:followed_users</span><span class="p">,</span> <span class="ss">through: :relationships</span><span class="p">,</span> <span class="ss">source: </span><span class="s2">"followed_id"</span>
 </pre></div>
 </div>
 <p>这行代码会自动获取被关注用户组成的数组，也就是 <code>user.followed_users</code>。 图11.7 描述了这个数据模型。</p>
@@ -131,12 +131,12 @@
 </div>
 <p>下面让我们动手实现，首先我们通过下面的命令创建 Relationship 模型：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate model Relationship follower_id:integer followed_id:integer
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate model Relationship follower_id:integer followed_id:integer
 </pre></div>
 </div>
 <p>这个命令可能会生成 Relationship 预构件，你应该将其删除：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rm -f spec/factories/relationship.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rm -f spec/factories/relationship.rb
 </pre></div>
 </div>
 <p>由于我们需通过 <code>follower_id</code> 和 <code>followed_id</code> 来查找用户之间的关系，考虑到性能，要为这两列加上索引， 如代码 11.1 所示。</p>
@@ -144,14 +144,14 @@
 <div class="codeblock has-caption" id="codeblock-11-1"><p class="caption"><span>代码 11.1：</span>在 <code>relationships</code> 表中设置索引</p><p class="file"><code>db/migrate/[timestamp]_create_relationships.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateRelationships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:relationships</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:follower_id</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:followed_id</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:follower_id</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:followed_id</span>
 
-      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span>
     <span class="k">end</span>
     <span class="n">add_index</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">:follower_id</span>
     <span class="n">add_index</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">:followed_id</span>
-    <span class="n">add_index</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="o">[</span><span class="ss">:follower_id</span><span class="p">,</span> <span class="ss">:followed_id</span><span class="o">]</span><span class="p">,</span> <span class="ss">unique</span><span class="p">:</span> <span class="kp">true</span>
+    <span class="n">add_index</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="o">[</span><span class="ss">:follower_id</span><span class="p">,</span> <span class="ss">:followed_id</span><span class="o">]</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -161,7 +161,7 @@
 </div>
 <p>在代码 11.1 中，我们还设置了一个组合索引（composite index），其目的是确保 (<code>follower_id, followed_id</code>) 组合是唯一的，这样用户就无法多次关注同一个用户了 (可以和代码 6.19 中为保持 Email 地址唯一的 index 做比较一下)：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">add_index</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="o">[</span><span class="ss">:follower_id</span><span class="p">,</span> <span class="ss">:followed_id</span><span class="o">]</span><span class="p">,</span> <span class="ss">unique</span><span class="p">:</span> <span class="kp">true</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">add_index</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="o">[</span><span class="ss">:follower_id</span><span class="p">,</span> <span class="ss">:followed_id</span><span class="o">]</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
 </pre></div>
 </div>
 <p>从 <a href="chapter11.html#section-11-1-4">11.1.4 节</a>开始，我们会发现，在用户界面中这样的事情是不会发生的，但是添加了组合索引后，如果用户试图二次关注时，程序会抛出异常（例如，使用像 <code>curl</code> 这样的命令行程序）。我们也可以在 Relationship 模型中添加唯一性数据验证，但因为每次尝试创建一个重复关系时都会触发错误，所以这个组合索引现在已经能满足我们的需求了。</p>
@@ -177,8 +177,8 @@
 </div>
 <p>为了创建 <code>relationships</code> 表，和之前一样，我们要先执行数据库迁移，再准备好“测试数据库”：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <p>得到的 Relationship 数据模型如图 11.8 所示。</p>
@@ -193,7 +193,7 @@
 
 <p>和 <a href="chapter10.html#section-10-1-3">10.1.3 节</a>创建微博一样，我们将通过 User 和 Relationship 模型之间的关联来创建这个“关系”，使用如下的代码实现：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">user</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">user</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">followed_id: </span><span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>首先，我们来编写测试，如代码 11.2 所示。</p>
@@ -202,9 +202,9 @@
 
 <span class="n">describe</span> <span class="no">Relationship</span> <span class="k">do</span>
 
-  <span class="n">let</span><span class="p">(</span><span class="ss">:follower</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">let</span><span class="p">(</span><span class="ss">:followed</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">let</span><span class="p">(</span><span class="ss">:relationship</span><span class="p">)</span> <span class="p">{</span> <span class="n">follower</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="n">followed</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:follower</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:followed</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:relationship</span><span class="p">)</span> <span class="p">{</span> <span class="n">follower</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">followed</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span> <span class="p">}</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="n">relationship</span> <span class="p">}</span>
 
@@ -252,8 +252,8 @@
 <p>因为 <code>microposts</code> 表中存有 <code>user_id</code> 属性，可以标示用户（参见 <a href="chapter10.html#section-10-1-1">10.1.1 节</a>）。这种连接两个数据表的 id，我们称之为外键（foreign key），当指向 User 模型的外键为 <code>user_id</code> 时，Rails 就会自动的获知关联关系，因为默认情况下，Rails 会寻找 <code>&lt;class&gt;_id</code> 形式的外键，其中 <code>&lt;class&gt;</code> 是模型类名的小写形式。<sup class="footnote" id="fnref-11-5"><a href="#fn-11-5" rel="footnote">5</a></sup>现在，尽管我们处理的还是用户，但外键是 <code>follower_id</code> 了，所以我们要告诉 Rails 这一变化，如代码 11.4 所示。<sup class="footnote" id="fnref-11-6"><a href="#fn-11-6" rel="footnote">6</a></sup></p>
 
 <div class="codeblock has-caption" id="codeblock-11-4"><p class="caption"><span>代码 11.4：</span>实现 User 和 Relationship 模型之间 <code>has_many</code> 的关联关系</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
-  <span class="n">has_many</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s2">"follower_id"</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
+  <span class="n">has_many</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">dependent: :destroy</span>
+  <span class="n">has_many</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="s2">"follower_id"</span><span class="p">,</span> <span class="ss">dependent: :destroy</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -280,8 +280,8 @@
 <p>下面我们开始写程序的代码，<code>belongs_to</code> 关系的建立和之前一样。Rails 会通过 Symbol 获知外键的名字（例如，<code>:follower</code> 对应的外键是 <code>follower_id</code>，<code>:followed</code> 对应的外键是 <code>followed_id</code>），但 Followed 或 Follower 模型是不存在的，因此这里就要使用 <code>User</code> 这个类名， 如代码 11.6 所示。注意，与默认生成的 Relationship 模型不同，这里只有 <code>followed_id</code> 是可以访问的。</p>
 
 <div class="codeblock has-caption" id="codeblock-11-6"><p class="caption"><span>代码 11.6：</span>为 Relationship 模型添加 <code>belongs_to</code> 关系</p><p class="file"><code>app/models/relationship.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Relationship</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:follower</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s2">"User"</span>
-  <span class="n">belongs_to</span> <span class="ss">:followed</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s2">"User"</span>
+  <span class="n">belongs_to</span> <span class="ss">:follower</span><span class="p">,</span> <span class="ss">class_name: </span><span class="s2">"User"</span>
+  <span class="n">belongs_to</span> <span class="ss">:followed</span><span class="p">,</span> <span class="ss">class_name: </span><span class="s2">"User"</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -289,7 +289,7 @@
 
 <p>此时，代码 11.2 和代码 11.3 中的测试应该可以通过了。</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-11-1-3'><span>11.1.3</span> 数据验证</h3>
@@ -302,22 +302,22 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"when followed id is not present"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="n">relationship</span><span class="o">.</span><span class="n">followed_id</span> <span class="o">=</span> <span class="kp">nil</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">relationship</span><span class="p">.</span><span class="nf">followed_id</span> <span class="o">=</span> <span class="kp">nil</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"when follower id is not present"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="n">relationship</span><span class="o">.</span><span class="n">follower_id</span> <span class="o">=</span> <span class="kp">nil</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">relationship</span><span class="p">.</span><span class="nf">follower_id</span> <span class="o">=</span> <span class="kp">nil</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <div class="codeblock has-caption" id="codeblock-11-8"><p class="caption"><span>代码 11.8：</span>添加 Relationship 模型数据验证</p><p class="file"><code>app/models/relationship.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Relationship</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:follower</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s2">"User"</span>
-  <span class="n">belongs_to</span> <span class="ss">:followed</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s2">"User"</span>
-  <span class="n">validates</span> <span class="ss">:follower_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
-  <span class="n">validates</span> <span class="ss">:followed_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">belongs_to</span> <span class="ss">:follower</span><span class="p">,</span> <span class="ss">class_name: </span><span class="s2">"User"</span>
+  <span class="n">belongs_to</span> <span class="ss">:followed</span><span class="p">,</span> <span class="ss">class_name: </span><span class="s2">"User"</span>
+  <span class="n">validates</span> <span class="ss">:follower_id</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+  <span class="n">validates</span> <span class="ss">:followed_id</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -341,15 +341,15 @@
 </div>
 <p>实现的代码会第一次使用 <code>has_many through</code>：用户通过 <code>relationships</code> 表拥有多个关注关系，就像图 11.7 所示的那样。默认情况下，在 <code>has_many through</code> 关联中，Rails 会寻找关联名单数形式对应的外键，也就是说，像下面的代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:followeds</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:relationships</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:followeds</span><span class="p">,</span> <span class="ss">through: :relationships</span>
 </pre></div>
 </div>
 <p>会使用 <code>relationships</code> 表中的 <code>followed_id</code> 列生成一个数组。但是，正如在 <a href="chapter11.html#section-11-1-1">11.1.1 节</a>中说过的，<code>user.followeds</code> 这种说法比较蹩脚，若使用“followed users”作为 “followed”的复数形式会好得多，那么被关注的用户数组就要写成 <code>user.followed_users</code> 了。Rails 当然会允许我们重写默认的设置，针对本例，我们可以使用 <code>:source</code> 参数（参见代码 11.10），告知 Rails <code>followed_users</code> 数组的来源是 <code>followed</code> 所代表的 id 集合。</p>
 
 <div class="codeblock has-caption" id="codeblock-11-10"><p class="caption"><span>代码 11.10：</span>在 User 模型中添加 <code>followed_users</code> 关联</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
-  <span class="n">has_many</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s2">"follower_id"</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
-  <span class="n">has_many</span> <span class="ss">:followed_users</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:followed</span>
+  <span class="n">has_many</span> <span class="ss">:microposts</span><span class="p">,</span> <span class="ss">dependent: :destroy</span>
+  <span class="n">has_many</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="s2">"follower_id"</span><span class="p">,</span> <span class="ss">dependent: :destroy</span>
+  <span class="n">has_many</span> <span class="ss">:followed_users</span><span class="p">,</span> <span class="ss">through: :relationships</span><span class="p">,</span> <span class="ss">source: :followed</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -371,10 +371,10 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"following"</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">before</span> <span class="k">do</span>
-      <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
-      <span class="vi">@user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
+      <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
+      <span class="vi">@user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_following</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
@@ -396,11 +396,11 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">following?</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-    <span class="n">relationships</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">relationships</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-    <span class="n">relationships</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">relationships</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -410,12 +410,12 @@
 </div>
 <p>注意，在代码 11.12 中我们忽略了用户对象自身，直接写成</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">relationships</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">relationships</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>而不是等效的</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>是否使用 <code>self</code> 关键字只是个人偏好而已。</p>
@@ -438,7 +438,7 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"and unfollowing"</span> <span class="k">do</span>
-      <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">unfollow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">unfollow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_following</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">its</span><span class="p">(</span><span class="ss">:followed_users</span><span class="p">)</span> <span class="p">{</span> <span class="n">should_not</span> <span class="kp">include</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
@@ -454,15 +454,15 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">following?</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-    <span class="n">relationships</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">relationships</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-    <span class="n">relationships</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">relationships</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">unfollow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
-    <span class="n">relationships</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">destroy</span>
+    <span class="n">relationships</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">).</span><span class="nf">destroy</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -520,12 +520,12 @@
 </div>
 <p>你可能已经想到了，我们不会再建立一个完整的数据表来存放倒转后的关注关系。事实上，我们会通过被关注者和粉丝之间的对称关系来模拟一个 <code>reverse_relationships</code> 表，主键设为 <code>followed_id</code>。也就是说，<code>relationships</code> 表使用 <code>follower_id</code> 做外键：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s2">"follower_id"</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="s2">"follower_id"</span>
 </pre></div>
 </div>
 <p>那么，<code>reverse_relationships</code> 虚拟表就用 <code>followed_id</code> 做外键：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:reverse_relationships</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s2">"followed_id"</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:reverse_relationships</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="s2">"followed_id"</span>
 </pre></div>
 </div>
 <p>粉丝的关联就建立在这层反转的关系上，如代码 11.16 所示。</p>
@@ -534,10 +534,10 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
-  <span class="n">has_many</span> <span class="ss">:reverse_relationships</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s2">"followed_id"</span><span class="p">,</span>
-                                   <span class="n">class_name</span><span class="p">:</span>  <span class="s2">"Relationship"</span><span class="p">,</span>
-                                   <span class="ss">dependent</span><span class="p">:</span>   <span class="ss">:destroy</span>
-  <span class="n">has_many</span> <span class="ss">:followers</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:reverse_relationships</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:follower</span>
+  <span class="n">has_many</span> <span class="ss">:reverse_relationships</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="s2">"followed_id"</span><span class="p">,</span>
+                                   <span class="ss">class_name:  </span><span class="s2">"Relationship"</span><span class="p">,</span>
+                                   <span class="ss">dependent:   :destroy</span>
+  <span class="n">has_many</span> <span class="ss">:followers</span><span class="p">,</span> <span class="ss">through: :reverse_relationships</span><span class="p">,</span> <span class="ss">source: :follower</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -546,22 +546,22 @@
 </div>
 <p>（和代码 11.4 一样，针对 <code>dependent :destroy</code> 的测试会留作练习，参见 <a href="chapter11.html#section-11-1-5">11.5 节</a>。） 注意为了实现数据表之间的关联，我们要指定类名：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:reverse_relationships</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s2">"followed_id"</span><span class="p">,</span>
-                                 <span class="n">class_name</span><span class="p">:</span> <span class="s2">"Relationship"</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:reverse_relationships</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="s2">"followed_id"</span><span class="p">,</span>
+                                 <span class="ss">class_name: </span><span class="s2">"Relationship"</span>
 </pre></div>
 </div>
 <p>如果没有指定类名，Rails 会尝试寻找 <code>ReverseRelationship</code> 类，而这个类并不存在。</p>
 
 <p>还有一点值得注意一下，在里我们其实可以省略 <code>:source</code> 参数，使用下面的简单方式</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:followers</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:reverse_relationships</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">has_many</span> <span class="ss">:followers</span><span class="p">,</span> <span class="ss">through: :reverse_relationships</span>
 </pre></div>
 </div>
 <p>对 <code>:followers</code> 属性而言，Rails 会把“followers”转成单数形式，自动寻找名为 <code>follower_id</code> 的外键。在此我保留了 <code>:source</code> 参数是为了保持与 <code>has_many :followed_users</code> 关系之间结构上的对称，你也可以选择去掉它。</p>
 
 <p>加入代码 11.16 之后，关注者和粉丝之间的关联就完成了，所有的测试应该都可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h2 id='section-11-2'><span>11.2</span> 关注用户功能的网页界面</h2>
@@ -578,7 +578,7 @@
 
 <div class="codeblock has-caption" id="codeblock-11-17"><p class="caption"><span>代码 11.17：</span>加入用户关注关联示例数据</p><p class="file"><code>lib/tasks/sample_data.rake</code></p><div class="highlight type-ruby"><pre><span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
   <span class="n">desc</span> <span class="s2">"Fill database with sample data"</span>
-  <span class="n">task</span> <span class="ss">populate</span><span class="p">:</span> <span class="ss">:environment</span> <span class="k">do</span>
+  <span class="n">task</span> <span class="ss">populate: :environment</span> <span class="k">do</span>
     <span class="n">make_users</span>
     <span class="n">make_microposts</span>
     <span class="n">make_relationships</span>
@@ -586,49 +586,49 @@
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">make_users</span>
-  <span class="n">admin</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span>     <span class="s2">"Example User"</span><span class="p">,</span>
-                       <span class="ss">email</span><span class="p">:</span>    <span class="s2">"example@railstutorial.org"</span><span class="p">,</span>
-                       <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
-                       <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
-                       <span class="ss">admin</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
-  <span class="mi">99</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span>
-    <span class="nb">name</span>  <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="o">.</span><span class="n">name</span>
+  <span class="n">admin</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span>     <span class="s2">"Example User"</span><span class="p">,</span>
+                       <span class="ss">email:    </span><span class="s2">"example@railstutorial.org"</span><span class="p">,</span>
+                       <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span>
+                       <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">,</span>
+                       <span class="ss">admin: </span><span class="kp">true</span><span class="p">)</span>
+  <span class="mi">99</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">n</span><span class="o">|</span>
+    <span class="nb">name</span>  <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="p">.</span><span class="nf">name</span>
     <span class="n">email</span> <span class="o">=</span> <span class="s2">"example-</span><span class="si">#{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">@railstutorial.org"</span>
     <span class="n">password</span>  <span class="o">=</span> <span class="s2">"password"</span>
-    <span class="no">User</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span>     <span class="nb">name</span><span class="p">,</span>
-                 <span class="ss">email</span><span class="p">:</span>    <span class="n">email</span><span class="p">,</span>
-                 <span class="ss">password</span><span class="p">:</span> <span class="n">password</span><span class="p">,</span>
-                 <span class="n">password_confirmation</span><span class="p">:</span> <span class="n">password</span><span class="p">)</span>
+    <span class="no">User</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span>     <span class="nb">name</span><span class="p">,</span>
+                 <span class="ss">email:    </span><span class="n">email</span><span class="p">,</span>
+                 <span class="ss">password: </span><span class="n">password</span><span class="p">,</span>
+                 <span class="ss">password_confirmation: </span><span class="n">password</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">make_microposts</span>
-  <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="ss">limit</span><span class="p">:</span> <span class="mi">6</span><span class="p">)</span>
-  <span class="mi">50</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
-    <span class="n">content</span> <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Lorem</span><span class="o">.</span><span class="n">sentence</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">users</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="n">user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="n">content</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">all</span><span class="p">(</span><span class="ss">limit: </span><span class="mi">6</span><span class="p">)</span>
+  <span class="mi">50</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Lorem</span><span class="p">.</span><span class="nf">sentence</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">users</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="n">user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">content: </span><span class="n">content</span><span class="p">)</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">make_relationships</span>
-  <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
-  <span class="n">user</span>  <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="n">first</span>
-  <span class="n">followed_users</span> <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">2</span><span class="o">.</span><span class="n">.</span><span class="mi">50</span><span class="o">]</span>
-  <span class="n">followers</span>      <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">3</span><span class="o">.</span><span class="n">.</span><span class="mi">40</span><span class="o">]</span>
-  <span class="n">followed_users</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">followed</span><span class="o">|</span> <span class="n">user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">followed</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">followers</span><span class="o">.</span><span class="n">each</span>      <span class="p">{</span> <span class="o">|</span><span class="n">follower</span><span class="o">|</span> <span class="n">follower</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">all</span>
+  <span class="n">user</span>  <span class="o">=</span> <span class="n">users</span><span class="p">.</span><span class="nf">first</span>
+  <span class="n">followed_users</span> <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">2</span><span class="p">.</span><span class="nf">.</span><span class="mi">50</span><span class="o">]</span>
+  <span class="n">followers</span>      <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">3</span><span class="p">.</span><span class="nf">.</span><span class="mi">40</span><span class="o">]</span>
+  <span class="n">followed_users</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">followed</span><span class="o">|</span> <span class="n">user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">followed</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">followers</span><span class="p">.</span><span class="nf">each</span>      <span class="p">{</span> <span class="o">|</span><span class="n">follower</span><span class="o">|</span> <span class="n">follower</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>用户关注关联的示例数据是由下面的代码生成的：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">make_relationships</span>
-  <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
-  <span class="n">user</span>  <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="n">first</span>
-  <span class="n">followed_users</span> <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">2</span><span class="o">.</span><span class="n">.</span><span class="mi">50</span><span class="o">]</span>
-  <span class="n">followers</span>      <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">3</span><span class="o">.</span><span class="n">.</span><span class="mi">40</span><span class="o">]</span>
-  <span class="n">followed_users</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">followed</span><span class="o">|</span> <span class="n">user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">followed</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">followers</span><span class="o">.</span><span class="n">each</span>      <span class="p">{</span> <span class="o">|</span><span class="n">follower</span><span class="o">|</span> <span class="n">follower</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">all</span>
+  <span class="n">user</span>  <span class="o">=</span> <span class="n">users</span><span class="p">.</span><span class="nf">first</span>
+  <span class="n">followed_users</span> <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">2</span><span class="p">.</span><span class="nf">.</span><span class="mi">50</span><span class="o">]</span>
+  <span class="n">followers</span>      <span class="o">=</span> <span class="n">users</span><span class="o">[</span><span class="mi">3</span><span class="p">.</span><span class="nf">.</span><span class="mi">40</span><span class="o">]</span>
+  <span class="n">followed_users</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">followed</span><span class="o">|</span> <span class="n">user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">followed</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">followers</span><span class="p">.</span><span class="nf">each</span>      <span class="p">{</span> <span class="o">|</span><span class="n">follower</span><span class="o">|</span> <span class="n">follower</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -636,9 +636,9 @@
 
 <p>和之前一样，要想运行代码 11.17，就要执行下面的数据库命令：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:reset
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:populate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:reset
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:populate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <h3 id='section-11-2-2'><span>11.2.2</span> 数量统计和关注表单</h3>
@@ -653,7 +653,7 @@
 </div>
 <p>图 11.10 中显示的数量统计包含了当前用户关注的用户和关注了该用户的粉丝数，二者又分别链接到了各自详细的用户列表页面。在<a href="chapter5.html">第 5 章</a>中，我们使用 <code>#</code> 占位符代替真实的网址，因为那时我们还没怎么接触路由。现在，虽然在 <a href="chapter11.html#section-11-2-3">11.2.3 节</a>中才会创建所需的页面，不过我们可以先设置路由，如代码 11.18 所示。这段代码在 <code>resources</code> 块中使用了 <code>:member</code> 方法，以前没用过，你可以猜测一下这个方法的作用是什么。（注意，代码 11.18 是用来替换原来的 <code>resources :users</code> 的。）</p>
 
-<div class="codeblock has-caption" id="codeblock-11-18"><p class="caption"><span>代码 11.18：</span>把 <code>following</code> 和 <code>folloers</code> 动作加入 Users 控制器的路由中</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-11-18"><p class="caption"><span>代码 11.18：</span>把 <code>following</code> 和 <code>folloers</code> 动作加入 Users 控制器的路由中</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span> <span class="k">do</span>
     <span class="n">member</span> <span class="k">do</span>
       <span class="n">get</span> <span class="ss">:following</span><span class="p">,</span> <span class="ss">:followers</span>
@@ -704,29 +704,29 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"for signed-in users"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">before</span> <span class="k">do</span>
-        <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="ss">content</span><span class="p">:</span> <span class="s2">"Lorem"</span><span class="p">)</span>
-        <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="ss">content</span><span class="p">:</span> <span class="s2">"Ipsum"</span><span class="p">)</span>
+        <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user: </span><span class="n">user</span><span class="p">,</span> <span class="ss">content: </span><span class="s2">"Lorem"</span><span class="p">)</span>
+        <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user: </span><span class="n">user</span><span class="p">,</span> <span class="ss">content: </span><span class="s2">"Ipsum"</span><span class="p">)</span>
         <span class="n">sign_in</span> <span class="n">user</span>
         <span class="n">visit</span> <span class="n">root_path</span>
       <span class="k">end</span>
 
       <span class="n">it</span> <span class="s2">"should render the user's feed"</span> <span class="k">do</span>
-        <span class="n">user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
-          <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s2">"li#</span><span class="si">#{</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">user</span><span class="p">.</span><span class="nf">feed</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+          <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s2">"li#</span><span class="si">#{</span><span class="n">item</span><span class="p">.</span><span class="nf">id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">text: </span><span class="n">item</span><span class="p">.</span><span class="nf">content</span><span class="p">)</span>
         <span class="k">end</span>
       <span class="k">end</span>
 
       <span class="n">describe</span> <span class="s2">"follower/following counts"</span> <span class="k">do</span>
-        <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
         <span class="n">before</span> <span class="k">do</span>
-          <span class="n">other_user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+          <span class="n">other_user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
           <span class="n">visit</span> <span class="n">root_path</span>
         <span class="k">end</span>
 
-        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"0 following"</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">following_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"1 followers"</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">followers_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"0 following"</span><span class="p">,</span> <span class="ss">href: </span><span class="n">following_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"1 followers"</span><span class="p">,</span> <span class="ss">href: </span><span class="n">followers_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -738,34 +738,34 @@
 </div>
 <p>上述测试的核心是，检测页面中是否显示了关注和粉丝数，以及是否指向了正确的地址：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"0 following"</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">following_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-<span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"1 followers"</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">followers_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"0 following"</span><span class="p">,</span> <span class="ss">href: </span><span class="n">following_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+<span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s2">"1 followers"</span><span class="p">,</span> <span class="ss">href: </span><span class="n">followers_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>我们用到了<a href="chapter11.html#table-11-1">表格 11.1</a>中的具名路由来测试链接是否指向了正确的地址。还有一处要注意一下，这里的“followers”是作为标签使用的，所以我们会一直用复数形式，即使只有一个粉丝也是如此。</p>
 
 <p>数量统计局部视图的代码很简单，在一个 <code>div</code> 元素中显示几个链接就行了，如代码 11.20 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-20"><p class="caption"><span>代码 11.20：</span>显示关注数量统计的局部视图</p><p class="file"><code>app/views/shared/_stats.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="vi">@user</span> <span class="o">||=</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;div class="stats"&gt;</span>
-<span class="x">  &lt;a href="</span><span class="cp">&lt;%=</span> <span class="n">following_user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
-<span class="x">    &lt;strong id="following" class="stat"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">followed_users</span><span class="o">.</span><span class="n">count</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/strong&gt;</span>
-<span class="x">    following</span>
-<span class="x">  &lt;/a&gt;</span>
-<span class="x">  &lt;a href="</span><span class="cp">&lt;%=</span> <span class="n">followers_user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">"&gt;</span>
-<span class="x">    &lt;strong id="followers" class="stat"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">followers</span><span class="o">.</span><span class="n">count</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/strong&gt;</span>
-<span class="x">    followers</span>
-<span class="x">  &lt;/a&gt;</span>
-<span class="x">&lt;/div&gt;</span>
+<div class="codeblock has-caption" id="codeblock-11-20"><p class="caption"><span>代码 11.20：</span>显示关注数量统计的局部视图</p><p class="file"><code>app/views/shared/_stats.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="vi">@user</span> <span class="o">||=</span> <span class="n">current_user</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"stats"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="cp">&lt;%=</span> <span class="n">following_user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="s">"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;strong</span> <span class="na">id=</span><span class="s">"following"</span> <span class="na">class=</span><span class="s">"stat"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">followed_users</span><span class="p">.</span><span class="nf">count</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/strong&gt;</span>
+    following
+  <span class="nt">&lt;/a&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="cp">&lt;%=</span> <span class="n">followers_user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="s">"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;strong</span> <span class="na">id=</span><span class="s">"followers"</span> <span class="na">class=</span><span class="s">"stat"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">followers</span><span class="p">.</span><span class="nf">count</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/strong&gt;</span>
+    followers
+  <span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>因为这个局部视图会同时在用户资料页面和首页中显示，所以在代码 11.20 的第一行中，我们要获取正确的用户对象：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="vi">@user</span> <span class="o">||=</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="vi">@user</span> <span class="o">||=</span> <span class="n">current_user</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>我们在<a href="chapter8.html#aside-8-2">旁注 8.2</a>中介绍过这样的用法，如果 <code>@user</code> 不是 <code>nil</code>（在用户资料页面），这行代码就没什么效果，而如果是 <code>nil</code>（在首页）， 就会把当前用户对象赋值给 <code>@user</code>。</p>
@@ -785,27 +785,27 @@
 
 <p>编好了局部视图，把它放入首页中就很简单了，如代码 11.21 所示。（加入局部视图后，代码 11.19 中的测试也就会通过了。）</p>
 
-<div class="codeblock has-caption" id="codeblock-11-21"><p class="caption"><span>代码 11.21：</span>在首页中显示的关注和粉丝数量统计</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      .</span>
-<span class="x">      .</span>
-<span class="x">      .</span>
-<span class="x">      &lt;section&gt;</span>
-<span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/user_info'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;/section&gt;</span>
-<span class="x">      &lt;section&gt;</span>
-<span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/stats'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;/section&gt;</span>
-<span class="x">      &lt;section&gt;</span>
-<span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/micropost_form'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;/section&gt;</span>
-<span class="x">      .</span>
-<span class="x">      .</span>
-<span class="x">      .</span>
-<span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  .</span>
-<span class="x">  .</span>
-<span class="x">  .</span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-11-21"><p class="caption"><span>代码 11.21：</span>在首页中显示的关注和粉丝数量统计</p><p class="file"><code>app/views/static_pages/home.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span>
+      .
+      .
+      .
+      <span class="nt">&lt;section&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/user_info'</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/section&gt;</span>
+      <span class="nt">&lt;section&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/stats'</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/section&gt;</span>
+      <span class="nt">&lt;section&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/micropost_form'</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/section&gt;</span>
+      .
+      .
+      .
+<span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+  .
+  .
+  .
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>我们会添加一些 SCSS 代码来美化一下数量统计部分，如代码 11.22 所示（这段代码包含了本章用到的所有样式）。添加样式后的页面如图 11.11 所示。</p>
@@ -819,31 +819,31 @@
 <span class="nc">.</span>
 <span class="nc">.</span>
 <span class="nc">.stats</span> <span class="p">{</span>
-  <span class="na">overflow</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span>
+  <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
   <span class="nt">a</span> <span class="p">{</span>
-    <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-    <span class="na">padding</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
-    <span class="na">border-left</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="nv">$grayLighter</span><span class="p">;</span>
-    <span class="na">color</span><span class="o">:</span> <span class="nb">gray</span><span class="p">;</span>
+    <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+    <span class="nl">padding</span><span class="p">:</span> <span class="m">0</span> <span class="m">10px</span><span class="p">;</span>
+    <span class="nl">border-left</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="nv">$grayLighter</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="no">gray</span><span class="p">;</span>
     <span class="k">&amp;</span><span class="nd">:first-child</span> <span class="p">{</span>
-      <span class="na">padding-left</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="na">border</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="nl">padding-left</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+      <span class="nl">border</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
-      <span class="na">text-decoration</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-      <span class="na">color</span><span class="o">:</span> <span class="nv">$blue</span><span class="p">;</span>
+      <span class="nl">text-decoration</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+      <span class="nl">color</span><span class="p">:</span> <span class="nv">$blue</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
   <span class="nt">strong</span> <span class="p">{</span>
-    <span class="na">display</span><span class="o">:</span> <span class="no">block</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="nc">.user_avatars</span> <span class="p">{</span>
-  <span class="na">overflow</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span>
-  <span class="na">margin-top</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+  <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+  <span class="nl">margin-top</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
   <span class="nc">.gravatar</span> <span class="p">{</span>
-    <span class="na">margin</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="mi">1</span><span class="kt">px</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="m">1px</span> <span class="m">1px</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 <span class="nc">.</span>
@@ -856,26 +856,26 @@
 </div>
 <p>稍后我们再把数量统计局部视图加入用户资料页面，现在先来编写关注和取消关注按钮的局部视图，如代码 11.23 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-23"><p class="caption"><span>代码 11.23：</span>关注和取消关注表单</p><p class="file"><code>app/views/users/_follow_form.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">unless</span> <span class="n">current_user?</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;div id="follow_form"&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">following?</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'unfollow'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'follow'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-11-23"><p class="caption"><span>代码 11.23：</span>关注和取消关注表单</p><p class="file"><code>app/views/users/_follow_form.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">unless</span> <span class="n">current_user?</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"follow_form"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">following?</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'unfollow'</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'follow'</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>这段代码其实也没做什么，只是把具体的工作分配给 <code>follow</code> 和 <code>unfollow</code> 局部视图了，这样我们就要再次设置路由，加入 Relationships 资源，参照 Microposts 资源的设置（参见代码 10.25），如代码 11.24 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-24"><p class="caption"><span>代码 11.24：</span>添加 Relationships 资源的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-11-24"><p class="caption"><span>代码 11.24：</span>添加 Relationships 资源的路由设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
-  <span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span>      <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
-  <span class="n">resources</span> <span class="ss">:microposts</span><span class="p">,</span>    <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
-  <span class="n">resources</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span>      <span class="ss">only: </span><span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">resources</span> <span class="ss">:microposts</span><span class="p">,</span>    <span class="ss">only: </span><span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">resources</span> <span class="ss">:relationships</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -884,16 +884,16 @@
 </div>
 <p><code>follow</code> 和 <code>unfollow</code> 局部视图的代码分别如代码 11.25 和代码 11.26 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-25"><p class="caption"><span>代码 11.25：</span>关注用户的表单</p><p class="file"><code>app/views/users/_follow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;div&gt;</span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">hidden_field</span> <span class="ss">:followed_id</span> <span class="cp">%&gt;</span><span class="x">&lt;/div&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s2">"Follow"</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-11-25"><p class="caption"><span>代码 11.25：</span>关注用户的表单</p><p class="file"><code>app/views/users/_follow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">followed_id: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;div&gt;</span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">hidden_field</span> <span class="ss">:followed_id</span> <span class="cp">%&gt;</span><span class="nt">&lt;/div&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Follow"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-11-26"><p class="caption"><span>代码 11.26：</span>取消关注用户的表单</p><p class="file"><code>app/views/users/_unfollow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-             <span class="ss">html</span><span class="p">:</span> <span class="p">{</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span> <span class="p">})</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s2">"Unfollow"</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-11-26"><p class="caption"><span>代码 11.26：</span>取消关注用户的表单</p><p class="file"><code>app/views/users/_unfollow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">followed_id: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">),</span>
+             <span class="ss">html: </span><span class="p">{</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span> <span class="p">})</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Unfollow"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>这两个表单都使用了 <code>form_for</code> 来处理 Relationship 模型对象，二者之间主要的不同点是，代码 11.25 中的代码是构建一个新的“关系”，而代码 11.26 是查找现有的“关系”。很显然，第一个表单会向 Relationships 控制器发送 POST 请求，创建“关系”；而第二个表单发送的是 DELETE 请求，销毁“关系”。（两个表单用到的动作会在 <a href="chapter11.html#section-11-2-4">11.2.4 节</a>编写。）你可能还注意到了，这两个表单中除了按钮之外什么内容也没有，但是还要传送 <code>followed_id</code>，我们会调用 <code>hidden_fields</code> 方法将其加入，生成的 HTML 如下：</p>
@@ -908,26 +908,26 @@
 <div class="figure" id="figure-11-12">
   <img src="figures/profile_follow_button_bootstrap.png" alt="profile follow button bootstrap" /><p class="caption"><span>图 11.12：</span>显示了关注按钮的用户资料页面（<a href="http://localhost:3000/users/2">/users/2</a>）</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-11-27"><p class="caption"><span>代码 11.27：</span>在用户资料页面加入关注表单和关注数量统计</p><p class="file"><code>app/views/users/show.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;div class="row"&gt;</span>
-<span class="x">  &lt;aside class="span4"&gt;</span>
-<span class="x">    &lt;section&gt;</span>
-<span class="x">      &lt;h1&gt;</span>
-<span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="vi">@user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">        </span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;/h1&gt;</span>
-<span class="x">    &lt;/section&gt;</span>
-<span class="x">    &lt;section&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/stats'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/section&gt;</span>
-<span class="x">  &lt;/aside&gt;</span>
-<span class="x">  &lt;div class="span8"&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'follow_form'</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    .</span>
-<span class="x">    .</span>
-<span class="x">    .</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/div&gt;</span>
+<div class="codeblock has-caption" id="codeblock-11-27"><p class="caption"><span>代码 11.27：</span>在用户资料页面加入关注表单和关注数量统计</p><p class="file"><code>app/views/users/show.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"span4"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;section&gt;</span>
+      <span class="nt">&lt;h1&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="vi">@user</span> <span class="cp">%&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;/section&gt;</span>
+    <span class="nt">&lt;section&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/stats'</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/section&gt;</span>
+  <span class="nt">&lt;/aside&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"span8"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'follow_form'</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span>
+    .
+    .
+    .
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>稍后我们会让这些按钮起作用，而且我们会使用两种实现方式，一种是常规方式（<a href="chapter11.html#section-11-2-4">11.2.4 节</a>），另一种是使用 Ajax 的方式（<a href="chapter11.html#section-11-2-5">11.2.5 节</a>）。不过在此之前，我们要完成用户界面的制作，创建显示关注的用户列表和粉丝列表的页面。</p>
@@ -948,7 +948,7 @@
   <span class="n">describe</span> <span class="s2">"authorization"</span> <span class="k">do</span>
 
     <span class="n">describe</span> <span class="s2">"for non-signed-in users"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"in the Users controller"</span> <span class="k">do</span>
         <span class="o">.</span>
@@ -985,9 +985,9 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"following/followers"</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="n">user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">describe</span> <span class="s2">"followed users"</span> <span class="k">do</span>
       <span class="n">before</span> <span class="k">do</span>
@@ -996,8 +996,8 @@
       <span class="k">end</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Following'</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h3'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Following'</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="n">other_user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">other_user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h3'</span><span class="p">,</span> <span class="ss">text: </span><span class="s1">'Following'</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="n">other_user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">other_user</span><span class="p">))</span> <span class="p">}</span>
     <span class="k">end</span>
 
     <span class="n">describe</span> <span class="s2">"followers"</span> <span class="k">do</span>
@@ -1007,8 +1007,8 @@
       <span class="k">end</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">full_title</span><span class="p">(</span><span class="s1">'Followers'</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h3'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Followers'</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'h3'</span><span class="p">,</span> <span class="ss">text: </span><span class="s1">'Followers'</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1021,21 +1021,21 @@
 
 <div class="codeblock has-caption" id="codeblock-11-30"><p class="caption"><span>代码 11.30：</span><code>following</code> 和 <code>followers</code> 动作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="n">before_action</span> <span class="ss">:signed_in_user</span><span class="p">,</span>
-                <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span> <span class="ss">:following</span><span class="p">,</span> <span class="ss">:followers</span><span class="o">]</span>
+                <span class="ss">only: </span><span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span> <span class="ss">:following</span><span class="p">,</span> <span class="ss">:followers</span><span class="o">]</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">following</span>
     <span class="vi">@title</span> <span class="o">=</span> <span class="s2">"Following"</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-    <span class="vi">@users</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">followed_users</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">page</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">followed_users</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">page: </span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
     <span class="n">render</span> <span class="s1">'show_follow'</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">followers</span>
     <span class="vi">@title</span> <span class="o">=</span> <span class="s2">"Followers"</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-    <span class="vi">@users</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">followers</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">page</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">followers</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">page: </span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
     <span class="n">render</span> <span class="s1">'show_follow'</span>
   <span class="k">end</span>
 
@@ -1054,36 +1054,36 @@
 </div>
 <p>注意，在这两个动作中都明确的调用了 <code>render</code> 方法，渲染一个名为 <code>show_follow</code> 的视图，接下来我们就来编写这个视图。这两个动作之所以使用同一个视图，是因为两种情况用到的 ERb 代码差不多，如代码 11.31 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-31"><p class="caption"><span>代码 11.31：</span>渲染关注列表和粉丝列表的 <code>show_follow</code> 视图</p><p class="file"><code>app/views/users/show_follow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@title</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;div class="row"&gt;</span>
-<span class="x">  &lt;aside class="span4"&gt;</span>
-<span class="x">    &lt;section&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="vi">@user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;h1&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span> <span class="cp">%&gt;</span><span class="x">&lt;/h1&gt;</span>
-<span class="x">      &lt;span&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"view my profile"</span><span class="p">,</span> <span class="vi">@user</span> <span class="cp">%&gt;</span><span class="x">&lt;/span&gt;</span>
-<span class="x">      &lt;span&gt;&lt;b&gt;Microposts:&lt;/b&gt; </span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">count</span> <span class="cp">%&gt;</span><span class="x">&lt;/span&gt;</span>
-<span class="x">    &lt;/section&gt;</span>
-<span class="x">    &lt;section&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/stats'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@users</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">        &lt;div class="user_avatars"&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="vi">@users</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">            </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">gravatar_for</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="mi">30</span><span class="p">),</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">        &lt;/div&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    &lt;/section&gt;</span>
-<span class="x">  &lt;/aside&gt;</span>
-<span class="x">  &lt;div class="span8"&gt;</span>
-<span class="x">    &lt;h3&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@title</span> <span class="cp">%&gt;</span><span class="x">&lt;/h3&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@users</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;ul class="users"&gt;</span>
-<span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="vi">@users</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;/ul&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/div&gt;</span>
+<div class="codeblock has-caption" id="codeblock-11-31"><p class="caption"><span>代码 11.31：</span>渲染关注列表和粉丝列表的 <code>show_follow</code> 视图</p><p class="file"><code>app/views/users/show_follow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@title</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"span4"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;section&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">gravatar_for</span> <span class="vi">@user</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;h1&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span><span class="nt">&lt;/h1&gt;</span>
+      <span class="nt">&lt;span&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"view my profile"</span><span class="p">,</span> <span class="vi">@user</span> <span class="cp">%&gt;</span><span class="nt">&lt;/span&gt;</span>
+      <span class="nt">&lt;span&gt;&lt;b&gt;</span>Microposts:<span class="nt">&lt;/b&gt;</span> <span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">count</span> <span class="cp">%&gt;</span><span class="nt">&lt;/span&gt;</span>
+    <span class="nt">&lt;/section&gt;</span>
+    <span class="nt">&lt;section&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s1">'shared/stats'</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@users</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"user_avatars"</span><span class="nt">&gt;</span>
+          <span class="cp">&lt;%</span> <span class="vi">@users</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span>
+            <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">gravatar_for</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="ss">size: </span><span class="mi">30</span><span class="p">),</span> <span class="n">user</span> <span class="cp">%&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+      <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/section&gt;</span>
+  <span class="nt">&lt;/aside&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"span8"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;h3&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/h3&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@users</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"users"</span><span class="nt">&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="vi">@users</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/ul&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">will_paginate</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>这时，测试应该可以通过了，页面也能正常显示了，如图 11.16（关注的人）和图 11.17（粉丝们）所示。</p>
@@ -1106,12 +1106,12 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"profile page"</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"follow/unfollow buttons"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span> <span class="p">}</span>
 
       <span class="n">describe</span> <span class="s2">"following a user"</span> <span class="k">do</span>
@@ -1120,13 +1120,13 @@
         <span class="n">it</span> <span class="s2">"should increment the followed user count"</span> <span class="k">do</span>
           <span class="n">expect</span> <span class="k">do</span>
             <span class="n">click_button</span> <span class="s2">"Follow"</span>
-          <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">followed_users</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+          <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">followed_users</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">end</span>
 
         <span class="n">it</span> <span class="s2">"should increment the other user's followers count"</span> <span class="k">do</span>
           <span class="n">expect</span> <span class="k">do</span>
             <span class="n">click_button</span> <span class="s2">"Follow"</span>
-          <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="n">other_user</span><span class="o">.</span><span class="n">followers</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+          <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="n">other_user</span><span class="p">.</span><span class="nf">followers</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">end</span>
 
         <span class="n">describe</span> <span class="s2">"toggling the button"</span> <span class="k">do</span>
@@ -1137,20 +1137,20 @@
 
       <span class="n">describe</span> <span class="s2">"unfollowing a user"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="k">do</span>
-          <span class="n">user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
+          <span class="n">user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
           <span class="n">visit</span> <span class="n">user_path</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span>
         <span class="k">end</span>
 
         <span class="n">it</span> <span class="s2">"should decrement the followed user count"</span> <span class="k">do</span>
           <span class="n">expect</span> <span class="k">do</span>
             <span class="n">click_button</span> <span class="s2">"Unfollow"</span>
-          <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">followed_users</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+          <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">followed_users</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">end</span>
 
         <span class="n">it</span> <span class="s2">"should decrement the other user's followers count"</span> <span class="k">do</span>
           <span class="n">expect</span> <span class="k">do</span>
             <span class="n">click_button</span> <span class="s2">"Unfollow"</span>
-          <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="n">other_user</span><span class="o">.</span><span class="n">followers</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+          <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="n">other_user</span><span class="p">.</span><span class="nf">followers</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">end</span>
 
         <span class="n">describe</span> <span class="s2">"toggling the button"</span> <span class="k">do</span>
@@ -1177,19 +1177,19 @@
   <span class="n">describe</span> <span class="s2">"authorization"</span> <span class="k">do</span>
 
     <span class="n">describe</span> <span class="s2">"for non-signed-in users"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
       <span class="o">.</span>
       <span class="o">.</span>
       <span class="o">.</span>
       <span class="n">describe</span> <span class="s2">"in the Relationships controller"</span> <span class="k">do</span>
         <span class="n">describe</span> <span class="s2">"submitting to the create action"</span> <span class="k">do</span>
           <span class="n">before</span> <span class="p">{</span> <span class="n">post</span> <span class="n">relationships_path</span> <span class="p">}</span>
-          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">end</span>
 
         <span class="n">describe</span> <span class="s2">"submitting to the destroy action"</span> <span class="k">do</span>
           <span class="n">before</span> <span class="p">{</span> <span class="n">delete</span> <span class="n">relationship_path</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">}</span>
-          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+          <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">end</span>
       <span class="k">end</span>
       <span class="o">.</span>
@@ -1213,14 +1213,14 @@
   <span class="n">before_action</span> <span class="ss">:signed_in_user</span>
 
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:relationship</span><span class="o">][</span><span class="ss">:followed_id</span><span class="o">]</span><span class="p">)</span>
-    <span class="n">current_user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:relationship</span><span class="o">][</span><span class="ss">:followed_id</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">current_user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="n">redirect_to</span> <span class="vi">@user</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">destroy</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">Relationship</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">followed</span>
-    <span class="n">current_user</span><span class="o">.</span><span class="n">unfollow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">Relationship</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">).</span><span class="nf">followed</span>
+    <span class="n">current_user</span><span class="p">.</span><span class="nf">unfollow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="n">redirect_to</span> <span class="vi">@user</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1230,7 +1230,7 @@
 
 <p>至此，整个关注和取消关注的功能就都实现了，任何一个用户都可以关注或取消关注另一个用户了，你可以在程序中点击相应的链接检查一下，也可以运行测试验证一下：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-11-2-5'><span>11.2.5</span> 关注按钮的 Ajax 实现方式</h3>
@@ -1240,18 +1240,18 @@
 
 <p>Ajax 可以解决这个疑问，通过向服务器发送异步请求，在不刷新页面的情况下，Ajax 就可以更新页面里的内容。<sup class="footnote" id="fnref-11-9"><a href="#fn-11-9" rel="footnote">9</a></sup>因为在表单中处理 Ajax 请求是很常用的技术，所以 Rails 把实现 Ajax 的过程变得很简单。其实，关注和取消关注表单局部视图不用做大的改动，只要把 <code>form_for</code> 改成 <code>form_for..., remote: true</code>，Rails 就会自动使用 Ajax 处理表单了。<sup class="footnote" id="fnref-11-10"><a href="#fn-11-10" rel="footnote">10</a></sup>更新后的局部视图如代码 11.35 和代码 11.36 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-35"><p class="caption"><span>代码 11.35：</span>使用 Ajax 后的关注用户表单</p><p class="file"><code>app/views/users/_follow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-             <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;div&gt;</span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">hidden_field</span> <span class="ss">:followed_id</span> <span class="cp">%&gt;</span><span class="x">&lt;/div&gt;</span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s2">"Follow"</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-11-35"><p class="caption"><span>代码 11.35：</span>使用 Ajax 后的关注用户表单</p><p class="file"><code>app/views/users/_follow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="ss">followed_id: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">),</span>
+             <span class="ss">remote: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;div&gt;</span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">hidden_field</span> <span class="ss">:followed_id</span> <span class="cp">%&gt;</span><span class="nt">&lt;/div&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Follow"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-11-36"><p class="caption"><span>代码 11.36：</span>使用 Ajax 后的取消关注用户表单</p><p class="file"><code>app/views/users/_unfollow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-             <span class="ss">html</span><span class="p">:</span> <span class="p">{</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span> <span class="p">},</span>
-             <span class="ss">remote</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s2">"Unfollow"</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock has-caption" id="codeblock-11-36"><p class="caption"><span>代码 11.36：</span>使用 Ajax 后的取消关注用户表单</p><p class="file"><code>app/views/users/_unfollow.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="n">current_user</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">followed_id: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">),</span>
+             <span class="ss">html: </span><span class="p">{</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span> <span class="p">},</span>
+             <span class="ss">remote: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Unfollow"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>上述 ERb 代码生成的 HTML 没什么好说的，如果你好奇的话，可以看一下下面的示例：</p>
@@ -1272,41 +1272,41 @@
 
 <span class="n">describe</span> <span class="no">RelationshipsController</span> <span class="k">do</span>
 
-  <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:other_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 
-  <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span><span class="p">,</span> <span class="n">no_capybara</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="n">sign_in</span> <span class="n">user</span><span class="p">,</span> <span class="ss">no_capybara: </span><span class="kp">true</span> <span class="p">}</span>
 
   <span class="n">describe</span> <span class="s2">"creating a relationship with Ajax"</span> <span class="k">do</span>
 
     <span class="n">it</span> <span class="s2">"should increment the Relationship count"</span> <span class="k">do</span>
       <span class="n">expect</span> <span class="k">do</span>
-        <span class="n">xhr</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">relationship</span><span class="p">:</span> <span class="p">{</span> <span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span> <span class="p">}</span>
-      <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">Relationship</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">xhr</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">relationship: </span><span class="p">{</span> <span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span> <span class="p">}</span>
+      <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">Relationship</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should respond with success"</span> <span class="k">do</span>
-      <span class="n">xhr</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">relationship</span><span class="p">:</span> <span class="p">{</span> <span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span> <span class="p">}</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_success</span>
+      <span class="n">xhr</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">relationship: </span><span class="p">{</span> <span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span> <span class="p">}</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_success</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"destroying a relationship with Ajax"</span> <span class="k">do</span>
 
-    <span class="n">before</span> <span class="p">{</span> <span class="n">user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">other_user</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">let</span><span class="p">(</span><span class="ss">:relationship</span><span class="p">)</span> <span class="k">do</span>
-      <span class="n">user</span><span class="o">.</span><span class="n">relationships</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+      <span class="n">user</span><span class="p">.</span><span class="nf">relationships</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should decrement the Relationship count"</span> <span class="k">do</span>
       <span class="n">expect</span> <span class="k">do</span>
-        <span class="n">xhr</span> <span class="ss">:delete</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">relationship</span><span class="o">.</span><span class="n">id</span>
-      <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">Relationship</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">xhr</span> <span class="ss">:delete</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">relationship</span><span class="p">.</span><span class="nf">id</span>
+      <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">Relationship</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="s2">"should respond with success"</span> <span class="k">do</span>
-      <span class="n">xhr</span> <span class="ss">:delete</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">relationship</span><span class="o">.</span><span class="n">id</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_success</span>
+      <span class="n">xhr</span> <span class="ss">:delete</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">relationship</span><span class="p">.</span><span class="nf">id</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_success</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1314,7 +1314,7 @@
 </div>
 <p>代码 11.37 是我们第一次使用控制器测试（controller test），我以前经常使用控制器测试（如在本书的第一版中），但是现在我倾向于使用集成测试。这里之所以使用控制器测试是因为，<code>xhr</code> 方法在集成测试中不可用（有点让人不解）。虽然这是我们第一次使用 <code>xhr</code> 方法，但结合本书前面的内容，你应该可以理解下面这行代码的作用：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">xhr</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">relationship</span><span class="p">:</span> <span class="p">{</span> <span class="n">followed_id</span><span class="p">:</span> <span class="n">other_user</span><span class="o">.</span><span class="n">id</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">xhr</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">relationship: </span><span class="p">{</span> <span class="ss">followed_id: </span><span class="n">other_user</span><span class="p">.</span><span class="nf">id</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>我们看到，<code>xhr</code> 方法的第一个参数是相应的 HTTP 方法，第二个参数是动作名，第三个参数是一个 Hash，其元素是控制器中的 <code>params</code> 变量的值。和以前的测试一样，我们把相关的操作放入 <code>expect</code> 块中，检查数量是不是增加或减少了。</p>
@@ -1325,20 +1325,20 @@
   <span class="n">before_action</span> <span class="ss">:signed_in_user</span>
 
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:relationship</span><span class="o">][</span><span class="ss">:followed_id</span><span class="o">]</span><span class="p">)</span>
-    <span class="n">current_user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:relationship</span><span class="o">][</span><span class="ss">:followed_id</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">current_user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
-      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@user</span> <span class="p">}</span>
-      <span class="nb">format</span><span class="o">.</span><span class="n">js</span>
+      <span class="nb">format</span><span class="p">.</span><span class="nf">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@user</span> <span class="p">}</span>
+      <span class="nb">format</span><span class="p">.</span><span class="nf">js</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">destroy</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">Relationship</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">followed</span>
-    <span class="n">current_user</span><span class="o">.</span><span class="n">unfollow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">Relationship</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">).</span><span class="nf">followed</span>
+    <span class="n">current_user</span><span class="p">.</span><span class="nf">unfollow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
-      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@user</span> <span class="p">}</span>
-      <span class="nb">format</span><span class="o">.</span><span class="n">js</span>
+      <span class="nb">format</span><span class="p">.</span><span class="nf">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@user</span> <span class="p">}</span>
+      <span class="nb">format</span><span class="p">.</span><span class="nf">js</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1348,8 +1348,8 @@
  方法，根据接到的请求类型进行不同的操作。（这里用到的 <code>respond_to</code> 和 RSpec 中的 <code>respond_to</code> 没任何联系。）<code>repond_to</code> 方法的写法可能有点让人迷糊，你要知道，如下的代码</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
-  <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@user</span> <span class="p">}</span>
-  <span class="nb">format</span><span class="o">.</span><span class="n">js</span>
+  <span class="nb">format</span><span class="p">.</span><span class="nf">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@user</span> <span class="p">}</span>
+  <span class="nb">format</span><span class="p">.</span><span class="nf">js</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1371,19 +1371,19 @@
 </div>
 <p>和常规的 JavaScript 文件不同，JS-ERb 文件还可以使用嵌入式 Ruby 代码。在 <code>create.js.erb</code> 文件中我们会把关注用户表单换成取消关注用户表单（成功关注后），并更新关注者的数量，如代码 11.39 所示。这段代码中用到了 <code>escape_javascript</code> 方法，在 JavaScript 中写入 HTML 代码必须使用这个方法对 HTML 进行转义。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-39"><p class="caption"><span>代码 11.39：</span>创建关注“关系”的 JS-ERb 代码</p><p class="file"><code>app/views/relationships/create.js.erb</code></p><div class="highlight type-erb"><pre><span class="x">$("#follow_form").html("</span><span class="cp">&lt;%=</span> <span class="n">escape_javascript</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="s1">'users/unfollow'</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">")</span>
-<span class="x">$("#followers").html('</span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">followers</span><span class="o">.</span><span class="n">count</span> <span class="cp">%&gt;</span><span class="x">')</span>
+<div class="codeblock has-caption" id="codeblock-11-39"><p class="caption"><span>代码 11.39：</span>创建关注“关系”的 JS-ERb 代码</p><p class="file"><code>app/views/relationships/create.js.erb</code></p><div class="highlight type-erb"><pre>$("#follow_form").html("<span class="cp">&lt;%=</span> <span class="n">escape_javascript</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="s1">'users/unfollow'</span><span class="p">))</span> <span class="cp">%&gt;</span>")
+$("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">followers</span><span class="p">.</span><span class="nf">count</span> <span class="cp">%&gt;</span>')
 </pre></div>
 </div>
 <p><code>destroy.js.erb</code> 文件的内容类似，如代码 11.40 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-11-40"><p class="caption"><span>代码 11.40：</span>销毁关注“关系”的 JS-ERb 代码</p><p class="file"><code>app/views/relationships/destroy.js.erb</code></p><div class="highlight type-erb"><pre><span class="x">$("#follow_form").html("</span><span class="cp">&lt;%=</span> <span class="n">escape_javascript</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="s1">'users/follow'</span><span class="p">))</span> <span class="cp">%&gt;</span><span class="x">")</span>
-<span class="x">$("#followers").html('</span><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">followers</span><span class="o">.</span><span class="n">count</span> <span class="cp">%&gt;</span><span class="x">')</span>
+<div class="codeblock has-caption" id="codeblock-11-40"><p class="caption"><span>代码 11.40：</span>销毁关注“关系”的 JS-ERb 代码</p><p class="file"><code>app/views/relationships/destroy.js.erb</code></p><div class="highlight type-erb"><pre>$("#follow_form").html("<span class="cp">&lt;%=</span> <span class="n">escape_javascript</span><span class="p">(</span><span class="n">render</span><span class="p">(</span><span class="s1">'users/follow'</span><span class="p">))</span> <span class="cp">%&gt;</span>")
+$("#followers").html('<span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">followers</span><span class="p">.</span><span class="nf">count</span> <span class="cp">%&gt;</span>')
 </pre></div>
 </div>
 <p>加入上述代码后，你应该访问用户资料页面，看一下关注或取消关注用户后页面是不是真的没有刷新，再验证一下测试是否可以通过：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>在 Rails 中使用 Ajax 可以讲的太多了，技术变化的也快，我们只是介绍了点皮毛（本书其他的内容也是如此），你可以据此为基础学习其他更高级的用法。</p>
@@ -1405,7 +1405,7 @@
 </div>
 <p>因为需要把指定用户所关注用户的全部微博取出来，我们计划定义一个名为 <code>from_users_followed_by</code> 方法，以下面的方式调用：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">Micropost</span><span class="o">.</span><span class="n">from_users_followed_by</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">Micropost</span><span class="p">.</span><span class="nf">from_users_followed_by</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>虽然我们还不知道怎么定义这个方法，但在此之前却可以先编写测试检测它的功能是否按设想实现了。测试的关键是要覆盖三种情况：动态列表中要包含被关注用户和用户自己的微博，而且不能包含未被关注用户的微博。前面的测试已经检测了其中两种情况：代码 10.35 验证了动态列表中有用户自己的微博，而且没有未被关注用户的微博。既然我们已经实现了关注用户功能，那就加入对第三种情况的测试吧，检测动态列表中是否包含了被关注用户的微博，如代码 11.41 所示。</p>
@@ -1420,32 +1420,32 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"micropost associations"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span> <span class="p">}</span>
     <span class="n">let!</span><span class="p">(</span><span class="ss">:older_micropost</span><span class="p">)</span> <span class="k">do</span>
-      <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="vi">@user</span><span class="p">,</span> <span class="n">created_at</span><span class="p">:</span> <span class="mi">1</span><span class="o">.</span><span class="n">day</span><span class="o">.</span><span class="n">ago</span><span class="p">)</span>
+      <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user: </span><span class="vi">@user</span><span class="p">,</span> <span class="ss">created_at: </span><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">ago</span><span class="p">)</span>
     <span class="k">end</span>
     <span class="n">let!</span><span class="p">(</span><span class="ss">:newer_micropost</span><span class="p">)</span> <span class="k">do</span>
-      <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="vi">@user</span><span class="p">,</span> <span class="n">created_at</span><span class="p">:</span> <span class="mi">1</span><span class="o">.</span><span class="n">hour</span><span class="o">.</span><span class="n">ago</span><span class="p">)</span>
+      <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user: </span><span class="vi">@user</span><span class="p">,</span> <span class="ss">created_at: </span><span class="mi">1</span><span class="p">.</span><span class="nf">hour</span><span class="p">.</span><span class="nf">ago</span><span class="p">)</span>
     <span class="k">end</span>
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"status"</span> <span class="k">do</span>
       <span class="n">let</span><span class="p">(</span><span class="ss">:unfollowed_post</span><span class="p">)</span> <span class="k">do</span>
-        <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">))</span>
+        <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:micropost</span><span class="p">,</span> <span class="ss">user: </span><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">))</span>
       <span class="k">end</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:followed_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:followed_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">before</span> <span class="k">do</span>
-        <span class="vi">@user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="n">followed_user</span><span class="p">)</span>
-        <span class="mi">3</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="n">followed_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="s2">"Lorem ipsum"</span><span class="p">)</span> <span class="p">}</span>
+        <span class="vi">@user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="n">followed_user</span><span class="p">)</span>
+        <span class="mi">3</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="n">followed_user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">content: </span><span class="s2">"Lorem ipsum"</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
 
       <span class="n">its</span><span class="p">(</span><span class="ss">:feed</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="kp">include</span><span class="p">(</span><span class="n">newer_micropost</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">its</span><span class="p">(</span><span class="ss">:feed</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="kp">include</span><span class="p">(</span><span class="n">older_micropost</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">its</span><span class="p">(</span><span class="ss">:feed</span><span class="p">)</span> <span class="p">{</span> <span class="n">should_not</span> <span class="kp">include</span><span class="p">(</span><span class="n">unfollowed_post</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">its</span><span class="p">(</span><span class="ss">:feed</span><span class="p">)</span> <span class="k">do</span>
-        <span class="n">followed_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">micropost</span><span class="o">|</span>
+        <span class="n">followed_user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">micropost</span><span class="o">|</span>
           <span class="n">should</span> <span class="kp">include</span><span class="p">(</span><span class="n">micropost</span><span class="p">)</span>
         <span class="k">end</span>
       <span class="k">end</span>
@@ -1464,7 +1464,7 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">feed</span>
-    <span class="no">Micropost</span><span class="o">.</span><span class="n">from_users_followed_by</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="no">Micropost</span><span class="p">.</span><span class="nf">from_users_followed_by</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1487,7 +1487,7 @@
 
 <p>在 <a href="chapter10.html#section-10-3-3">10.3.3 节</a>实现临时动态列表时，是调用 Active Record 中的 <code>where</code> 方法完成上面这种查询的，如代码 10.36 所示。这段代码中用到的查询很简单，只是通过当前用户的 id 取出了他发布的微博：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">Micropost</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"user_id = ?"</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">Micropost</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"user_id = ?"</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>而现在，我们遇到的情况复杂的多，要使用类似下面的代码实现：</p>
@@ -1499,45 +1499,45 @@
 
 <p>从上面的查询条件可以看出，我们需要生成一个数组，其元素为被关注用户的 id。生成这个数组的方法之一是，使用 Ruby 中的 <code>map</code> 方法，这个方法可以在任意的“可枚举（enumerable）”对象上调用，例如包含了元素的集合类对象（数组，Hash 等）。<sup class="footnote" id="fnref-11-11"><a href="#fn-11-11" rel="footnote">11</a></sup>我们在 <a href="chapter4.html#section-4-3-2">4.3.2 节</a>中举例介绍过这个方法，其用法如下：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; <span class="o">[</span>1, 2, 3, 4<span class="o">]</span>.map <span class="o">{</span> <span class="p">|</span>i<span class="p">|</span> i.to_s <span class="o">}</span>
-<span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"1"</span>, <span class="s2">"2"</span>, <span class="s2">"3"</span>, <span class="s2">"4"</span><span class="o">]</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span><span class="o">[</span>1, 2, 3, 4].map <span class="o">{</span> |i| i.to_s <span class="o">}</span>
+<span class="gp">=&gt; </span><span class="o">[</span><span class="s2">"1"</span>, <span class="s2">"2"</span>, <span class="s2">"3"</span>, <span class="s2">"4"</span><span class="o">]</span>
 </pre></div>
 </div>
 <p>像上面这种在每个元素上调用同一个方法的情况是很常见的，所以 Ruby 为此定义了一种简写形式，在 <code>&amp;</code> 符号后面跟上被调用方法的 Symbol 形式：<sup class="footnote" id="fnref-11-12"><a href="#fn-11-12" rel="footnote">12</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">[</span>1, 2, 3, 4<span class="o">]</span>.map<span class="o">(</span><span class="p">&amp;</span>:to_s<span class="o">)</span>
-<span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"1"</span>, <span class="s2">"2"</span>, <span class="s2">"3"</span>, <span class="s2">"4"</span><span class="o">]</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span><span class="o">[</span>1, 2, 3, 4].map<span class="o">(</span>&amp;:to_s<span class="o">)</span>
+<span class="gp">=&gt; </span><span class="o">[</span><span class="s2">"1"</span>, <span class="s2">"2"</span>, <span class="s2">"3"</span>, <span class="s2">"4"</span><span class="o">]</span>
 </pre></div>
 </div>
 <p>然后再调用 <code>join</code> 方法（参见 <a href="chapter4.html#section-4-3-1">4.3.1 节</a>），就可以将数组中的元素合并起来组成字符串，各元素之间用逗号加一个空格分开：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="o">[</span>1, 2, 3, 4<span class="o">]</span>.map<span class="o">(</span><span class="p">&amp;</span>:to_s<span class="o">)</span>.join<span class="o">(</span><span class="s1">', '</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="s2">"1, 2, 3, 4"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span><span class="o">[</span>1, 2, 3, 4].map<span class="o">(</span>&amp;:to_s<span class="o">)</span>.join<span class="o">(</span><span class="s1">', '</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="s2">"1, 2, 3, 4"</span>
 </pre></div>
 </div>
 <p>参照上面介绍的方法，我们可以在 <code>user.followed_users</code> 的每个元素上调用 <code>id</code> 方法，得到一个由被关注用户的 id 组成的数组。例如，对数据库中第 1 个用户而言，就可以用下面的代码实现：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.first.followed_users.map<span class="o">(</span><span class="p">&amp;</span>:id<span class="o">)</span>
-<span class="o">=</span>&gt; <span class="o">[</span>4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.first.followed_users.map<span class="o">(</span>&amp;:id<span class="o">)</span>
+<span class="gp">=&gt; </span><span class="o">[</span>4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
-43, 44, 45, 46, 47, 48, 49, 50, 51<span class="o">]</span>
+43, 44, 45, 46, 47, 48, 49, 50, 51]
 </pre></div>
 </div>
 <p>其实，因为这种用法太普遍了，所以 Active Record 默认已经提供了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.first.followed_user_ids
-<span class="o">=</span>&gt; <span class="o">[</span>4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.first.followed_user_ids
+<span class="gp">=&gt; </span><span class="o">[</span>4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
-43, 44, 45, 46, 47, 48, 49, 50, 51<span class="o">]</span>
+43, 44, 45, 46, 47, 48, 49, 50, 51]
 </pre></div>
 </div>
 <p>上述代码中的 <code>followed_user_ids</code> 方法是 Active Record 根据 <code>has_many :followed_users</code> 关联（参见代码 11.10）合成的，这样我们只需在关联名的后面加上 <code>_ids</code> 就可以获取 <code>user.followed_users</code> 集合中所有用户的 id 了。用户 id 组成的字符串如下：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.first.followed_user_ids.join<span class="o">(</span><span class="s1">', '</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="s2">"4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,</span>
-<span class="s2">24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,</span>
-<span class="s2">43, 44, 45, 46, 47, 48, 49, 50, 51"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.first.followed_user_ids.join<span class="o">(</span><span class="s1">', '</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="s2">"4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
+43, 44, 45, 46, 47, 48, 49, 50, 51"</span>
 </pre></div>
 </div>
 <p>不过，当插入 SQL 语句中时，你无须手动生成字符串，<code>?</code> 插值操作会为你代劳（同时也避免了一些数据库之间的兼容问题）。所以，我们实际要使用的只是 <code>user.followed_user_ids</code> 而已。</p>
@@ -1549,7 +1549,7 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">from_users_followed_by</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">followed_user_ids</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">followed_user_ids</span>
+    <span class="n">followed_user_ids</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">followed_user_ids</span>
     <span class="n">where</span><span class="p">(</span><span class="s2">"user_id IN (?) OR user_id = ?"</span><span class="p">,</span> <span class="n">followed_user_ids</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1557,7 +1557,7 @@
 </div>
 <p>虽然代码 11.43 之前的讨论都是以假设为基础进行的，但得到的代码却是可用的。你可以运行测试验证一下，应该是可以通过的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>在某些程序中，这样的初步实现已经能满足大部分需求了。不过这不是我们最终要使用的实现方式，在继续阅读下一小节之前，你可以想一下为什么。（提示：如果用户关注了 5000 个用户呢？）</p>
@@ -1577,9 +1577,9 @@
   <span class="o">.</span>
   <span class="c1"># Returns microposts from the users being followed by the given user.</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">from_users_followed_by</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">followed_user_ids</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">followed_user_ids</span>
+    <span class="n">followed_user_ids</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">followed_user_ids</span>
     <span class="n">where</span><span class="p">(</span><span class="s2">"user_id IN (:followed_user_ids) OR user_id = :user_id"</span><span class="p">,</span>
-          <span class="n">followed_user_ids</span><span class="p">:</span> <span class="n">followed_user_ids</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
+          <span class="ss">followed_user_ids: </span><span class="n">followed_user_ids</span><span class="p">,</span> <span class="ss">user_id: </span><span class="n">user</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1592,20 +1592,20 @@
 <p>换成了等效的</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">where</span><span class="p">(</span><span class="s2">"user_id IN (:followed_user_ids) OR user_id = :user_id"</span><span class="p">,</span>
-      <span class="n">followed_user_ids</span><span class="p">:</span> <span class="n">followed_user_ids</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
+      <span class="ss">followed_user_ids: </span><span class="n">followed_user_ids</span><span class="p">,</span> <span class="ss">user_id: </span><span class="n">user</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>使用问号做插值虽然可以，但当我们要在多处插入同一个值时，后一种写法就方便多了。</p>
 
 <p>上面这段话表明，我们要在 SQL 查询语句中两次用到 <code>user_id</code>。简单来说就是，我们要把下面这行 Ruby 代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">followed_user_ids</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">followed_user_ids</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">followed_user_ids</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">followed_user_ids</span>
 </pre></div>
 </div>
 <p>换成包含 SQL 语句的代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">followed_user_ids</span> <span class="o">=</span> <span class="s2">"SELECT followed_id FROM relationships</span>
-<span class="s2">                     WHERE follower_id = :user_id"</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">followed_user_ids</span> <span class="o">=</span> <span class="s2">"SELECT followed_id FROM relationships
+                     WHERE follower_id = :user_id"</span>
 </pre></div>
 </div>
 <p>上面这行代码使用了 SQL 的子查询语句，那么针对 id 为 1 的用户，整个查询语句就可以写成：</p>
@@ -1623,15 +1623,15 @@
 <div class="codeblock has-caption" id="codeblock-11-45"><p class="caption"><span>代码 11.45：</span><code>from_users_followed_by</code> 方法的最终版本</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
   <span class="n">default_scope</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">'created_at DESC'</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
-  <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">140</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 
   <span class="c1"># Returns microposts from the users being followed by the given user.</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">from_users_followed_by</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">followed_user_ids</span> <span class="o">=</span> <span class="s2">"SELECT followed_id FROM relationships</span>
-<span class="s2">                         WHERE follower_id = :user_id"</span>
+    <span class="n">followed_user_ids</span> <span class="o">=</span> <span class="s2">"SELECT followed_id FROM relationships
+                         WHERE follower_id = :user_id"</span>
     <span class="n">where</span><span class="p">(</span><span class="s2">"user_id IN (</span><span class="si">#{</span><span class="n">followed_user_ids</span><span class="si">}</span><span class="s2">) OR user_id = :user_id"</span><span class="p">,</span>
-          <span class="n">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+          <span class="ss">user_id: </span><span class="n">user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1647,8 +1647,8 @@
 
   <span class="k">def</span> <span class="nf">home</span>
     <span class="k">if</span> <span class="n">signed_in?</span>
-      <span class="vi">@micropost</span>  <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">microposts</span><span class="o">.</span><span class="n">build</span>
-      <span class="vi">@feed_items</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">page</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
+      <span class="vi">@micropost</span>  <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">microposts</span><span class="p">.</span><span class="nf">build</span>
+      <span class="vi">@feed_items</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">feed</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">page: </span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
   <span class="o">.</span>
@@ -1667,19 +1667,19 @@
 </div>
 <p>在介绍可对程序进行的功能扩展之前，最好先把本章的改动合并到主分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Add user following"</span>
-<span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git merge following-users
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Add user following"</span>
+<span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git merge following-users
 </pre></div>
 </div>
 <p>和之前一样，你也可以把代码推送到 GitHub，还可以部署到 Heroku：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push
-<span class="nv">$ </span>git push heroku
-<span class="nv">$ </span>heroku pg:reset DATABASE
-<span class="nv">$ </span>heroku run rake db:migrate
-<span class="nv">$ </span>heroku run rake db:populate
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git push
+<span class="gp">$ </span>git push heroku
+<span class="gp">$ </span>heroku pg:reset DATABASE
+<span class="gp">$ </span>heroku run rake db:migrate
+<span class="gp">$ </span>heroku run rake db:populate
 </pre></div>
 </div>
 <h3 id='section-11-4-1'><span>11.4.1</span> 扩展示例程序的功能</h3>
@@ -1763,14 +1763,14 @@
   <span class="n">respond_to</span> <span class="ss">:html</span><span class="p">,</span> <span class="ss">:js</span>
 
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:relationship</span><span class="o">][</span><span class="ss">:followed_id</span><span class="o">]</span><span class="p">)</span>
-    <span class="n">current_user</span><span class="o">.</span><span class="n">follow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:relationship</span><span class="o">][</span><span class="ss">:followed_id</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">current_user</span><span class="p">.</span><span class="nf">follow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="n">respond_with</span> <span class="vi">@user</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">destroy</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">Relationship</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">followed</span>
-    <span class="n">current_user</span><span class="o">.</span><span class="n">unfollow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">Relationship</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">).</span><span class="nf">followed</span>
+    <span class="n">current_user</span><span class="p">.</span><span class="nf">unfollow!</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="n">respond_with</span> <span class="vi">@user</span>
   <span class="k">end</span>
 <span class="k">end</span>

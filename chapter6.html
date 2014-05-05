@@ -96,8 +96,8 @@
 
 <p>和之前一样，如果你一直使用 Git 做版本控制，现在最好为本章创建一个从分支：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git checkout -b modeling-users
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git checkout -b modeling-users
 </pre></div>
 </div>
 <p>（第一个命令是要确保处在主分支，这样创建的 <code>modeling-users</code> 从分支才会基于 <code>master</code> 分支的当前状态。如果你已经处在主分支的话，可以跳过第一个命令。）</p>
@@ -131,14 +131,14 @@
 
 <p>让我们看一下 Active Record 是怎么找到的。（如果下面这些讨论对你来说太抽象了，请耐心的看下去。<a href="chapter6.html#section-6-1-3">6.1.3 节</a>在控制台中的操作示例，以及图 6.3 和图 6.6 中的数据库浏览器截图应该会让你更清楚的理解这些内容。）代码 5.29 使用下面的命令生成了 Users 控制器和 <code>new</code> 动作：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate controller Users new --no-test-framework
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate controller Users new --no-test-framework
 </pre></div>
 </div>
 <p>创建模型可以使用类似的命令：<code>generate model</code>。代码 6.1 所示为生成 <code>User</code> 模型，以及 <code>name</code> 和 <code>email</code> 属性所用的命令。</p>
 
-<div class="codeblock has-caption" id="codeblock-6-1"><p class="caption"><span>代码 6.1：</span>生成用户模型</p><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate model User name:string email:string
+<div class="codeblock has-caption" id="codeblock-6-1"><p class="caption"><span>代码 6.1：</span>生成用户模型</p><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate model User name:string email:string
       invoke active record
-      create db/migrate/<span class="o">[</span>timestamp<span class="o">]</span>_create_users.rb
+      create db/migrate/[timestamp]_create_users.rb
       create app/models/user.rb
       invoke rspec
       create   spec/models/user_spec.rb
@@ -151,9 +151,9 @@
 <div class="codeblock has-caption" id="codeblock-6-2"><p class="caption"><span>代码 6.2：</span>User 模型的迁移文件（创建 <code>users</code> 表）</p><p class="file"><code>db/migrate/[timestamp]_create_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:email</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:name</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:email</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -166,7 +166,7 @@
 </div>
 <p>我们可以使用如下的 <code>rake</code> 命令（参见<a href="chapter2.html#aside-2-1">旁注 2.1</a>）来执行这个迁移（也叫“向上迁移”）：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
 </pre></div>
 </div>
 <p>（你可能还记得，我们在 <a href="chapter2.html#section-2-2">2.2 节</a>中使用过这个命令。）第一次运行 <code>db:migrate</code> 命令时会新建 <code>db/development.sqlite3</code>，这是 SQLite<sup class="footnote" id="fnref-6-5"><a href="#fn-6-5" rel="footnote">5</a></sup>数据库文件。若要查看数据库结构，可以使用 SQLite 数据库浏览器打开 <code>db/development.sqlite3</code> 文件（如图 6.3 所示）。和图 6.2 中的模型对比之后，你会发现 <code>id</code> 列在迁移文件中没有定义。在 <a href="chapter2.html#section-2-2">2.2 节</a> 中介绍过，Rails 把这个列作为行的唯一标识符。</p>
@@ -176,14 +176,14 @@
 </div>
 <p>大多数迁移，包括本教程中的所有迁移，都是可逆的，也就是说可以通过一个简单的 Rake 命令“向下迁移”，撤销之前的迁移操作，这个命令是 <code>db:rollback</code>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:rollback
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:rollback
 </pre></div>
 </div>
 <p>（另外还有一个撤销迁移的方法请查看<a href="chapter3.html#aside-3-2">旁注 3.2</a>。）这个命令会调用 <code>drop_table</code> 方法把 users 表从数据库中删除。我们之所以可以这么做，是因为 <code>change</code> 方法知道 <code>create_table</code> 的反操作是 <code>drop_table</code>，所以回滚时就会直接调用 <code>drop_table</code> 方法。对于一些无法自动逆转的操作，例如删除列，就不能依赖 <code>change</code> 方法了，我们要分别定义 <code>up</code> 和 <code>down</code> 方法。关于迁移的更多内容请查看 Rails 指南。</p>
 
 <p>如果你执行了上面的回滚操作，在继续阅读之前请再迁移回来：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
 </pre></div>
 </div>
 <h3 id='section-6-1-2'><span>6.1.2</span> 模型文件</h3>
@@ -204,8 +204,8 @@
 
 <p>和 <a href="chapter4.html">第 4 章</a>一样，探索数据模型我们使用的工具是 Rails 控制台。因为我们还不想改动数据库，所以我们要在沙盒模式（sandbox）中启动控制台：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console --sandbox
-Loading development environment in sandbox
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console --sandbox
+Loading development environment <span class="k">in </span>sandbox
 Any modifications you make will be rolled back on <span class="nb">exit</span>
 &gt;&gt;
 </pre></div>
@@ -214,72 +214,72 @@ Any modifications you make will be rolled back on <span class="nb">exit</span>
 
 <p><a href="chapter4.html#section-4-4-5">4.4.5 节</a>中的控制台会话，需要手动加载自己编写的 <code>User</code> 类才能使用 <code>User.new</code> 创建用户对象。创建模型后，情况就不一样了。<a href="chapter4.html#section-4-4-4">4.4.4 节</a>中介绍过，Rails 控制台会自动加载 Rails 环境，当然也会自动加载模型。也就是说，现在无需加载额外的代码就可以直接创建用户对象了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.new
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: nil, name: nil, email: nil, created_at: nil, updated_at: nil&gt;</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.new
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: nil, name: nil, email: nil, created_at: nil, updated_at: nil&gt;</span>
 </pre></div>
 </div>
 <p>上述控制台显示了一个用户对象的默认值。</p>
 
 <p>如果不为 <code>User.new</code> 指定参数，对象的所有属性值都是 <code>nil</code>。在 <a href="chapter4.html#section-4-4-5">4.4.5 节</a>中，自己编写的 <code>User</code> 类可以接受一个 Hash 参数用来初始化对象的属性，这种方式是受 Active Record 启发的，在 Active Record 中也可以使用相同的方式指定初始值：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">user</span> <span class="o">=</span> User.new<span class="o">(</span>name: <span class="s2">"Michael Hartl"</span>, email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: nil, name: "Michael Hartl", email: "mhartl@example.com", created_at: nil, updated_at: nil&gt;</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user <span class="o">=</span> User.new<span class="o">(</span>name: <span class="s2">"Michael Hartl"</span>, email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: nil, name: "Michael Hartl", email: "mhartl@example.com", created_at: nil, updated_at: nil&gt;</span>
 </pre></div>
 </div>
 <p>我们看到 <code>name</code> 和 <code>email</code> 属性的值都已经设定了。</p>
 
 <p>如果查看开发日志的话，会发现没有什么新内容。这是因为 <code>User.new</code> 方法并没有改动数据库，只是在内存中创建了一个用户对象。如果要把用户对象保存到数据库中，要在 <code>user</code> 对象上调用 <code>save</code> 方法：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.save
-<span class="o">=</span>&gt; <span class="nb">true</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.save
+<span class="gp">=&gt; </span><span class="nb">true</span>
 </pre></div>
 </div>
 <p>如果保存成功，<code>save</code> 方法会返回 <code>true</code>；否则返回 <code>false</code>。（现在所有的保存操作都会成功<sup class="footnote" id="fnref-6-t1"><a href="#fn-6-t1" rel="footnote">6</a></sup>，<a href="chapter6.html#section-6-2">6.2 节</a>会看到保存失败的例子。）保存成功后，日志文件中就会出现一行 SQL 语句：<code>INSERT INTO "users"</code>。Active Record 提供了很多方法用来和数据库交互，所以你根本不需要直接使用SQL 语句，今后我也不会介绍 SQL 相关的知识。如果你想学习 SQL，可以查看日志文件。</p>
 
 <p>你可能注意到了，刚创建时用户对象的 <code>id</code>、<code>created_at</code> 和 <code>updated_at</code> 属性值都是 <code>nil</code>，下面看一下保存之后有什么变化：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">user</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
-created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;00:57:46<span class="s2">", updated_at: "</span>2011-12-05 00:57:46<span class="err">"</span>&gt;
-</pre></div>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
+created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;00:57:46<span class="s2">", updated_at: "</span>2011-12-05 00:57:46<span class="s2">"&gt;
+</span></pre></div>
 </div>
 <p>如上述代码所示，<code>id</code> 的值变成 <code>1</code> 了，那两个自动创建的时间戳属性也变成了当前的时间。<sup class="footnote" id="fnref-6-6"><a href="#fn-6-6" rel="footnote">7</a></sup>现在这两个时间戳是一样的，<a href="chapter6.html#section-6-1-5">6.1.5 节</a>会看到二者不同的情况。</p>
 
 <p>和 <a href="chapter4.html#section-4-4-5">4.4.5 节</a>中的 <code>User</code> 类一样，User 模型的实例也可以使用点号获取属性：<sup class="footnote" id="fnref-6-7"><a href="#fn-6-7" rel="footnote">8</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.name
-<span class="o">=</span>&gt; <span class="s2">"Michael Hartl"</span>
-&gt;&gt; user.email
-<span class="o">=</span>&gt; <span class="s2">"mhartl@example.com"</span>
-&gt;&gt; user.updated_at
-<span class="o">=</span>&gt; Mon, 11 Mar 2013 00:57:46 UTC +00:00
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.name
+<span class="gp">=&gt; </span><span class="s2">"Michael Hartl"</span>
+<span class="gp">&gt;&gt; </span>user.email
+<span class="gp">=&gt; </span><span class="s2">"mhartl@example.com"</span>
+<span class="gp">&gt;&gt; </span>user.updated_at
+<span class="gp">=&gt; </span>Mon, 11 Mar 2013 00:57:46 UTC +00:00
 </pre></div>
 </div>
 <p>在<a href="chapter7.html">第 7 章</a>中会介绍，虽然一般习惯把创建和保存分成如上所示的两步分别操作，不过 Active Record 也允许我们使用 <code>User.create</code> 方法把这两步合成一步：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.create<span class="o">(</span>name: <span class="s2">"A Nother"</span>, email: <span class="s2">"another@example.org"</span><span class="o">)</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.create<span class="o">(</span>name: <span class="s2">"A Nother"</span>, email: <span class="s2">"another@example.org"</span><span class="o">)</span>
 <span class="c">#&lt;User id: 2, name: "A Nother", email: "another@example.org", created_at:</span>
 <span class="s2">"2013-03-11 01:05:24"</span>, updated_at: <span class="s2">"2013-03-11 01:05:24"</span>&gt;
-&gt;&gt; <span class="nv">foo</span> <span class="o">=</span> User.create<span class="o">(</span>name: <span class="s2">"Foo"</span>, email: <span class="s2">"foo@bar.com"</span><span class="o">)</span>
+<span class="gp">&gt;&gt; </span>foo <span class="o">=</span> User.create<span class="o">(</span>name: <span class="s2">"Foo"</span>, email: <span class="s2">"foo@bar.com"</span><span class="o">)</span>
 <span class="c">#&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2013-03-11</span>
-01:05:42<span class="s2">", updated_at: "</span>2013-03-11 01:05:42<span class="err">"</span>&gt;
-</pre></div>
+01:05:42<span class="s2">", updated_at: "</span>2013-03-11 01:05:42<span class="s2">"&gt;
+</span></pre></div>
 </div>
 <p>注意，<code>User.create</code> 的返回值不是 <code>true</code> 或 <code>false</code>，而是返回创建的用户对象，可直接赋值给变量（例如上面第二个命令中的 <code>foo</code> 变量）.</p>
 
 <p><code>create</code> 的反操作是 <code>destroy</code>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; foo.destroy
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2013-03-11</span>
-01:05:42<span class="s2">", updated_at: "</span>2013-03-11 01:05:42<span class="err">"</span>&gt;
-</pre></div>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>foo.destroy
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2013-03-11</span>
+01:05:42<span class="s2">", updated_at: "</span>2013-03-11 01:05:42<span class="s2">"&gt;
+</span></pre></div>
 </div>
 <p>奇怪的是，<code>destroy</code> 和 <code>create</code> 一样，返回值是销毁的对象。我不觉得什么地方会用到 <code>destroy</code> 的返回值。更奇怪的事情是，销毁的对象还在内存中：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">foo</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2013-03-11</span>
-01:05:42<span class="s2">", updated_at: "</span>2013-03-11 01:05:42<span class="err">"</span>&gt;
-</pre></div>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>foo
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 3, name: "Foo", email: "foo@bar.com", created_at: "2013-03-11</span>
+01:05:42<span class="s2">", updated_at: "</span>2013-03-11 01:05:42<span class="s2">"&gt;
+</span></pre></div>
 </div>
 <p>那么我们怎么知道对象是否真的被销毁了呢？对于已经保存而没有销毁的对象，怎样从数据库中获取呢？要回答这些问题，我们要先学习如何使用 Active Record 查找用户对象。</p>
 
@@ -288,8 +288,8 @@ created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span cla
 
 <p>Active Record 为查找对象提供了好几种方法。我们要使用这些方法来查找刚创建的第一个用户，同时也验证一下第三个用户（<code>foo</code>）是否被销毁了。先看一下还存在的用户：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.find<span class="o">(</span>1<span class="o">)</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.find<span class="o">(</span>1<span class="o">)</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
 created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;
 </pre></div>
 </div>
@@ -297,23 +297,23 @@ created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span cla
 
 <p>下面来看一下 id 为 3 的用户是否还在数据库中：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.find<span class="o">(</span>3<span class="o">)</span>
-<span class="o">=</span>&gt; <span class="c">#ActiveRecord::RecordNotFound: Couldn't find User with ID=3</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.find<span class="o">(</span>3<span class="o">)</span>
+<span class="gp">=&gt; </span><span class="c">#ActiveRecord::RecordNotFound: Couldn't find User with ID=3</span>
 </pre></div>
 </div>
 <p>因为在 <a href="chapter6.html#section-6-1-3">6.1.3 节</a>中销毁了第三个用户，所以 Active Record 无法在数据库中找到，抛出了一个异常，说明在查找过程中出现了问题。因为 id 不存在，所以 <code>find</code> 方法才会抛出 <code>ActiveRecord::RecordNotFound</code> 异常。<sup class="footnote" id="fnref-6-8"><a href="#fn-6-8" rel="footnote">9</a></sup></p>
 
 <p>除了 <code>find</code> 方法之外，Active Record 还支持指定属性来查找用户：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.find_by_email<span class="o">(</span><span class="s2">"mhartl@example.com"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.find_by_email<span class="o">(</span><span class="s2">"mhartl@example.com"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
 created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;
 </pre></div>
 </div>
 <p><code>find_by_email</code> 方法是 Active Record 根据 <code>users</code> 表中的 <code>email</code> 列自动定义的（你可能猜到了，Active Record 还定义了 <code>find_by_name</code> 方法）。从 Rails 4.0 开始，通过属性查找记录推荐的做法是使用 <code>find_by</code> 方法，属性值以 Hash 形式传入：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.find_by<span class="o">(</span>email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.find_by<span class="o">(</span>email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
 created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;
 </pre></div>
 </div>
@@ -321,18 +321,18 @@ created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span cla
 
 <p>最后我们还要介绍几个常用的用户查找方法。首先是 <code>first</code> 方法：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.first
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.first
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
 created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;
 </pre></div>
 </div>
 <p>很明显，<code>first</code> 会返回数据库中的第一个用户。还有 <code>all</code> 方法：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; User.all
-<span class="o">=</span>&gt; <span class="o">[</span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>User.all
+<span class="gp">=&gt; </span><span class="o">[</span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
 created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;,
 <span class="c">#&lt;User id: 2, name: "A Nother", email: "another@example.org", created_at:</span>
-<span class="s2">"2013-03-11 01:05:24"</span>, updated_at: <span class="s2">"2013-03-11 01:05:24"</span>&gt;<span class="o">]</span>
+<span class="s2">"2013-03-11 01:05:24"</span>, updated_at: <span class="s2">"2013-03-11 01:05:24"</span>&gt;]
 </pre></div>
 </div>
 <p><code>all</code> 方法会返回一个数组，包含数据库中的所有用户。</p>
@@ -342,49 +342,49 @@ created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span cla
 
 <p>创建对象后，一般都会进行更新操作。更新有两种基本的方式，其一，我们可以分别为各属性赋值，在 <a href="chapter4.html#section-4-4-5">4.4.5 节</a>中就是这么做的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user           <span class="c"># Just a reminder about our user's attributes</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user           <span class="c"># Just a reminder about our user's attributes</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com",</span>
 created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span class="s2">"2013-03-11 00:57:46"</span>&gt;
-&gt;&gt; user.email <span class="o">=</span> <span class="s2">"mhartl@example.net"</span>
-<span class="o">=</span>&gt; <span class="s2">"mhartl@example.net"</span>
-&gt;&gt; user.save
-<span class="o">=</span>&gt; <span class="nb">true</span>
+<span class="gp">&gt;&gt; </span>user.email <span class="o">=</span> <span class="s2">"mhartl@example.net"</span>
+<span class="gp">=&gt; </span><span class="s2">"mhartl@example.net"</span>
+<span class="gp">&gt;&gt; </span>user.save
+<span class="gp">=&gt; </span><span class="nb">true</span>
 </pre></div>
 </div>
 <p>注意，最后一个命令是必须的，我们要把改动写入数据库。我们可以执行 <code>reload</code> 命令来看一下没保存的话是什么情况。<code>reload</code> 命令会使用数据库中的数据重新加载对象：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.email
-<span class="o">=</span>&gt; <span class="s2">"mhartl@example.net"</span>
-&gt;&gt; user.email <span class="o">=</span> <span class="s2">"foo@bar.com"</span>
-<span class="o">=</span>&gt; <span class="s2">"foo@bar.com"</span>
-&gt;&gt; user.reload.email
-<span class="o">=</span>&gt; <span class="s2">"mhartl@example.net"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.email
+<span class="gp">=&gt; </span><span class="s2">"mhartl@example.net"</span>
+<span class="gp">&gt;&gt; </span>user.email <span class="o">=</span> <span class="s2">"foo@bar.com"</span>
+<span class="gp">=&gt; </span><span class="s2">"foo@bar.com"</span>
+<span class="gp">&gt;&gt; </span>user.reload.email
+<span class="gp">=&gt; </span><span class="s2">"mhartl@example.net"</span>
 </pre></div>
 </div>
 <p>现在我们已经更新了用户数据，如在 <a href="chapter6.html#section-6-1-3">6.1.3 节</a>中所说，自动创建的那两个时间戳属性就不一样了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.created_at
-<span class="o">=</span>&gt; <span class="s2">"2013-03-11 00:57:46"</span>
-&gt;&gt; user.updated_at
-<span class="o">=</span>&gt; <span class="s2">"2013-03-11 01:37:32"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.created_at
+<span class="gp">=&gt; </span><span class="s2">"2013-03-11 00:57:46"</span>
+<span class="gp">&gt;&gt; </span>user.updated_at
+<span class="gp">=&gt; </span><span class="s2">"2013-03-11 01:37:32"</span>
 </pre></div>
 </div>
 <p>更新数据的第二种常用方式是使用 <code>update_attributes</code> 方法：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.update_attributes<span class="o">(</span>name: <span class="s2">"The Dude"</span>, email: <span class="s2">"dude@abides.org"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="nb">true</span>
-&gt;&gt; user.name
-<span class="o">=</span>&gt; <span class="s2">"The Dude"</span>
-&gt;&gt; user.email
-<span class="o">=</span>&gt; <span class="s2">"dude@abides.org"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.update_attributes<span class="o">(</span>name: <span class="s2">"The Dude"</span>, email: <span class="s2">"dude@abides.org"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="nb">true</span>
+<span class="gp">&gt;&gt; </span>user.name
+<span class="gp">=&gt; </span><span class="s2">"The Dude"</span>
+<span class="gp">&gt;&gt; </span>user.email
+<span class="gp">=&gt; </span><span class="s2">"dude@abides.org"</span>
 </pre></div>
 </div>
 <p><code>update_attributes</code> 方法可接受一个指定对象属性的 Hash 作为参数，如果操作成功，会执行更新和保存两个命令（保存成功时返回值为 <code>true</code>）。注意，如果任何一个数据验证失败了，例如存储记录时需要密码（会在 <a href="chapter6.html#section-6-3">6.3 节</a>实现），<code>update_attributes</code> 操作就会失败。如果要更新单个属性，请使用 <code>update_attribute</code>，这样就能跳过验证限制了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.update_attribute<span class="o">(</span>:name, <span class="s2">"The Dude"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="nb">true</span>
-&gt;&gt; user.name
-<span class="o">=</span>&gt; <span class="s2">"The Dude"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.update_attribute<span class="o">(</span>:name, <span class="s2">"The Dude"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="nb">true</span>
+<span class="gp">&gt;&gt; </span>user.name
+<span class="gp">=&gt; </span><span class="s2">"The Dude"</span>
 </pre></div>
 </div>
 <h2 id='section-6-2'><span>6.2</span> 用户数据验证</h2>
@@ -401,19 +401,19 @@ created_at: <span class="s2">"2013-03-11 00:57:46"</span>, updated_at: <span cla
 
 <div class="codeblock has-caption" id="codeblock-6-4"><p class="caption"><span>代码 6.4：</span>几乎没什么内容的 User 模型测试文件</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
-  <span class="n">pending</span> <span class="s2">"add some examples to (or delete) </span><span class="si">#{</span><span class="bp">__FILE__</span><span class="si">}</span><span class="s2">"</span>
+  <span class="n">pending</span> <span class="s2">"add some examples to (or delete) </span><span class="si">#{</span><span class="kp">__FILE__</span><span class="si">}</span><span class="s2">"</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>上述代码使用了 <code>pending</code> 方法，提示我们应该编写一些真正有用的测试。我们可以准备一个空“测试数据库”然后运行 User 模型的测试看一下现在的情况：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
-*
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
+<span class="k">*</span>
 
 
-Finished in 0.01999 seconds
+Finished <span class="k">in </span>0.01999 seconds
 1 example, 0 failures, 1 pending
 
 Pending:
@@ -426,7 +426,7 @@ Pending:
 
 <p>这是我们第一次看到创建“测试数据库”的正确命令：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <p>这个命令会把“开发数据库” <code>db/development.sqlite3</code> 中的数据模型复制到“测试数据库” <code>db/test.sqlite3</code> 中。（执行迁移后很多人经常都会忘记执行这个 Rake 任务。而且，“测试数据库”经常会损坏，需要还原。如果测试出现了莫名其妙的问题，可以执行 <code>rake test:prepare</code> 看能否解决。）</p>
@@ -437,7 +437,7 @@ Pending:
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
-  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span> <span class="p">}</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
 
@@ -461,23 +461,23 @@ Pending:
 </div>
 <p>其实，这两个测试用例使用的是 Ruby 的 <code>respond_to?</code> 方法，这个方法可以接受一个 Symbol 参数，如果对象可以响应指定的方法或属性就返回 <code>true</code>，否则返回 <code>false</code>：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console --sandbox
-&gt;&gt; <span class="nv">user</span> <span class="o">=</span> User.new
-&gt;&gt; user.respond_to?<span class="o">(</span>:name<span class="o">)</span>
-<span class="o">=</span>&gt; <span class="nb">true</span>
-&gt;&gt; user.respond_to?<span class="o">(</span>:foobar<span class="o">)</span>
-<span class="o">=</span>&gt; <span class="nb">false</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console --sandbox
+<span class="gp">&gt;&gt; </span>user <span class="o">=</span> User.new
+<span class="gp">&gt;&gt; </span>user.respond_to?<span class="o">(</span>:name<span class="o">)</span>
+<span class="gp">=&gt; </span><span class="nb">true</span>
+<span class="gp">&gt;&gt; </span>user.respond_to?<span class="o">(</span>:foobar<span class="o">)</span>
+<span class="gp">=&gt; </span><span class="nb">false</span>
 </pre></div>
 </div>
 <p>（在 <a href="chapter4.html#section-4-2-3">4.2.3 节</a>中介绍过，Ruby 使用问号标明返回值是布尔值的方法。）这些测试使用了 RSpec 关于布尔值的约定，所以如下的代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span><span class="p">.</span><span class="nf">respond_to?</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>在 RSpec 中可以写成</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="s2">"should respond to 'name'"</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+  <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">).</span><span class="nf">to</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -490,7 +490,7 @@ Pending:
 
 <p>因为我们前面已经执行 <code>rake test:prepare</code> 命令准备好了“测试数据库”，所以测试应该是通过的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-6-2-2'><span>6.2.2</span> 验证存在性</h3>
@@ -503,31 +503,31 @@ Pending:
 <p>验证 <code>name</code> 属性是否存在的方法是使用 <code>validates</code> 方法，传入 <code>presence: true</code> 参数，如代码 6.6 所示。参数 <code>presence: true</code> 是只有一个元素的可选 Hash 参数。我们在 <a href="chapter4.html#section-4-3-4">4.3.4 节</a>中介绍过，如果方法的最后一个参数是 Hash 的话，可以省略 Hash 的花括号。（如 <a href="chapter5.html#section-5-1-1">5.1.1 节</a>中提到的，这样的可选 Hash 在 Rails 中很普遍。）</p>
 
 <div class="codeblock has-caption" id="codeblock-6-6"><p class="caption"><span>代码 6.6：</span>验证 <code>name</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>代码 6.6 看起来很神奇，其实 <code>validates</code> 只不过是一个方法而已。加上括号后等效的代码如下：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
+  <span class="n">validates</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>下面在控制台中看一下，为 User 模型添加这个验证之后的效果：<sup class="footnote" id="fnref-6-9"><a href="#fn-6-9" rel="footnote">10</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console --sandbox
-&gt;&gt; <span class="nv">user</span> <span class="o">=</span> User.new<span class="o">(</span>name: <span class="s2">""</span>, email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
-&gt;&gt; user.save
-<span class="o">=</span>&gt; <span class="nb">false</span>
-&gt;&gt; user.valid?
-<span class="o">=</span>&gt; <span class="nb">false</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console --sandbox
+<span class="gp">&gt;&gt; </span>user <span class="o">=</span> User.new<span class="o">(</span>name: <span class="s2">""</span>, email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
+<span class="gp">&gt;&gt; </span>user.save
+<span class="gp">=&gt; </span><span class="nb">false</span>
+<span class="gp">&gt;&gt; </span>user.valid?
+<span class="gp">=&gt; </span><span class="nb">false</span>
 </pre></div>
 </div>
 <p><code>user.save</code> 的返回值是 <code>false</code>，说明存储失败了。最后一个命令使用了 <code>valid?</code> 方法，如果对象没有通过任意一个验证就会返回 <code>false</code>，如果全部验证都通过了则返回 <code>true</code>。这个例子只有一个验证，所以我们知道是哪个验证失败了，不过看一下失败的提示信息还是会有点收获的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.errors.full_messages
-<span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"Name can't be blank"</span><span class="o">]</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.errors.full_messages
+<span class="gp">=&gt; </span><span class="o">[</span><span class="s2">"Name can't be blank"</span><span class="o">]</span>
 </pre></div>
 </div>
 <p>（错误提示信息暗示了 Rails 中属性存在性验证使用的是 <code>blank?</code> 方法，在 <a href="chapter4.html#section-4-4-3">4.4.3 节</a>的末尾用过这个方法。）</p>
@@ -546,7 +546,7 @@ Pending:
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -557,7 +557,7 @@ Pending:
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_valid</span> <span class="p">}</span>
 
   <span class="n">describe</span> <span class="s2">"when name is not present"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">" "</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="s2">" "</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -570,13 +570,13 @@ Pending:
 </div>
 <p>这是 <a href="chapter6.html#section-6-2-1">6.2.1 节</a>中介绍的 RSpec 对布尔值约定的又一个实例：只要对象可以响应返回值为布尔值的方法 <code>foo?</code>，就有一个对应的 <code>be_foo</code> 可以在测试中使用。所以在本例中，我们可以把如下的测试</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span><span class="o">.</span><span class="n">valid?</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span><span class="p">.</span><span class="nf">valid?</span>
 </pre></div>
 </div>
 <p>写成</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="s2">"should be valid"</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_valid</span>
+  <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_valid</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -588,7 +588,7 @@ Pending:
 <p>第二个测试用例先把用户的名字设为不合法的值（空格），然后测试 <code>@user</code> 对象是否是不合法的：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"when name is not present"</span> <span class="k">do</span>
-  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">" "</span> <span class="p">}</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="s2">" "</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
@@ -597,14 +597,14 @@ Pending:
 
 <p>现在你可以看一下测试是否是失败的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
 ...F
 4 examples, 1 failure
 </pre></div>
 </div>
 <p>现在去掉验证代码前的注释（把代码 6.7 变回代码 6.6），测试就可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
 ...
 4 examples, 0 failures
 </pre></div>
@@ -616,13 +616,13 @@ Pending:
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"when email is not present"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s2">" "</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="s2">" "</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -631,8 +631,8 @@ Pending:
 <p>验证的实现几乎也一样，如代码 6.10 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-10"><p class="caption"><span>代码 6.10：</span>验证 <code>name</code> 和 <code>email</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -649,30 +649,30 @@ Pending:
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"when name is too long"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">51</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">51</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
 </pre></div>
 </div>
 <p>为了方便，在代码 6.11 中我们使用字符串连乘生成了一个有 51 个字符的字符串。在控制台中可以看到连乘是什么：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="s2">"a"</span> * <span class="nv">51</span>
-<span class="o">=</span>&gt; <span class="s2">"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"</span>
-&gt;&gt; <span class="o">(</span><span class="s2">"a"</span> * 51<span class="o">)</span>.length
-<span class="o">=</span>&gt; 51
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span><span class="s2">"a"</span> <span class="k">*</span> 51
+<span class="gp">=&gt; </span><span class="s2">"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"</span>
+<span class="gp">&gt;&gt; </span><span class="o">(</span><span class="s2">"a"</span> <span class="k">*</span> 51<span class="o">)</span>.length
+<span class="gp">=&gt; </span>51
 </pre></div>
 </div>
 <p>代码 6.11 中的测试应该会失败。为了让测试通过，我们要知道怎么使用限制长度的参数 <code>:length</code>，以及限制上限的 <code>:maximum</code> 参数。验证相关的代码如代码 6.12 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-12"><p class="caption"><span>代码 6.12：</span>为 <code>name</code> 属性添加长度验证</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -685,13 +685,13 @@ Pending:
 
 <p>这里我们用到的测试和验证不是十全十美的，只是刚刚好可以接受大多数的合法 Email 地址，并拒绝大多数不合法的 Email 地址。我们会先对一些合法的 Email 集合和不合法的 Email 集合进行测试。我们使用 <code>%w[]</code> 来创建集合，集合中的元素都是字符串形式，如下面的控制台会话所示：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; %w<span class="o">[</span>foo bar baz<span class="o">]</span>
-<span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"foo"</span>, <span class="s2">"bar"</span>, <span class="s2">"baz"</span><span class="o">]</span>
-&gt;&gt; <span class="nv">addresses</span> <span class="o">=</span> %w<span class="o">[</span>user@foo.COM THE_US-ER@foo.bar.org first.last@foo.jp<span class="o">]</span>
-<span class="o">=</span>&gt; <span class="o">[</span><span class="s2">"user@foo.COM"</span>, <span class="s2">"THE_US-ER@foo.bar.org"</span>, <span class="s2">"first.last@foo.jp"</span><span class="o">]</span>
-&gt;&gt; addresses.each <span class="k">do</span> <span class="p">|</span>address<span class="p">|</span>
-?&gt; puts address
-&gt;&gt; end
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>%w[foo bar baz]
+<span class="gp">=&gt; </span><span class="o">[</span><span class="s2">"foo"</span>, <span class="s2">"bar"</span>, <span class="s2">"baz"</span><span class="o">]</span>
+<span class="gp">&gt;&gt; </span>addresses <span class="o">=</span> %w[user@foo.COM THE_US-ER@foo.bar.org first.last@foo.jp]
+<span class="gp">=&gt; </span><span class="o">[</span><span class="s2">"user@foo.COM"</span>, <span class="s2">"THE_US-ER@foo.bar.org"</span>, <span class="s2">"first.last@foo.jp"</span><span class="o">]</span>
+<span class="gp">&gt;&gt; </span>addresses.each <span class="k">do</span> |address|
+<span class="gp">?&gt; </span>puts address
+<span class="gp">&gt;&gt; </span>end
 user@foo.COM
 THE_US-ER@foo.bar.org
 first.last@foo.jp
@@ -704,18 +704,18 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"when email format is invalid"</span> <span class="k">do</span>
     <span class="n">it</span> <span class="s2">"should be invalid"</span> <span class="k">do</span>
-      <span class="n">addresses</span> <span class="o">=</span> <span class="sx">%w[user@foo,com user_at_foo.org example.user@foo.</span>
-<span class="sx">                     foo@bar_baz.com foo@bar+baz.com]</span>
-      <span class="n">addresses</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">invalid_address</span><span class="o">|</span>
-        <span class="vi">@user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">invalid_address</span>
-        <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_valid</span>
+      <span class="n">addresses</span> <span class="o">=</span> <span class="sx">%w[user@foo,com user_at_foo.org example.user@foo.
+                     foo@bar_baz.com foo@bar+baz.com]</span>
+      <span class="n">addresses</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">invalid_address</span><span class="o">|</span>
+        <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">invalid_address</span>
+        <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">be_valid</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -723,9 +723,9 @@ first.last@foo.jp
   <span class="n">describe</span> <span class="s2">"when email format is valid"</span> <span class="k">do</span>
     <span class="n">it</span> <span class="s2">"should be valid"</span> <span class="k">do</span>
       <span class="n">addresses</span> <span class="o">=</span> <span class="sx">%w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]</span>
-      <span class="n">addresses</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">valid_address</span><span class="o">|</span>
-        <span class="vi">@user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">valid_address</span>
-        <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_valid</span>
+      <span class="n">addresses</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">valid_address</span><span class="o">|</span>
+        <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">valid_address</span>
+        <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_valid</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -737,16 +737,16 @@ first.last@foo.jp
 <p>在应用程序中，我们会使用正则表达式定义要验证的 Email 格式，然后通过 <code>validates</code> 方法的 <code>:format</code> 参数指定合法的格式（参见代码 6.14）。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-14"><p class="caption"><span>代码 6.14：</span>使用正则表达式验证 Email 格式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with</span><span class="p">:</span> <span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>我们把这个正则表达式定义为常量 <code>VALID_EMAIL_REGEX</code>，Ruby 中的常量都是以大写字母开头的。</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
-<span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with</span><span class="p">:</span> <span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
+<span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>使用上面的代码可以确保只有匹配这个正则表达式的 Email 地址才是合法的。（因为 <code>VALID_EMAIL_REGEX</code> 以大写字母开头，是个常量，所以其值是不能改变的。）</p>
@@ -799,15 +799,15 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"when email address is already taken"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
-      <span class="n">user_with_same_email</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">dup</span>
-      <span class="n">user_with_same_email</span><span class="o">.</span><span class="n">save</span>
+      <span class="n">user_with_same_email</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">dup</span>
+      <span class="n">user_with_same_email</span><span class="p">.</span><span class="nf">save</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
@@ -823,7 +823,7 @@ first.last@foo.jp
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with</span><span class="p">:</span> <span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span> <span class="ss">uniqueness</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span> <span class="ss">uniqueness: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -834,16 +834,16 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"when email address is already taken"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
-      <span class="n">user_with_same_email</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">dup</span>
-      <span class="n">user_with_same_email</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">upcase</span>
-      <span class="n">user_with_same_email</span><span class="o">.</span><span class="n">save</span>
+      <span class="n">user_with_same_email</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">dup</span>
+      <span class="n">user_with_same_email</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">.</span><span class="nf">upcase</span>
+      <span class="n">user_with_same_email</span><span class="p">.</span><span class="nf">save</span>
     <span class="k">end</span>
 
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
@@ -853,14 +853,14 @@ first.last@foo.jp
 </div>
 <p>上面的代码，在字符串上调用了 <code>upcase</code> 方法（参照 <a href="chapter4.html#section-4-3-2">4.3.2 节</a>）。这个测试和前面对相同 Email 地址的测试类似，只是把 Email 地址转换成全部大写字母的形式。如果觉得太抽象，那就在控制台中实操一下吧：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console --sandbox
-&gt;&gt; <span class="nv">user</span> <span class="o">=</span> User.create<span class="o">(</span>name: <span class="s2">"Example User"</span>, email: <span class="s2">"user@example.com"</span><span class="o">)</span>
-&gt;&gt; user.email.upcase
-<span class="o">=</span>&gt; <span class="s2">"USER@EXAMPLE.COM"</span>
-&gt;&gt; <span class="nv">user_with_same_email</span> <span class="o">=</span> user.dup
-&gt;&gt; user_with_same_email.email <span class="o">=</span> user.email.upcase
-&gt;&gt; user_with_same_email.valid?
-<span class="o">=</span>&gt; <span class="nb">true</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console --sandbox
+<span class="gp">&gt;&gt; </span>user <span class="o">=</span> User.create<span class="o">(</span>name: <span class="s2">"Example User"</span>, email: <span class="s2">"user@example.com"</span><span class="o">)</span>
+<span class="gp">&gt;&gt; </span>user.email.upcase
+<span class="gp">=&gt; </span><span class="s2">"USER@EXAMPLE.COM"</span>
+<span class="gp">&gt;&gt; </span>user_with_same_email <span class="o">=</span> user.dup
+<span class="gp">&gt;&gt; </span>user_with_same_email.email <span class="o">=</span> user.email.upcase
+<span class="gp">&gt;&gt; </span>user_with_same_email.valid?
+<span class="gp">=&gt; </span><span class="nb">true</span>
 </pre></div>
 </div>
 <p>现在 <code>user_with_same_email.valid?</code> 的返回值是 <code>true</code>，因为唯一性验证还是区分大小写的。我们希望得到的结果是 <code>false</code>。幸好 <code>uniqueness</code> 可以指定 <code>:case_sensitive</code> 选项，正好可以解决这个问题，如代码 6.18 所示。</p>
@@ -869,9 +869,9 @@ first.last@foo.jp
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
-                    <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with</span><span class="p">:</span> <span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
-                    <span class="ss">uniqueness</span><span class="p">:</span> <span class="p">{</span> <span class="n">case_sensitive</span><span class="p">:</span> <span class="kp">false</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
+                    <span class="ss">uniqueness: </span><span class="p">{</span> <span class="ss">case_sensitive: </span><span class="kp">false</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -892,14 +892,14 @@ first.last@foo.jp
 
 <p>为 <code>email</code> 列建立索引就要改变数据库模型，在 Rails 中可以通过迁移实现（参见 <a href="chapter6.html#section-6-1-1">6.1.1 节</a>）。在 <a href="chapter6.html#section-6-1-1">6.1.1 节</a> 中我们看到，生成 User 模型时会自动创建一个迁移文件（参见代码 6.2），现在我们是要改变已经存在的模型结构，那么使用 <code>migration</code> 命令直接创建迁移文件就可以了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate migration add_index_to_users_email
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate migration add_index_to_users_email
 </pre></div>
 </div>
 <p>和 User 模型的迁移不一样，实现 Email 唯一性的迁移操作没有事先定义的模板可用，所以我们要手动把代码 6.19 中的内容写入迁移文件。<sup class="footnote" id="fnref-6-15"><a href="#fn-6-15" rel="footnote">16</a></sup></p>
 
 <div class="codeblock has-caption" id="codeblock-6-19"><p class="caption"><span>代码 6.19：</span>确保 Email 唯一性的迁移文件</p><p class="file"><code>db/migrate/[timestamp]_add_index_to_users_email.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddIndexToUsersEmail</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">add_index</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">unique</span><span class="p">:</span> <span class="kp">true</span>
+    <span class="n">add_index</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -908,18 +908,18 @@ first.last@foo.jp
 
 <p>然后执行数据库迁移操作：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
 </pre></div>
 </div>
 <p>（如果失败的话，就退出所有打开的控制台沙盒会话，这些会话可能会锁定数据库，拒绝进行迁移操作。）如果你想看一下操作执行后的效果，请打开 <code>db/schema.rb</code> 文件，会发现多了一行：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">add_index</span> <span class="s2">"users"</span><span class="p">,</span> <span class="o">[</span><span class="s2">"email"</span><span class="o">]</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"index_users_on_email"</span><span class="p">,</span> <span class="ss">unique</span><span class="p">:</span> <span class="kp">true</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">add_index</span> <span class="s2">"users"</span><span class="p">,</span> <span class="o">[</span><span class="s2">"email"</span><span class="o">]</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"index_users_on_email"</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
 </pre></div>
 </div>
 <p>为了保证 Email 地址的唯一性，还要做些修改：存入数据库之前把 Email 地址转换成全小写字母的形式，因为不是所有数据库适配器的索引都是区分大小写的。<sup class="footnote" id="fnref-6-16"><a href="#fn-6-16" rel="footnote">17</a></sup> 为此，我们要使用回调函数（callback），在 Active Record 对象生命周期的特定时刻调用（参阅 Rails API 中关于回调函数的文档）。本例中，我们要使用的回调函数是 <code>before_save</code>，在用户存入数据库之前强行把 Email 地址转换成全小写字母形式，如代码 6.20 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-20"><p class="caption"><span>代码 6.20：</span>把 Email 地址转换成全小写形式，确保唯一性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
+  <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase</span> <span class="p">}</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -971,7 +971,7 @@ first.last@foo.jp
 </div>
 <p>然后运行 <code>bundle install</code> 安装：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle install
 </pre></div>
 </div>
 <p>既然我们规划的 <code>users</code> 表中有一列是 <code>password_digest</code>，那么用户对象就应该可以响应 <code>password_digest</code> 方法，按照这个思路我们就可以编写出如代码 6.22 所示的测试。</p>
@@ -981,7 +981,7 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -997,7 +997,7 @@ first.last@foo.jp
 </div>
 <p>为了让测试通过，首先要生成一个合适的迁移文件，添加 <code>password_digest</code> 列：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate migration add_password_digest_to_users password_digest:string
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate migration add_password_digest_to_users password_digest:string
 </pre></div>
 </div>
 <p>上述命令的第一个参数是迁移的名字，第二个参数指明要添加列的名字和数据类型。（可以和代码 6.1 中生成 <code>users</code> 表的代码对比一下。）迁移的名字可以随便起，但一般会以 <code>_to_users</code> 结尾，Rails 会自动生成一个向 <code>users</code> 表中增加列的迁移。我们还提供了第二个参数，Rails 就得到了足够的信息，会为我们生成整个迁移文件，如代码 6.23 所示。</p>
@@ -1013,9 +1013,9 @@ first.last@foo.jp
 
 <p>在开发数据库中执行迁移操作，再准备好测试数据库，代码 6.22 中的测试就可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-6-3-2'><span>6.3.2</span> 密码和密码确认</h3>
@@ -1030,10 +1030,10 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
-                     <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                     <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
-                     <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
+                     <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                     <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span>
+                     <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -1053,10 +1053,10 @@ first.last@foo.jp
 <p>注意，我们在 <code>User.new</code> 的初始化参数 Hash 中加入了 <code>password</code> 和 <code>password_confirmation</code>：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">before</span> <span class="k">do</span>
-  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
-                   <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                   <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span>
-                   <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
+  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
+                   <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                   <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span>
+                   <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1064,8 +1064,8 @@ first.last@foo.jp
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"when password is not present"</span> <span class="k">do</span>
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                     <span class="ss">password</span><span class="p">:</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">" "</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                     <span class="ss">password: </span><span class="s2">" "</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">" "</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
 <span class="k">end</span>
@@ -1076,7 +1076,7 @@ first.last@foo.jp
 <p>我们还要确保密码和密码确认的值是相同的，这种情况 <code>it { should be_valid }</code> 已经覆盖了。那么再编写针对二者不同时的测试就可以了：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"when password doesn't match confirmation"</span> <span class="k">do</span>
-  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">password_confirmation</span> <span class="o">=</span> <span class="s2">"mismatch"</span> <span class="p">}</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password_confirmation</span> <span class="o">=</span> <span class="s2">"mismatch"</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
@@ -1088,8 +1088,8 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                     <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                     <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -1106,14 +1106,14 @@ first.last@foo.jp
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"when password is not present"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
-      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                       <span class="ss">password</span><span class="p">:</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">" "</span><span class="p">)</span>
+      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                       <span class="ss">password: </span><span class="s2">" "</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">" "</span><span class="p">)</span>
     <span class="k">end</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"when password doesn't match confirmation"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">password_confirmation</span> <span class="o">=</span> <span class="s2">"mismatch"</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password_confirmation</span> <span class="o">=</span> <span class="s2">"mismatch"</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1146,12 +1146,12 @@ first.last@foo.jp
 
 <p>第一步很简单，如 <a href="chapter6.html#section-6-1-4">6.1.4 节</a>中介绍过的，我们可以调用 <code>find_by</code> 方法，通过 Email 地址查找用户记录：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">email</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>接下来的第二步，可以使用 <code>authenticate</code> 方法验证用户的密码。在<a href="chapter8.html">第 8 章</a>中会使用类似下面的代码获取当前登录的用户：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>如果提交的密码和用户的密码一致，上述代码就会返回一个用户对象，否则返回 <code>false</code>。</p>
@@ -1164,34 +1164,34 @@ first.last@foo.jp
 <p>然后测试密码是否正确：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"return value of authenticate method"</span> <span class="k">do</span>
-  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span> <span class="p">}</span>
-  <span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span> <span class="p">}</span>
 
   <span class="n">describe</span> <span class="s2">"with valid password"</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="n">found_user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">password</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="n">found_user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">password</span><span class="p">)</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"with invalid password"</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:user_for_invalid_password</span><span class="p">)</span> <span class="p">{</span> <span class="n">found_user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="s2">"invalid"</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user_for_invalid_password</span><span class="p">)</span> <span class="p">{</span> <span class="n">found_user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="s2">"invalid"</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">eq</span> <span class="n">user_for_invalid_password</span> <span class="p">}</span>
-    <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user_for_invalid_password</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_false</span> <span class="p">}</span>
+    <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user_for_invalid_password</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_false</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p><code>before</code> 块中的代码先把用户存入数据库，然后在 <code>let</code> 块中调用 <code>find_by</code> 方法取出用户：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>在前几章的练习题中用过很多次 <code>let</code> 了，但这是第一次在正文中出现。<a href="chapter6.html#aside-6-3">旁注 6.3</a>较为深入的介绍了 <code>let</code> 方法。接下来的两个 <code>describe</code> 块测试了 <code>@user</code> 和 <code>found_user</code> 是否为同一个用户。测试代码中使用 <code>eq</code> 测试对象是否相同（会调用 <code>==</code> 测试是否相同，参见 <a href="chapter4.html#section-4-3-1">4.3.1 节</a>）。注意，下面的测试中</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"with invalid password"</span> <span class="k">do</span>
-  <span class="n">let</span><span class="p">(</span><span class="ss">:user_for_invalid_password</span><span class="p">)</span> <span class="p">{</span> <span class="n">found_user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="s2">"invalid"</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:user_for_invalid_password</span><span class="p">)</span> <span class="p">{</span> <span class="n">found_user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="s2">"invalid"</span><span class="p">)</span> <span class="p">}</span>
 
   <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">eq</span> <span class="n">user_for_invalid_password</span> <span class="p">}</span>
-  <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user_for_invalid_password</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_false</span> <span class="p">}</span>
+  <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user_for_invalid_password</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_false</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1202,7 +1202,7 @@ first.last@foo.jp
 
   <p>我们可以使用 RSpec 提供的 <code>let</code> 方法便捷的在测试中定义局部变量。<code>let</code> 方法的句法看起来有点怪，不过和变量赋值语句的作用是一样的。<code>let</code> 方法的参数是一个 Symbol，后面可以跟着一个块，块中代码的返回值会赋给名为 Symbol 代表的局部变量。也就是说：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span> <span class="p">}</span>
 </pre></div>
 </div>
   <p>定义了一个名为 <code>found_user</code> 的变量，其值等于 <code>find_by</code> 的返回值。在这个测试用例的任何一个 <code>before</code> 或 <code>it</code> 块中都可以使用这个变量。使用 <code>let</code> 方法定义变量的一个好处是，它可以记住（memoize）变量的值。（memoize 是个行业术语，不是“memorize”的误拼写。）对上面的代码而言，因为 <code>let</code> 的备忘功能，<code>found_user</code> 的值会被记住，因此不管调用多少次 User 模型测试，<code>find_by</code> 方法只会运行一次。</p>
@@ -1212,7 +1212,7 @@ first.last@foo.jp
 <p>最后，安全起见，我们还要编写一个密码长度测试，大于 6 个字符才能通过：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"with a password that's too short"</span> <span class="k">do</span>
-  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">password_confirmation</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">5</span> <span class="p">}</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password_confirmation</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">5</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_invalid</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
@@ -1224,8 +1224,8 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                     <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                     <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -1237,23 +1237,23 @@ first.last@foo.jp
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"with a password that's too short"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">password_confirmation</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">5</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password_confirmation</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">5</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_invalid</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="n">describe</span> <span class="s2">"return value of authenticate method"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span> <span class="p">}</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:found_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="n">describe</span> <span class="s2">"with valid password"</span> <span class="k">do</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="n">found_user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">password</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="n">found_user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">password</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">end</span>
 
     <span class="n">describe</span> <span class="s2">"with invalid password"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user_for_invalid_password</span><span class="p">)</span> <span class="p">{</span> <span class="n">found_user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="s2">"invalid"</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user_for_invalid_password</span><span class="p">)</span> <span class="p">{</span> <span class="n">found_user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="s2">"invalid"</span><span class="p">)</span> <span class="p">}</span>
 
       <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">eq</span> <span class="n">user_for_invalid_password</span> <span class="p">}</span>
-      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user_for_invalid_password</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_false</span> <span class="p">}</span>
+      <span class="n">specify</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="n">user_for_invalid_password</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_false</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1268,7 +1268,7 @@ first.last@foo.jp
 
 <p>首先，我们要为密码添加一个长度验证，使用和代码 6.12 中用过的 <code>:maximum</code> 类似的 <code>:minimum</code>：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">minimum</span><span class="p">:</span> <span class="mi">6</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">minimum: </span><span class="mi">6</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>（密码和密码确认的存在性验证都在 <code>has_secure_password</code> 方法中实现了。）</p>
@@ -1283,7 +1283,7 @@ first.last@foo.jp
 <p>（如果你觉得 <code>has_secure_password</code> 方法太过神奇，不妨阅读一下 <code>secure_password.rb</code> 文件中的代码，里面有很多注释，代码本身也不难理解。这段代码中有这么几行：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates_confirmation_of</span> <span class="ss">:password</span><span class="p">,</span>
-                          <span class="k">if</span><span class="p">:</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">present?</span> <span class="p">}</span>
+                          <span class="k">if</span><span class="p">:</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="p">.</span><span class="nf">password</span><span class="p">.</span><span class="nf">present?</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>这行代码会自动创建 <code>password_confirmation</code> 属性（<a href="http://api.rubyonrails.org/v4.0.0/classes/ActiveModel/Validations/HelperMethods.html#method-i-validates_confirmation_of">Rails API</a> 中有说明）。这段代码还有针对 <code>password_digest</code> 属性的数据验证。）</p>
@@ -1291,30 +1291,30 @@ first.last@foo.jp
 <p>把以上的代码放在一起就得到了如代码 6.29 所示的 User 模型，同时也实现了安全的密码机制。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-29"><p class="caption"><span>代码 6.29：</span>最终实现的安全的密码机制</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
+  <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span>   <span class="kp">true</span><span class="p">,</span>
-                    <span class="nb">format</span><span class="p">:</span>     <span class="p">{</span> <span class="ss">with</span><span class="p">:</span> <span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
-                    <span class="ss">uniqueness</span><span class="p">:</span> <span class="p">{</span> <span class="n">case_sensitive</span><span class="p">:</span> <span class="kp">false</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence:   </span><span class="kp">true</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="p">:</span>     <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
+                    <span class="ss">uniqueness: </span><span class="p">{</span> <span class="ss">case_sensitive: </span><span class="kp">false</span> <span class="p">}</span>
   <span class="n">has_secure_password</span>
-  <span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">minimum</span><span class="p">:</span> <span class="mi">6</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">minimum: </span><span class="mi">6</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>现在你可以看一下测试是否可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>注意：如果看到如下的弃用提示：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="o">[</span>deprecated<span class="o">]</span> I18n.enforce_available_locales will default to <span class="nb">true </span>in the future
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="o">[</span>deprecated] I18n.enforce_available_locales will default to <span class="nb">true </span><span class="k">in </span>the future
 </pre></div>
 </div>
 <p>请按照如下方式修改 <code>config/application.rb</code>：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">'../boot'</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'../boot'</span><span class="p">,</span> <span class="kp">__FILE__</span><span class="p">)</span>
 <span class="o">.</span>
 <span class="o">.</span>
 <span class="o">.</span>
@@ -1323,7 +1323,7 @@ first.last@foo.jp
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
-    <span class="no">I18n</span><span class="o">.</span><span class="n">enforce_available_locales</span> <span class="o">=</span> <span class="kp">true</span>
+    <span class="no">I18n</span><span class="p">.</span><span class="nf">enforce_available_locales</span> <span class="o">=</span> <span class="kp">true</span>
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
@@ -1338,10 +1338,10 @@ first.last@foo.jp
 
 <p>因为现在还不能在网页中注册（<a href="chapter7.html">第 7 章</a>会实现），我们要在控制台中手动创建新用户。和 <a href="chapter6.html#section-6-1-3">6.1.3 节</a>不一样，本节使用的不是沙盒模式下的控制台，因为我们真的要在数据库中保存一条记录：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; User.create<span class="o">(</span>name: <span class="s2">"Michael Hartl"</span>, email: <span class="s2">"mhartl@example.com"</span>,
-?&gt;             password: <span class="s2">"foobar"</span>, password_confirmation: <span class="s2">"foobar"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com", created_at: "2013-03-11 20:45:19", updated_at: "2013-03-11 20:45:19", password_digest: "$2a$10$kn4cQDJTzV76ZgDxOWk6Je9A0Ttn5sKNaGTEmT0jU7.n..."&gt;</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span>User.create<span class="o">(</span>name: <span class="s2">"Michael Hartl"</span>, email: <span class="s2">"mhartl@example.com"</span>,
+<span class="gp">?&gt;             </span>password: <span class="s2">"foobar"</span>, password_confirmation: <span class="s2">"foobar"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com", created_at: "2013-03-11 20:45:19", updated_at: "2013-03-11 20:45:19", password_digest: "$2a$10$kn4cQDJTzV76ZgDxOWk6Je9A0Ttn5sKNaGTEmT0jU7.n..."&gt;</span>
 </pre></div>
 </div>
 <p>在 SQLite 数据库浏览器中打开开发数据库（<code>db/development.sqlite3</code>），会发现上述命令执行后存入的记录（如图 6.6），各列对应了图 6.5 中数据模型相应的属性。</p>
@@ -1351,17 +1351,17 @@ first.last@foo.jp
 </div>
 <p>再回到控制台中，读取 <code>password_digest</code> 属性的值，看一下代码 6.29 中 <code>has_secure_password</code> 方法的作用：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; <span class="nv">user</span> <span class="o">=</span> User.find_by<span class="o">(</span>email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
-&gt;&gt; user.password_digest
-<span class="o">=</span>&gt; <span class="s2">"$2a$10$kn4cQDJTzV76ZgDxOWk6Je9A0Ttn5sKNaGTEmT0jU7.ncBJ/60gHq"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user <span class="o">=</span> User.find_by<span class="o">(</span>email: <span class="s2">"mhartl@example.com"</span><span class="o">)</span>
+<span class="gp">&gt;&gt; </span>user.password_digest
+<span class="gp">=&gt; </span><span class="s2">"</span><span class="nv">$2a$10$kn4cQDJTzV76ZgDxOWk6Je9A0Ttn5sKNaGTEmT0jU7</span><span class="s2">.ncBJ/60gHq"</span>
 </pre></div>
 </div>
 <p>这是初始化用户时提供的原始密码（<code>"foobar"</code>）对应的加密形式。下面再来验证一下 <code>authenticate</code> 方法是否可以正常使用，先提供不正确的密码，再提供正确的密码，结果如下：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; user.authenticate<span class="o">(</span><span class="s2">"invalid"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="nb">false</span>
-&gt;&gt; user.authenticate<span class="o">(</span><span class="s2">"foobar"</span><span class="o">)</span>
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com", created_at: "2013-03-11 20:45:19", updated_at: "2013-03-11 20:45:19", password_digest: "$2a$10$kn4cQDJTzV76ZgDxOWk6Je9A0Ttn5sKNaGTEmT0jU7.n..."&gt;</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>user.authenticate<span class="o">(</span><span class="s2">"invalid"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="nb">false</span>
+<span class="gp">&gt;&gt; </span>user.authenticate<span class="o">(</span><span class="s2">"foobar"</span><span class="o">)</span>
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "mhartl@example.com", created_at: "2013-03-11 20:45:19", updated_at: "2013-03-11 20:45:19", password_digest: "$2a$10$kn4cQDJTzV76ZgDxOWk6Je9A0Ttn5sKNaGTEmT0jU7.n..."&gt;</span>
 </pre></div>
 </div>
 <p>如代码 6.28 中的测试需求，如果密码不正确，<code>authenticate</code> 方法会返回 <code>false</code>；如果密码正确，则会返回对应的用户对象。</p>
@@ -1375,14 +1375,14 @@ first.last@foo.jp
 
 <p>如果你使用 Git，而且一直都没做提交的话，现在最好提交一下本章所做的改动：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Make a basic User model (including secure passwords)"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Make a basic User model (including secure passwords)"</span>
 </pre></div>
 </div>
 <p>然后合并到主分支中：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git merge modeling-users
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git merge modeling-users
 </pre></div>
 </div>
 <h2 id='section-6-5'><span>6.5</span> 练习</h2>
@@ -1416,9 +1416,9 @@ first.last@foo.jp
     <span class="n">let</span><span class="p">(</span><span class="ss">:mixed_case_email</span><span class="p">)</span> <span class="p">{</span> <span class="s2">"Foo@ExAMPle.CoM"</span> <span class="p">}</span>
 
     <span class="n">it</span> <span class="s2">"should be saved as all lower-case"</span> <span class="k">do</span>
-      <span class="vi">@user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">mixed_case_email</span>
-      <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
-      <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="n">mixed_case_email</span><span class="o">.</span><span class="n">downcase</span>
+      <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">mixed_case_email</span>
+      <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
+      <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">reload</span><span class="p">.</span><span class="nf">email</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="n">mixed_case_email</span><span class="p">.</span><span class="nf">downcase</span>
     <span class="k">end</span>
   <span class="k">end</span>
   <span class="o">.</span>
@@ -1429,7 +1429,7 @@ first.last@foo.jp
 </div>
 <div class="codeblock has-caption" id="codeblock-6-31"><p class="caption"><span>代码 6.31：</span><code>before_save</code> 回调函数的另一种写法</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_secure_password</span>
-  <span class="n">before_save</span> <span class="p">{</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase!</span> <span class="p">}</span>
+  <span class="n">before_save</span> <span class="p">{</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase!</span> <span class="p">}</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1441,8 +1441,8 @@ first.last@foo.jp
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with</span><span class="p">:</span> <span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
-                    <span class="ss">uniqueness</span><span class="p">:</span> <span class="p">{</span> <span class="n">case_sensitive</span><span class="p">:</span> <span class="kp">false</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
+                    <span class="ss">uniqueness: </span><span class="p">{</span> <span class="ss">case_sensitive: </span><span class="kp">false</span> <span class="p">}</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>

@@ -86,7 +86,7 @@
 
 <p>和之前的章节一样，我们会在一个新的从分支中工作，本章结束后再将其合并到主分支中：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git checkout -b sign-in-out
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git checkout -b sign-in-out
 </pre></div>
 </div>
 <h2 id='section-8-1'><span>8.1</span> session 和登录失败</h2>
@@ -101,8 +101,8 @@
 
 <p>登录和退出功能其实是由 Sessions 控制器中相应的动作处理的，登录表单在 <code>new</code> 动作中处理（本节的内容），登录的过程就是向 <code>create</code> 动作发送 <code>POST</code> 请求（<a href="chapter8.html#section-8-1">8.1 节</a>和 <a href="chapter8.html#section-8-2">8.2 节</a>），退出则是向 <code>destroy</code> 动作发送 <code>DELETE</code> 请求（<a href="chapter8.html#section-8-2-6">8.2.6 节</a>）。（HTTP 请求和 REST 动作之间的对应关系可以查看<a href="chapter7.html#table-7-1">表格 7.1</a>。）首先，我们要生成 Sessions 控制器，以及验证系统所需的集成测试：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate controller Sessions --no-test-framework
-<span class="nv">$ </span>rails generate integration_test authentication_pages
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate controller Sessions --no-test-framework
+<span class="gp">$ </span>rails generate integration_test authentication_pages
 </pre></div>
 </div>
 <p>参照 <a href="chapter7.html#section-7-2">7.2 节</a>中的“注册”页面，我们要创建一个登录表单，用来生成新的 session。注册表单的构思图如图 8.1 所示。</p>
@@ -129,23 +129,23 @@
 </div>
 <p>现在测试是失败的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>要让代码 8.1 中的测试通过，首先，我们要为 Sessions 资源设置路由，还要修改“登录”页面具名路由的名称，将其映射到 Sessions 控制器的 <code>new</code> 动作上。和 Users 资源一样，我们可以使用 <code>resources</code> 方法设置标准的 REST 动作：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
 </pre></div>
 </div>
 <p>因为我们没必要显示或编辑 session，所以我们对动作的种类做了限制，为 <code>resources</code> 方法指定了 <code>:only</code> 选项，只创建 <code>new</code>、<code>create</code> 和 <code>destroy</code> 动作。最终的结果，包括登录和退出具名路由的设置，如代码 8.2 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-2"><p class="caption"><span>代码 8.2：</span>设置 session 相关的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-8-2"><p class="caption"><span>代码 8.2：</span>设置 session 相关的路由</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span>
-  <span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
-  <span class="n">root</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'static_pages#home'</span>
-  <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to</span><span class="p">:</span> <span class="s1">'users#new'</span><span class="p">,</span>            <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/signin'</span><span class="p">,</span>  <span class="ss">to</span><span class="p">:</span> <span class="s1">'sessions#new'</span><span class="p">,</span>         <span class="ss">via</span><span class="p">:</span> <span class="s1">'get'</span>
-  <span class="n">match</span> <span class="s1">'/signout'</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">'sessions#destroy'</span><span class="p">,</span>     <span class="ss">via</span><span class="p">:</span> <span class="s1">'delete'</span>
+  <span class="n">resources</span> <span class="ss">:sessions</span><span class="p">,</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+  <span class="n">root</span> <span class="ss">to: </span><span class="s1">'static_pages#home'</span>
+  <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to: </span><span class="s1">'users#new'</span><span class="p">,</span>            <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/signin'</span><span class="p">,</span>  <span class="ss">to: </span><span class="s1">'sessions#new'</span><span class="p">,</span>         <span class="ss">via: </span><span class="s1">'get'</span>
+  <span class="n">match</span> <span class="s1">'/signout'</span><span class="p">,</span> <span class="ss">to: </span><span class="s1">'sessions#destroy'</span><span class="p">,</span>     <span class="ss">via: </span><span class="s1">'delete'</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -195,13 +195,13 @@
     </tr></tbody></table></div>
 <p>接下来还要创建“登录”页面的视图，因为“登录”页面的目的是创建新 session，所以创建的视图位于 <code>app/views/sessions/new.html.erb</code>。在视图中我们要显示网页的标题和一个一级标头，如代码 8.4 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-4"><p class="caption"><span>代码 8.4：</span>“登录”页面的视图</p><p class="file"><code>app/views/sessions/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Sign in"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Sign in&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-8-4"><p class="caption"><span>代码 8.4：</span>“登录”页面的视图</p><p class="file"><code>app/views/sessions/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Sign in"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Sign in<span class="nt">&lt;/h1&gt;</span>
 </pre></div>
 </div>
 <p>现在代码 8.1 中的测试应该可以通过了，接下来我们要编写登录表单。</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <h3 id='section-8-1-2'><span>8.1.2</span> 测试登录功能</h3>
@@ -219,7 +219,7 @@
 <p>这行代码使用了代码 7.32（在第 7 章的练习中）中用过的 <code>have_selector</code> 方法。<code>have_selector</code> 会检查页面中是否出现了指定的元素（例如，一个 HTML 标签，不过在 Capybara 2.0 中只会检查<strong>可见</strong>的元素）
 本例我们要查找的元素是：</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>div.alert.alert-error
+<div class="codeblock"><div class="highlight type-plaintext"><pre>div.alert.alert-error
 </pre></div>
 </div>
 <p>上面这行代码会寻找一个 <code>div</code> 标签。前面介绍过，这里的点号代表 CSS 中的 class（参见 <a href="chapter5.html#section-5-1-2">5.1.2 节</a>），你也许猜到了，这里我们要查找的是同时具有 <code>alert</code> 和 <code>alert-error</code> class 的 <code>div</code> 元素，如下：</p>
@@ -272,17 +272,17 @@
     <span class="o">.</span>
     <span class="o">.</span>
     <span class="n">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">before</span> <span class="k">do</span>
-        <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">upcase</span>
-        <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+        <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">.</span><span class="nf">upcase</span>
+        <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
         <span class="n">click_button</span> <span class="s2">"Sign in"</span>
       <span class="k">end</span>
 
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href</span><span class="p">:</span> <span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href: </span><span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -293,7 +293,7 @@
 </div>
 <p>在代码 8.6 中用到了 Capybara 提供的 <code>have_link</code> 方法，它的第一参数是链接文本，第二个参数是可选的 <code>:href</code>，指定链接的地址，因此如下的代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>确保了页面中有一个 <code>a</code> 元素，链接到指定的 URL 地址。这里我们要检测的是一个指向用户资料页面的链接。注意，我们调用 <code>upcase</code> 方法把用户的 Email 地址转换成了大写形式，确保在数据库中查询用户时不用担心大小写问题。</p>
@@ -303,46 +303,46 @@
 
 <p>写完测试之后，我们就可以创建登录表单了。在代码 7.17 中，注册表单使用了 <code>form_for</code> 帮助函数，并指定其参数为 <code>@user</code> 变量：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">.</span>
-<span class="x">.</span>
-<span class="x">.</span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+.
+.
+.
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>注册表单和登录表单的区别在于，程序中没有 Session 模型，因此也就没有类似 <code>@user</code> 的变量。也就是说，在构建登录表单时，我们要给 <code>form_for</code> 提供更多的信息。一般来说，如下的代码</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">form_for(@user)</span>
+<div class="codeblock"><div class="highlight type-erb"><pre>form_for(@user)
 </pre></div>
 </div>
 <p>Rails 会自动向 /users 地址发送 <code>POST</code> 请求。对于登录表单，我们则要明确的指定资源的名称以及相应的 URL 地址：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="x">form_for(:session, url: sessions_path)</span>
+<div class="codeblock"><div class="highlight type-erb"><pre>form_for(:session, url: sessions_path)
 </pre></div>
 </div>
 <p>（创建表单还有另一种方法，不用 <code>form_for</code>，而用 <code>form_tag</code>。<code>form_tag</code> 也是 Rails 程序常用的方法，不过换用 <code>form_tag</code> 之后就和注册表单有很多不同之处了，我现在是想使用相似的代码构建登录表单。使用 <code>form_tag</code> 构建登录表单会留作练习（参见 <a href="chapter8.html#section-8-5">8.5 节</a>）。）</p>
 
 <p>使用上述这种 <code>form_for</code> 形式，参照代码 7.17 中的注册表单，很容易的就能编写一个符合图 8.1 的登录表单，如代码 8.7 所示。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-7"><p class="caption"><span>代码 8.7：</span>注册表单的代码</p><p class="file"><code>app/views/sessions/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Sign in"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;h1&gt;Sign in&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-8-7"><p class="caption"><span>代码 8.7：</span>注册表单的代码</p><p class="file"><code>app/views/sessions/new.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Sign in"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;h1&gt;</span>Sign in<span class="nt">&lt;/h1&gt;</span>
 
-<span class="x">&lt;div class="row"&gt;</span>
-<span class="x">  &lt;div class="span6 offset3"&gt;</span>
-<span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="ss">:session</span><span class="p">,</span> <span class="ss">url</span><span class="p">:</span> <span class="n">sessions_path</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"span6 offset3"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="ss">:session</span><span class="p">,</span> <span class="ss">url: </span><span class="n">sessions_path</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:email</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:email</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:email</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:email</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:password</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">password_field</span> <span class="ss">:password</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">password_field</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
 
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">    </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 
-<span class="x">    &lt;p&gt;New user? </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up now!"</span><span class="p">,</span> <span class="n">signup_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/p&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/div&gt;</span>
+    <span class="nt">&lt;p&gt;</span>New user? <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up now!"</span><span class="p">,</span> <span class="n">signup_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>注意，为了访客的便利，我们还加入了到“注册”页面的链接。代码 8.7 中的登录表单效果如图 8.4 所示。</p>
@@ -395,17 +395,17 @@
 <p>仔细看一下图 8.5 中显示的调试信息，你会发现，如在 <a href="chapter8.html#section-8-1-3">8.1.3 节</a>末尾说过的，表单提交后会生成 <code>params</code> Hash，Email 和密码都在 <code>:session</code> 键中：</p>
 
 <div class="codeblock"><div class="highlight type-yaml"><pre><span class="nn">---</span>
-<span class="l-Scalar-Plain">session</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">email</span><span class="p-Indicator">:</span> <span class="s">''</span>
-  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="s">''</span>
-<span class="l-Scalar-Plain">commit</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Sign in</span>
-<span class="l-Scalar-Plain">action</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">create</span>
-<span class="l-Scalar-Plain">controller</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">sessions</span>
+<span class="s">session</span><span class="pi">:</span>
+  <span class="s">email</span><span class="pi">:</span> <span class="s1">'</span><span class="s">'</span>
+  <span class="s">password</span><span class="pi">:</span> <span class="s1">'</span><span class="s">'</span>
+<span class="s">commit</span><span class="pi">:</span> <span class="s">Sign in</span>
+<span class="s">action</span><span class="pi">:</span> <span class="s">create</span>
+<span class="s">controller</span><span class="pi">:</span> <span class="s">sessions</span>
 </pre></div>
 </div>
 <p>和注册表单类似，这些参数是一个嵌套的 Hash，在代码 4.6 中见过。<code>params</code> 包含了如下的嵌套 Hash：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="p">{</span> <span class="ss">session</span><span class="p">:</span> <span class="p">{</span> <span class="ss">password</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">""</span> <span class="p">}</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="p">{</span> <span class="ss">session: </span><span class="p">{</span> <span class="ss">password: </span><span class="s2">""</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">""</span> <span class="p">}</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>也就是说</p>
@@ -415,7 +415,7 @@
 </div>
 <p>本身就是一个 Hash：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="p">{</span> <span class="ss">password</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">""</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="p">{</span> <span class="ss">password: </span><span class="s2">""</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">""</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>所以，</p>
@@ -433,8 +433,8 @@
 <p>也就是说，在 <code>create</code> 动作中，<code>params</code> 包含了使用 Email 和密码验证用户身份所需的全部数据。幸运的是，我们已经定义了身份验证过程中所需的两个方法，即由 Active Record 提供的 <code>User.find_by_email</code>（参见 <a href="chapter6.html#section-6-1-4">6.1.4 节</a>），以及由 <code>has_secure_password</code> 提供的 <code>authenticate</code> 方法（参见 <a href="chapter6.html#section-6-3-3">6.3.3 节</a>）。我们之前介绍过，如果提交的数据不合法，<code>authenticate</code> 方法会返回 <code>false</code>。基于以上的分析，我们计划按照如下的方式实现用户登录功能：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">create</span>
-  <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">].</span><span class="n">downcase</span><span class="p">)</span>
-  <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
+  <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">]</span><span class="p">.</span><span class="nf">downcase</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
     <span class="c1"># Sign the user in and redirect to the user's show page.</span>
   <span class="k">else</span>
     <span class="c1"># Create an error message and re-render the signin form.</span>
@@ -444,7 +444,7 @@
 </div>
 <p><code>create</code> 动作的第一行，使用提交的 Email 地址从数据库中取出相应的用户。（我们在 <a href="chapter6.html#section-6-2-5">6.2.5 节</a>讲过，Email 地址都是以小写字母形式保存的，所以这里调用了 <code>downcase</code> 方法，确保提交合法 Email 地址后能查询到相应的记录。）第二行看起来很怪，但在 Ruby 中经常使用：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="table has-caption" id="table-8-2">
@@ -478,8 +478,8 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">].</span><span class="n">downcase</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">]</span><span class="p">.</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
       <span class="c1"># Sign the user in and redirect to the user's show page.</span>
     <span class="k">else</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span> <span class="c1"># Not quite right!</span>
@@ -501,8 +501,8 @@
 </div>
 <p>Flash 消息没有按预期消失算是程序的一个 bug，在修正之前，我们最好编写一个测试来捕获这个错误。现在，登录失败时的测试是可以通过的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/authentication_pages_spec.rb <span class="se">\</span>
-&gt; -e <span class="s2">"signin with invalid information"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/authentication_pages_spec.rb <span class="se">\</span>
+<span class="gp">&gt; </span>-e <span class="s2">"signin with invalid information"</span>
 </pre></div>
 </div>
 <p>不过程序中有错误，测试应该是失败的，所以我们要编写一个能够捕获这种错误的测试。幸好，捕获这种错误正是集成测试的拿手好戏，所用的代码如下：</p>
@@ -545,8 +545,8 @@
 </div>
 <p>新添加的测试和预期一致，是失败的：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/authentication_pages_spec.rb <span class="se">\</span>
-&gt; -e <span class="s2">"signin with invalid information"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/authentication_pages_spec.rb <span class="se">\</span>
+<span class="gp">&gt; </span>-e <span class="s2">"signin with invalid information"</span>
 </pre></div>
 </div>
 <p>要让这个测试通过，我们要用 <code>flash.now</code> 替换 <code>flash</code>。<code>flash.now</code> 就是专门用来在重新渲染的页面中显示 Flash 消息的，在发送新的请求之后，Flash 消息便会消失。正确的 <code>create</code> 动作代码如代码 8.12 所示。</p>
@@ -557,11 +557,11 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">].</span><span class="n">downcase</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">]</span><span class="p">.</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
       <span class="c1"># Sign the user in and redirect to the user's show page.</span>
     <span class="k">else</span>
-      <span class="n">flash</span><span class="o">.</span><span class="n">now</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
+      <span class="n">flash</span><span class="p">.</span><span class="nf">now</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
       <span class="n">render</span> <span class="s1">'new'</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -573,8 +573,8 @@
 </div>
 <p>现在登录失败时的所有测试应该都可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/authentication pages spec.rb <span class="se">\</span>
-&gt; -e <span class="s2">"with invalid information"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/requests/authentication pages spec.rb <span class="se">\</span>
+<span class="gp">&gt; </span>-e <span class="s2">"with invalid information"</span>
 </pre></div>
 </div>
 <h2 id='section-8-2'><span>8.2</span> 登录成功</h2>
@@ -589,12 +589,12 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">].</span><span class="n">downcase</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:email</span><span class="o">]</span><span class="p">.</span><span class="nf">downcase</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:session</span><span class="o">][</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
       <span class="n">sign_in</span> <span class="n">user</span>
       <span class="n">redirect_to</span> <span class="n">user</span>
     <span class="k">else</span>
-      <span class="n">flash</span><span class="o">.</span><span class="n">now</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
+      <span class="n">flash</span><span class="p">.</span><span class="nf">now</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'Invalid email/password combination'</span>
       <span class="n">render</span> <span class="s1">'new'</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -610,7 +610,7 @@
 <p>现在我们要开始实现登录功能了，第一步是实现“记住我”这个功能，即用户登录的状态会被“永远”记住，直到用户点击“退出”链接为止。实现登录功能用到的函数已经超越了传统的 MVC 架构，其中一些函数要同时在控制器和视图中使用。在<a href="chapter4.html#section-4-2-5">4.2.5 节</a>中介绍过，Ruby 支持模块（module）功能，打包一系列函数，在不同的地方引入。我们会利用模块来打包用户身份验证相关的函数。我们当然可以创建一个新的模块，不过 Sessions 控制器已经提供了一个名为 <code>SessionsHelper</code> 的模块，而且这个模块中的帮助方法会自动引入 Rails 程序的视图中。所以，我们就直接使用这个现成的模块，然后在 Application 控制器中引入，如代码 8.14 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-8-14"><p class="caption"><span>代码 8.14：</span>在 Application 控制器中引入 Sessions 控制器的帮助方法模块</p><p class="file"><code>app/controllers/application_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">protect_from_forgery</span> <span class="ss">with</span><span class="p">:</span> <span class="ss">:exception</span>
+  <span class="n">protect_from_forgery</span> <span class="ss">with: :exception</span>
   <span class="kp">include</span> <span class="no">SessionsHelper</span>
 <span class="k">end</span>
 </pre></div>
@@ -619,7 +619,7 @@
 
 <p>因为 HTTP 是无状态的协议，所以如果应用程序需要实现登录功能的话，就要找到一种方法记住用户的状态。维持用户登录状态的方法之一，是使用常规的 Rails session（通过 <code>session</code> 函数），把用户的 id 保存在“记忆权标（remember token）”中：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">session</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">session</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
 </pre></div>
 </div>
 <p><code>session</code> 对象把用户 id 保存在浏览器的 cookie 中，这样在网站的所有页面就都可以使用了。浏览器关闭后，cookie 也随之失效。在网站中的任何页面，只需调用 <code>User.find(session[:remember_token])</code> 就可以取回用户对象了。Rails 在处理 session 时，会确保安全性。倘若用户企图伪造用户 id，Rails 可以通过每个 session 的 session id 检测到。</p>
@@ -648,7 +648,7 @@
 </div>
 <p>要让这个测试通过，我们要生成记忆权标属性，执行如下命令：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate migration add_remember_token_to_users
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate migration add_remember_token_to_users
 </pre></div>
 </div>
 <p>然后按照代码 8.16 修改生成的迁移文件。注意，因为我们要使用记忆权标取回用户，所以我们为 <code>remember_token</code> 列加了索引（参见 <a href="chapter6.html#aside-6-2">旁注 6.2</a>）。</p>
@@ -663,13 +663,13 @@
 </div>
 <p>然后，还要更新“开发数据库”和“测试数据库”：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="nv">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<span class="gp">$ </span>bundle <span class="nb">exec </span>rake <span class="nb">test</span>:prepare
 </pre></div>
 </div>
 <p>现在，User 模型的测试应该可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
 </pre></div>
 </div>
 <p>接下来我们要考虑记忆权标要保存什么数据，这有很多种选择，其实任何足够长的随机字符串都是可以的，只要能保证唯一性。Ruby 标准库中 <code>SecureRandom</code> 模块提供的 <code>urlsafe_base64</code> 方法可以满足我们的要求。<sup class="footnote" id="fnref-8-3"><a href="#fn-8-3" rel="footnote">3</a></sup><code>SecureRandom.urlsafe_base64</code> 创建的字符串长度为 16，由 A-Z、a-z、0-9、下划线（_）和连字符（-）组成（每一位字符都有 64 种可能的情况，所以叫做“<a href="http://en.wikipedia.org/wiki/Base64">base64</a>”）.所以两个记忆权标相等的概率就是 1/64<sup>16</sup> = 2<sup>-96</sup> ≈ 10<sup>-29</sup>，完全可以忽略。</p>
@@ -685,8 +685,8 @@
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                     <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                     <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -694,7 +694,7 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">describe</span> <span class="s2">"remember token"</span> <span class="k">do</span>
-    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span> <span class="p">}</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span> <span class="p">}</span>
     <span class="n">its</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">)</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_blank</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -707,7 +707,7 @@
 </div>
 <p>等同于</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">remember_token</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">be_blank</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">it</span> <span class="p">{</span> <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">remember_token</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">be_blank</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>User 模型的代码会涉及到一些新的知识。其一，我们添加了一个回调函数，在用户存入数据库之前生成记忆权标：</p>
@@ -726,8 +726,8 @@
 </div>
 <p>在类中，<code>private</code> 之后定义的方法都会被设为私有方法，所以，如果执行下面的操作</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; User.first.create_remember_token
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span>User.first.create_remember_token
 </pre></div>
 </div>
 <p>就会抛出 <code>NoMethodError</code> 异常。</p>
@@ -735,17 +735,17 @@
 <p>在 <code>create_remember_token</code> 方法中，要给用户的属性赋值，需要在 <code>remember_token</code> 前加上 <code>self</code> 关键字：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre>  <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">new_remember_token</span>
-    <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
+    <span class="no">SecureRandom</span><span class="p">.</span><span class="nf">urlsafe_base64</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-    <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+    <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="p">.</span><span class="nf">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="p">.</span><span class="nf">to_s</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="kp">private</span>
 
     <span class="k">def</span> <span class="nf">create_remember_token</span>
-      <span class="nb">self</span><span class="o">.</span><span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">)</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span><span class="p">)</span>
     <span class="k">end</span>
 </pre></div>
 </div>
@@ -758,23 +758,23 @@
 <p>把上述的分析结合起来，最终得到的 User 模型文件如代码 8.18 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-8-18"><p class="caption"><span>代码 8.18：</span>生成记忆权标的 <code>before_create</code> 回调函数</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">downcase</span> <span class="p">}</span>
+  <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase</span> <span class="p">}</span>
   <span class="n">before_create</span> <span class="ss">:create_remember_token</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">new_remember_token</span>
-    <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
+    <span class="no">SecureRandom</span><span class="p">.</span><span class="nf">urlsafe_base64</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nc">User</span><span class="o">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-    <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+    <span class="no">Digest</span><span class="o">::</span><span class="no">SHA1</span><span class="p">.</span><span class="nf">hexdigest</span><span class="p">(</span><span class="n">token</span><span class="p">.</span><span class="nf">to_s</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="kp">private</span>
 
     <span class="k">def</span> <span class="nf">create_remember_token</span>
-      <span class="nb">self</span><span class="o">.</span><span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">)</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span><span class="p">)</span>
     <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -783,7 +783,7 @@
 
 <p>因为加密后的 <code>SecureRandom.urlsafe_base64</code> 方法创建的字符串不可能为空值，所以对 User 模型的测试现在应该可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/models/user_spec.rb
 </pre></div>
 </div>
 <h3 id='section-8-2-2'><span>8.2.2</span> 定义 sign_in 方法</h3>
@@ -794,10 +794,10 @@
 <div class="codeblock has-caption" id="codeblock-8-19"><p class="caption"><span>代码 8.19：</span>完整但还不能正常使用的 <code>sign_in</code> 方法</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
 
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
-    <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
-    <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -806,8 +806,8 @@
 
 <p>注意，保存记忆权标使用的是 <code>update_attribute</code> 方法，这样可以跳过数据验证更新单个属性。我们必须用这个方法，因为我们无法提供用户的密码及密码确认。代码 8.19 中用到的 <code>cookies</code> 方法是由 Rails 提供的，我们可以把它看成 Hash，其中每个元素又都是一个 Hash，包含两个元素，<code>value</code> 指定 cookie 的文本，<code>expires</code> 指定 cookie 的失效日期。例如，我们可以使用下述代码实现登录功能，把 cookie 的值设为用户的记忆权标，失效日期设为 20 年之后：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">value</span><span class="p">:</span>   <span class="n">remember_token</span><span class="p">,</span>
-                             <span class="ss">expires</span><span class="p">:</span> <span class="mi">20</span><span class="o">.</span><span class="n">years</span><span class="o">.</span><span class="n">from_now</span><span class="o">.</span><span class="n">utc</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">value:   </span><span class="n">remember_token</span><span class="p">,</span>
+                             <span class="ss">expires: </span><span class="mi">20</span><span class="p">.</span><span class="nf">years</span><span class="p">.</span><span class="nf">from_now</span><span class="p">.</span><span class="nf">utc</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>（这里使用了 Rails 提供的时间帮助方法，详情参见<a href="chapter8.html#aside-8-1">旁注 8.1</a>。）</p>
@@ -817,19 +817,19 @@
 
   <p>在 <a href="chapter4.html#section-4-4-2">4.4.2 节</a>中介绍过，你可以向任何的 Ruby 类，甚至是内置的类中添加自定义的方法，我们就向 <code>String</code> 类添加了 <code>palindrome?</code> 方法（而且还发现了 <code>"deified"</code> 是回文）。我们还介绍过，Rails 为 <code>Object</code> 类添加了 <code>blank?</code> 方法（所以，<code>"".blank?</code>、<code>" ".blank?</code> 和 <code>nil.blank?</code> 的返回值都是 <code>true</code>）。代码 8.19 中处理 cookie 的代码又是一例，使用了 Rails 提供的时间帮助方法，这些方法是添加到 <code>Fixnum</code> 类（数字的基类）中的。</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; 1.year.from_now
-<span class="o">=</span>&gt; Sun, 13 Mar 2011 03:38:55 UTC +00:00
-&gt;&gt; 10.weeks.ago
-<span class="o">=</span>&gt; Sat, 02 Jan 2010 03:39:14 UTC +00:00
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span>1.year.from_now
+<span class="gp">=&gt; </span>Sun, 13 Mar 2011 03:38:55 UTC +00:00
+<span class="gp">&gt;&gt; </span>10.weeks.ago
+<span class="gp">=&gt; </span>Sat, 02 Jan 2010 03:39:14 UTC +00:00
 </pre></div>
 </div>
   <p>Rails 还添加了其他的帮助函数，如：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; 1.kilobyte
-<span class="o">=</span>&gt; 1024
-&gt;&gt; 5.megabytes
-<span class="o">=</span>&gt; 5242880
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>1.kilobyte
+<span class="gp">=&gt; </span>1024
+<span class="gp">&gt;&gt; </span>5.megabytes
+<span class="gp">=&gt; </span>5242880
 </pre></div>
 </div>
   <p>这几个帮助函数可用于限制上传文件的大小，例如，图片最大不超过 <code>5.megabytes</code>。</p>
@@ -840,14 +840,14 @@
 
 <p>因为开发者经常要把 cookie 的失效日期设为 20 年后，所以 Rails 特别提供了 <code>permanent</code> 方法，前面处理 cookie 的代码可以改写成：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">cookies</span><span class="p">.</span><span class="nf">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
 </pre></div>
 </div>
 <p>Rails 的 <code>permanent</code> 方法会自动把 cookie 的失效日期设为 20 年后。</p>
 
 <p>设定了 cookie 之后，在网页中我们就可以使用下面的代码取回用户：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">remember_token</span><span class="p">:</span> <span class="n">remember_token</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">remember_token: </span><span class="n">remember_token</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>其实浏览器中保存的 cookie 并不是 Hash，赋值给 <code>cookies</code> 只是把值以文本的形式保存在浏览器中。这正体现了 Rails 的智能，我们无需关心具体的处理细节，专注地实现应用程序的功能。</p>
@@ -860,25 +860,25 @@
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
 
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
-    <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
-    <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>现在还无法使用的代码是：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="n">user</span>
 </pre></div>
 </div>
 <p>我们在代码 8.19 后面说过，这行代码并不会真的在这个程序中使用，因为登录后会直接转向。如果 <code>sign_in</code> 方法只考虑转向一种情况也是很危险的。</p>
 
 <p><code>current_user</code> 方法可以在控制器和视图中使用，所以你既可以这样用：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="o">&lt;%=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">name</span> <span class="o">%&gt;</span>
-</pre></div>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="o">&lt;</span><span class="sx">%= current_user.name %&gt;
+</span></pre></div>
 </div>
 <p>也可以这样用：</p>
 
@@ -889,7 +889,7 @@
 
 <p>在开始编写 <code>current_user</code> 方法的代码之前，请仔细看这行代码：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="n">user</span>
 </pre></div>
 </div>
 <p>这是一个赋值操作，我们必须先定义相应的方法才能这么用。Ruby 为这种赋值操作提供了一种特别的定义方式，如代码 8.20 所示。</p>
@@ -910,12 +910,12 @@
 </div>
 <p>这段代码看起来很奇怪，因为大多数的编程语言并不允许在方法名中使用等号。其实这段代码定义的 <code>current_user=</code> 方法是用来处理 <code>current_user</code> 赋值操作的。也就是说，如下的代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>会自动转换成下面这种形式</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">current_user</span><span class="o">=</span><span class="p">(</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">current_user</span><span class="o">=</span><span class="p">(.</span><span class="nf">.</span><span class="o">.</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>就是直接调用 <code>current_user=</code> 方法，接受的参数是赋值语句右侧的值，本例中是要登录的用户对象。<code>current_user=</code> 方法定义体内只有一行代码，即设定实例变量 <code>@current_user</code> 的值，以备后用。</p>
@@ -951,15 +951,15 @@
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">current_user</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span><span class="p">)</span>
-    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">remember_token</span><span class="p">:</span> <span class="n">remember_token</span><span class="p">)</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">cookies</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">remember_token: </span><span class="n">remember_token</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>代码 8.22 中使用了一个常见但不是很容易理解的 <code>||=</code>（“or equals”）操作符（<a href="chapter8.html#aside-8-2">旁注 8.2</a>中有详细介绍）。使用这个操作符之后，当且仅当 <code>@current_user</code> 未定义时才会把通过记忆权标获取的用户赋值给实例变量 <code>@current_user</code>。<sup class="footnote" id="fnref-8-8"><a href="#fn-8-8" rel="footnote">9</a></sup>也就是说，如下的代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="n">remember_token</span><span class="p">:</span> <span class="n">remember_token</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">remember_token: </span><span class="n">remember_token</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>只在第一次调用 <code>current_user</code> 方法时调用 <code>find_by</code> 方法，如果后续再调用的话就直接返回 <code>@current_user</code> 的值，而不必再查询数据库。<sup class="footnote" id="fnref-8-7"><a href="#fn-8-7" rel="footnote">10</a></sup>这种方式的优点只有当在一个请求中多次调用 <code>current_user</code> 方法时才能显现。不管怎样，只要用户访问了相应的页面，<code>find_by</code> 方法都至少会执行一次。</p>
@@ -971,45 +971,45 @@
 
   <p>我们先来看一下改变已经定义的变量时经常使用的结构。在很多程序中都会把变量自增一，如下所示</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>x = x + 1
+<div class="codeblock"><div class="highlight type-plaintext"><pre>x = x + 1
 </pre></div>
 </div>
   <p>大多数语言都为这种操作提供了简化的操作符，在 Ruby 中，可以按照下面的方式重写（C、C++、Perl、Python、Java 等也如此）：</p>
 
-<div class="codeblock"><div class="highlight type-text"><pre>x += 1
+<div class="codeblock"><div class="highlight type-plaintext"><pre>x += 1
 </pre></div>
 </div>
   <p>其他操作符也有类似的简化形式：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; <span class="nv">x</span> <span class="o">=</span> <span class="nv">1</span>
-<span class="o">=</span>&gt; 1
-&gt;&gt; x +<span class="o">=</span> <span class="nv">1</span>
-<span class="o">=</span>&gt; 2
-&gt;&gt; x *<span class="o">=</span> <span class="nv">3</span>
-<span class="o">=</span>&gt; 6
-&gt;&gt; x -<span class="o">=</span> <span class="nv">7</span>
-<span class="o">=</span>&gt; -1
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span>x <span class="o">=</span> 1
+<span class="gp">=&gt; </span>1
+<span class="gp">&gt;&gt; </span>x +<span class="o">=</span> 1
+<span class="gp">=&gt; </span>2
+<span class="gp">&gt;&gt; </span>x <span class="k">*</span><span class="o">=</span> 3
+<span class="gp">=&gt; </span>6
+<span class="gp">&gt;&gt; </span>x -<span class="o">=</span> 7
+<span class="gp">=&gt; </span>-1
 </pre></div>
 </div>
   <p>上面的举例可以概括为，<code>x = x O y</code> 和 <code>x O=y</code> 是等效的，其中 <code>O</code> 表示操作符。</p>
 
   <p>在 Ruby 中还经常会遇到这种情况，如果变量的值为 <code>nil</code> 则赋予其他的值，否则就不改变这个变量的值。<a href="chapter4.html#section-4-2-3">4.2.3 节</a> 中介绍过 <code>||</code> 或操作符，所以这种情况可以用如下的代码表示：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; @user
-<span class="o">=</span>&gt; nil
-&gt;&gt; @user <span class="o">=</span> @user <span class="o">||</span> <span class="s2">"the user"</span>
-<span class="o">=</span>&gt; <span class="s2">"the user"</span>
-&gt;&gt; @user <span class="o">=</span> @user <span class="o">||</span> <span class="s2">"another user"</span>
-<span class="o">=</span>&gt; <span class="s2">"the user"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>@user
+<span class="gp">=&gt; </span>nil
+<span class="gp">&gt;&gt; </span>@user <span class="o">=</span> @user <span class="o">||</span> <span class="s2">"the user"</span>
+<span class="gp">=&gt; </span><span class="s2">"the user"</span>
+<span class="gp">&gt;&gt; </span>@user <span class="o">=</span> @user <span class="o">||</span> <span class="s2">"another user"</span>
+<span class="gp">=&gt; </span><span class="s2">"the user"</span>
 </pre></div>
 </div>
   <p>因为 <code>nil</code> 表示的布尔值是 <code>false</code>，所以第一个赋值操作等同于 <code>nil || "the user"</code>，这个语句的计算结果是 <code>"the user"</code>；类似的，第二个赋值操作等同于 <code>"the user" || "another user"</code>，这个语句的计算结果还是 <code>"the user"</code>，因为 <code>"the user"</code> 表示的布尔值是 <code>true</code>，这个或操作在执行了第一个表达式之后就终止了。（或操作的执行顺序是从左至右，只要出现真值就会终止语句的执行，这种方式称作“短路计算（short-circuit evaluation）”。）</p>
 
   <p>和上面的控制台会话对比之后，我们可以发现 <code>@user = @user || value</code> 符合 <code>x = x O y</code> 的形式，只需把 <code>O</code> 换成 <code>||</code>，所以就得到了下面这种简写形式：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre>&gt;&gt; @user <span class="o">||=</span> <span class="s2">"the user"</span>
-<span class="o">=</span>&gt; <span class="s2">"the user"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">&gt;&gt; </span>@user <span class="o">||=</span> <span class="s2">"the user"</span>
+<span class="gp">=&gt; </span><span class="s2">"the user"</span>
 </pre></div>
 </div>  <p>不难理解吧！<sup class="footnote" id="fnref-8-t2"><a href="#fn-8-t2" rel="footnote">11</a></sup></p>
 
@@ -1023,11 +1023,11 @@
 
 <p>在网站的布局中改变导航链接需要用到 ERb 的 if-else 分支结构：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x"># Links for signed-in users</span>
-<span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x"># Links for non-signed-in-users</span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span>
+# Links for signed-in users
+<span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+# Links for non-signed-in-users
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>若要上述代码起作用，先要用 <code>signed_in?</code> 方法。我们现在就来定义。</p>
@@ -1037,14 +1037,14 @@
 <div class="codeblock has-caption" id="codeblock-8-23"><p class="caption"><span>代码 8.23：</span>定义 <code>signed_in?</code> 帮助方法</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
 
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
-    <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
-    <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">signed_in?</span>
-    <span class="o">!</span><span class="n">current_user</span><span class="o">.</span><span class="n">nil?</span>
+    <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">nil?</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1054,60 +1054,60 @@
 </div>
 <p>定义了 <code>signed_in?</code> 方法后就可以着手修改布局中的导航了。我们要添加四个新链接，其中两个链接的地址先不填（<a href="chapter9.html">第 9 章</a>再填）：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>退出链接的地址使用代码 8.2 中定义的 <code>signout_path</code>：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>（注意，我们还为退出链接指定了类型为 Hash 的参数，指明点击链接后发送的是 HTTP <code>DELETE</code> 请求。<sup class="footnote" id="fnref-8-9"><a href="#fn-8-9" rel="footnote">12</a></sup>）最后，我们还要添加一个到资料页面的链接：</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>这个链接我们本可以写成</p>
 
-<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<div class="codeblock"><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>不过我们可以直接把链接地址设为 <code>current_user</code>，Rails 会自动将其转换成 <code>user_path(current_user)</code>。</p>
 
 <p>在添加导航链接的过程中，我们还要使用 Bootstrap 实现下拉菜单的效果，具体的实现方式可以参阅 Bootstrap 的文档。添加导航链接所需的代码如代码 8.24 所示。注意其中和 Bootstrap 下拉菜单有关的 CSS id 和 class。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-24"><p class="caption"><span>代码 8.24：</span>根据登录状态改变导航链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;header class="navbar navbar-fixed-top navbar-inverse"&gt;</span>
-<span class="x">  &lt;div class="navbar-inner"&gt;</span>
-<span class="x">    &lt;div class="container"&gt;</span>
-<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">      &lt;nav&gt;</span>
-<span class="x">        &lt;ul class="nav pull-right"&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span> <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">            &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">            &lt;li id="fat-menu" class="dropdown"&gt;</span>
-<span class="x">              &lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;</span>
-<span class="x">                Account &lt;b class="caret"&gt;&lt;/b&gt;</span>
-<span class="x">              &lt;/a&gt;</span>
-<span class="x">              &lt;ul class="dropdown-menu"&gt;</span>
-<span class="x">                &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">                &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">                &lt;li class="divider"&gt;&lt;/li&gt;</span>
-<span class="x">                &lt;li&gt;</span>
-<span class="x">                  </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">                &lt;/li&gt;</span>
-<span class="x">              &lt;/ul&gt;</span>
-<span class="x">            &lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">            &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="n">signin_path</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
-<span class="x">          </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">        &lt;/ul&gt;</span>
-<span class="x">      &lt;/nav&gt;</span>
-<span class="x">    &lt;/div&gt;</span>
-<span class="x">  &lt;/div&gt;</span>
-<span class="x">&lt;/header&gt;</span>
+<div class="codeblock has-caption" id="codeblock-8-24"><p class="caption"><span>代码 8.24：</span>根据登录状态改变导航链接</p><p class="file"><code>app/views/layouts/_header.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;header</span> <span class="na">class=</span><span class="s">"navbar navbar-fixed-top navbar-inverse"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-inner"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"sample app"</span><span class="p">,</span> <span class="n">root_path</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="s2">"logo"</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;nav&gt;</span>
+        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav pull-right"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">root_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Help"</span><span class="p">,</span> <span class="n">help_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">signed_in?</span> <span class="cp">%&gt;</span>
+            <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Users"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+            <span class="nt">&lt;li</span> <span class="na">id=</span><span class="s">"fat-menu"</span> <span class="na">class=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"dropdown-toggle"</span> <span class="na">data-toggle=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+                Account <span class="nt">&lt;b</span> <span class="na">class=</span><span class="s">"caret"</span><span class="nt">&gt;&lt;/b&gt;</span>
+              <span class="nt">&lt;/a&gt;</span>
+              <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"dropdown-menu"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="n">current_user</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+                <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Settings"</span><span class="p">,</span> <span class="s1">'#'</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"divider"</span><span class="nt">&gt;&lt;/li&gt;</span>
+                <span class="nt">&lt;li&gt;</span>
+                  <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">signout_path</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="s2">"delete"</span> <span class="cp">%&gt;</span>
+                <span class="nt">&lt;/li&gt;</span>
+              <span class="nt">&lt;/ul&gt;</span>
+            <span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+            <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="n">signin_path</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+          <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+      <span class="nt">&lt;/nav&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
 </pre></div>
 </div>
 <p>实现下拉菜单还要用到 Bootstrap 中的 JavaScript 代码，我们可以编辑应用程序的 JavaScript 文件，通过 asset pipeline 引入所需的文件，如代码 8.25 所示。</p>
@@ -1115,18 +1115,18 @@
 <div class="figure" id="figure-8-9">
   <img src="figures/profile_with_signout_link_bootstrap.png" alt="profile with signout link bootstrap" /><p class="caption"><span>图 8.9：</span>登录后显示了新链接和下拉菜单</p>
 </div>
-<div class="codeblock has-caption" id="codeblock-8-25"><p class="caption"><span>代码 8.25：</span>把 Bootstrap 的 JavaScript 代码加入 <code>application.js</code></p><p class="file"><code>app/assets/javascripts/application.js</code></p><div class="highlight type-javascript"><pre><span class="c1">//= require jquery</span>
-<span class="c1">//= require jquery_ujs</span>
-<span class="c1">//= require bootstrap</span>
-<span class="c1">//= require turbolinks</span>
-<span class="c1">//= require_tree .</span>
-</pre></div>
+<div class="codeblock has-caption" id="codeblock-8-25"><p class="caption"><span>代码 8.25：</span>把 Bootstrap 的 JavaScript 代码加入 <code>application.js</code></p><p class="file"><code>app/assets/javascripts/application.js</code></p><div class="highlight type-javascript"><pre><span class="c1">//= require jquery
+//= require jquery_ujs
+//= require bootstrap
+//= require turbolinks
+//= require_tree .
+</span></pre></div>
 </div>
 <p>引入文件的功能是由 Sprockets 实现的，而文件本身是由 <a href="chapter5.html#section-5-1-2">5.1.2 节</a>中添加的 <code>bootstrap-sass</code> gem 提供的。</p>
 
 <p>添加了代码 8.24 之后，所有的测试应该都可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>现在登入的用户就可以看到代码 8.24 新添加的链接和下拉菜单了，如图 8.9 所示。</p>
@@ -1153,11 +1153,11 @@
       <span class="o">.</span>
       <span class="n">describe</span> <span class="s2">"after saving the user"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">click_button</span> <span class="n">submit</span> <span class="p">}</span>
-        <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="s1">'user@example.com'</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="s1">'user@example.com'</span><span class="p">)</span> <span class="p">}</span>
 
         <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">)</span> <span class="p">}</span>
-        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
-        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-success'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="s1">'Welcome'</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-success'</span><span class="p">,</span> <span class="ss">text: </span><span class="s1">'Welcome'</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -1173,8 +1173,8 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
-    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
       <span class="n">sign_in</span> <span class="vi">@user</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Welcome to the Sample App!"</span>
       <span class="n">redirect_to</span> <span class="vi">@user</span>
@@ -1236,26 +1236,26 @@
 <div class="codeblock has-caption" id="codeblock-8-30"><p class="caption"><span>代码 8.30：</span>Sessions 帮助方法模块中定义的 <code>sign_out</code> 方法</p><p class="file"><code>app/helpers/sessions_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">SessionsHelper</span>
 
   <span class="k">def</span> <span class="nf">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span>
-    <span class="n">cookies</span><span class="o">.</span><span class="n">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
-    <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="n">remember_token</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">permanent</span><span class="o">[</span><span class="ss">:remember_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">remember_token</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span> <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="n">remember_token</span><span class="p">))</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="k">def</span> <span class="nf">sign_out</span>
-    <span class="n">current_user</span><span class="o">.</span><span class="n">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span>
-                                  <span class="no">User</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="no">User</span><span class="o">.</span><span class="n">new_remember_token</span><span class="p">))</span>
-    <span class="nb">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="kp">nil</span>
-    <span class="n">cookies</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">)</span>
+    <span class="n">current_user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">,</span>
+                                  <span class="no">User</span><span class="p">.</span><span class="nf">hash</span><span class="p">(</span><span class="no">User</span><span class="p">.</span><span class="nf">new_remember_token</span><span class="p">))</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">current_user</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:remember_token</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>现在，注册、登录和退出三个功能都实现了，测试也应该可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>有一点需要注意，我们的测试覆盖了身份验证机制的大多数功能，但不是全部。例如，我们没有测试“记住我”到底记住了多久，也没测试是否设置了记忆权标。我们当然可以加入这些测试，不过经验告诉我们，直接测试 cookie 的值不可靠，而且要依赖具体的实现细节，而实现的方法在不同的 Rails 版本中可能会有所不同，即便应用程序可以使用，测试却会失败。所以我们只关注抽象的功能（验证用户是否可以登录，是否可以保持登录状态，以及是否可以退出），编写的测试没必要针对实现的细节。</p>
@@ -1284,7 +1284,7 @@
   <span class="o">.</span>
   <span class="o">.</span>
   <span class="n">gem</span> <span class="s1">'cucumber-rails'</span><span class="p">,</span> <span class="s1">'1.4.0'</span><span class="p">,</span> <span class="ss">:require</span> <span class="o">=&gt;</span> <span class="kp">false</span>
-  <span class="n">gem</span> <span class="s1">'database_cleaner'</span><span class="p">,</span> <span class="ss">github</span><span class="p">:</span> <span class="s1">'bmabey/database_cleaner'</span>
+  <span class="n">gem</span> <span class="s1">'database_cleaner'</span><span class="p">,</span> <span class="ss">github: </span><span class="s1">'bmabey/database_cleaner'</span>
 <span class="k">end</span>
 <span class="o">.</span>
 <span class="o">.</span>
@@ -1293,12 +1293,12 @@
 </div>
 <p>然后和之前一样运行一下命令安装：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle install
 </pre></div>
 </div>
 <p>如果要在程序中使用 Cucumber，我们先要生成一些所需的文件和文件夹：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate cucumber:install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate cucumber:install
 </pre></div>
 </div>
 <p>这个命令会在根目录中创建 <code>features</code> 文件夹，Cucumber 相关的文件都会存在这个文件夹中。</p>
@@ -1312,57 +1312,57 @@
 
 <p>Cucumber 的功能由一个简短的描述文本开始，如下所示：</p>
 
-<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="k">Feature:</span><span class="nf"> Signing in</span>
+<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="kd">Feature</span><span class="p">:</span> Signing in
 </pre></div>
 </div>
 <p>然后再添加一定数量相对独立的场景（scenario）。例如，要测试登录失败的情况，我们可以按照如下的方式编写场景：</p>
 
-<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="nf">  </span><span class="k">Scenario:</span><span class="nf"> Unsuccessful signin</span>
-<span class="k">    Given </span><span class="nf">a user visits the signin page</span>
-<span class="nf">    </span><span class="k">When </span><span class="nf">he submits invalid signin information</span>
-<span class="nf">    </span><span class="k">Then </span><span class="nf">he should see an error message</span>
+<div class="codeblock"><div class="highlight type-gherkin"><pre>  <span class="kn">Scenario</span><span class="p">:</span> Unsuccessful signin
+    <span class="nf">Given</span> a user visits the signin page
+    <span class="nf">When</span> he submits invalid signin information
+    <span class="nf">Then</span> he should see an error message
 </pre></div>
 </div>
 <p>类似的，测试登录成功时，我们可以加入如下的场景：</p>
 
-<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="nf">  </span><span class="k">Scenario:</span><span class="nf"> Successful signin</span>
-<span class="k">    Given </span><span class="nf">a user visits the signin page</span>
-<span class="nf">    </span><span class="k">And </span><span class="nf">the user has an account</span>
-<span class="nf">    </span><span class="k">When </span><span class="nf">the user submits valid signin information</span>
-<span class="nf">    </span><span class="k">Then </span><span class="nf">he should see his profile page</span>
-<span class="nf">    </span><span class="k">And </span><span class="nf">he should see a signout link</span>
+<div class="codeblock"><div class="highlight type-gherkin"><pre>  <span class="kn">Scenario</span><span class="p">:</span> Successful signin
+    <span class="nf">Given</span> a user visits the signin page
+    <span class="nf">And</span> the user has an account
+    <span class="nf">When</span> the user submits valid signin information
+    <span class="nf">Then</span> he should see his profile page
+    <span class="nf">And</span> he should see a signout link
 </pre></div>
 </div>
 <p>把上述的文本放在一起，就组成了代码 8.32 所示的 Cucumber 功能文件。</p>
 
-<div class="codeblock has-caption" id="codeblock-8-31"><p class="caption"><span>代码 8.31：</span>测试用户登录功能</p><p class="file"><code>features/signing_in.feature</code></p><div class="highlight type-gherkin"><pre><span class="k">Feature:</span><span class="nf"> Signing in</span>
+<div class="codeblock has-caption" id="codeblock-8-31"><p class="caption"><span>代码 8.31：</span>测试用户登录功能</p><p class="file"><code>features/signing_in.feature</code></p><div class="highlight type-gherkin"><pre><span class="kd">Feature</span><span class="p">:</span> Signing in
 
-<span class="nf">  </span><span class="k">Scenario:</span><span class="nf"> Unsuccessful signin</span>
-<span class="k">    Given </span><span class="nf">a user visits the signin page</span>
-<span class="nf">    </span><span class="k">When </span><span class="nf">he submits invalid signin information</span>
-<span class="nf">    </span><span class="k">Then </span><span class="nf">he should see an error message</span>
+  <span class="kn">Scenario</span><span class="p">:</span> Unsuccessful signin
+    <span class="nf">Given</span> a user visits the signin page
+    <span class="nf">When</span> he submits invalid signin information
+    <span class="nf">Then</span> he should see an error message
 
-<span class="nf">  </span><span class="k">Scenario:</span><span class="nf"> Successful signin</span>
-<span class="k">    Given </span><span class="nf">a user visits the signin page</span>
-<span class="nf">    </span><span class="k">And </span><span class="nf">the user has an account</span>
-<span class="nf">    </span><span class="k">When </span><span class="nf">the user submits valid signin information</span>
-<span class="nf">    </span><span class="k">Then </span><span class="nf">he should see his profile page</span>
-<span class="nf">    </span><span class="k">And </span><span class="nf">he should see a signout link</span>
+  <span class="kn">Scenario</span><span class="p">:</span> Successful signin
+    <span class="nf">Given</span> a user visits the signin page
+    <span class="nf">And</span> the user has an account
+    <span class="nf">When</span> the user submits valid signin information
+    <span class="nf">Then</span> he should see his profile page
+    <span class="nf">And</span> he should see a signout link
 </pre></div>
 </div>
 <p>然后使用 <code>cucumber</code> 命令运行这个功能：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>cucumber features/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>cucumber features/
 </pre></div>
 </div>
 <p>上述命令和执行 RSpec 测试的命令类似：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rspec spec/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rspec spec/
 </pre></div>
 </div>
 <p>提示一下，Cucumber 和 RSpec 一样，可以通过 Rake 命令执行：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake cucumber
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake cucumber
 </pre></div>
 </div>
 <p>（鉴于某些原因，我经常使用的命令是 <code>rake cucumber:ok</code>。）</p>
@@ -1371,7 +1371,7 @@
 
 <p>以 <code>Feature</code> 和 <code>Scenario</code> 开头的行基本上只被视作文档，其他的行则都要和 Ruby 代码对应。例如，功能文件中下面这行</p>
 
-<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="k">Given </span><span class="nf">a user visits the signin page</span>
+<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="nf">Given</span> a user visits the signin page
 </pre></div>
 </div>
 <p>对应到步骤定义中的</p>
@@ -1388,8 +1388,8 @@
 </div>
 <p>你可能觉得这行代码很眼熟，不错，这就是前面用过的 Capybara 提供的方法，Cucumber 的步骤定义文件会自动引入 Capybara。接下来的两行代码实现也同样眼熟。如下的场景步骤：</p>
 
-<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="k">When </span><span class="nf">he submits invalid signin information</span>
-<span class="k">Then </span><span class="nf">he should see an error message</span>
+<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="nf">When</span> he submits invalid signin information
+<span class="nf">Then</span> he should see an error message
 </pre></div>
 </div>
 <p>对应到步骤定义文件中的</p>
@@ -1399,7 +1399,7 @@
 <span class="k">end</span>
 
 <span class="no">Then</span> <span class="sr">/^he should see an error message$/</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
+  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1407,7 +1407,7 @@
 
 <p>场景中接下来的步骤也可以做类似的处理。最终的步骤定义文件如代码 8.33 所示。你可以一次只添加一个步骤，然后执行下面的代码，直到测试都通过为止：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>cucumber features/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>cucumber features/
 </pre></div>
 </div>
 <div class="codeblock has-caption" id="codeblock-8-32"><p class="caption"><span>代码 8.32：</span>使登录功能通过的步骤定义</p><p class="file"><code>features/step_definitions/authentication_steps.rb</code></p><div class="highlight type-ruby"><pre><span class="no">Given</span> <span class="sr">/^a user visits the signin page$/</span> <span class="k">do</span>
@@ -1419,32 +1419,32 @@
 <span class="k">end</span>
 
 <span class="no">Then</span> <span class="sr">/^he should see an error message$/</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
+  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="no">Given</span> <span class="sr">/^the user has an account$/</span> <span class="k">do</span>
-  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s2">"user@example.com"</span><span class="p">,</span>
-                      <span class="ss">password</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">,</span> <span class="n">password_confirmation</span><span class="p">:</span> <span class="s2">"foobar"</span><span class="p">)</span>
+  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+                      <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="no">When</span> <span class="sr">/^the user submits valid signin information$/</span> <span class="k">do</span>
-  <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span>
-  <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="vi">@user</span><span class="o">.</span><span class="n">password</span>
+  <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">email</span>
+  <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="vi">@user</span><span class="p">.</span><span class="nf">password</span>
   <span class="n">click_button</span> <span class="s2">"Sign in"</span>
 <span class="k">end</span>
 
 <span class="no">Then</span> <span class="sr">/^he should see his profile page$/</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_title</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_title</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="no">Then</span> <span class="sr">/^he should see a signout link$/</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">signout_path</span><span class="p">)</span>
+  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">signout_path</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>添加了代码 8.33，Cucumber 测试应该就可以通过了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>cucumber features/
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>cucumber features/
 </pre></div>
 </div>
 <h3 id='section-8-3-3'><span>8.3.3</span> 小技巧：自定义 RSpec 匹配器</h3>
@@ -1467,17 +1467,17 @@
     <span class="k">end</span>
 
     <span class="n">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
-      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
       <span class="n">before</span> <span class="k">do</span>
-        <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">upcase</span>
-        <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+        <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">.</span><span class="nf">upcase</span>
+        <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
         <span class="n">click_button</span> <span class="s2">"Sign in"</span>
       <span class="k">end</span>
 
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href</span><span class="p">:</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href</span><span class="p">:</span> <span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
-      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href</span><span class="p">:</span> <span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Profile'</span><span class="p">,</span>     <span class="ss">href: </span><span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign out'</span><span class="p">,</span>    <span class="ss">href: </span><span class="n">signout_path</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">have_link</span><span class="p">(</span><span class="s1">'Sign in'</span><span class="p">,</span> <span class="ss">href: </span><span class="n">signin_path</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -1487,13 +1487,13 @@
 
 <p>Cucumber 把功能描述和步骤定义分开，可以很好的实现抽象层面的行为。例如，下面这个描述</p>
 
-<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="k">Then </span><span class="nf">he should see an error message</span>
+<div class="codeblock"><div class="highlight type-gherkin"><pre><span class="nf">Then</span> he should see an error message
 </pre></div>
 </div>
 <p>表达的意思是，期望看到一个错误提示信息。如下的步骤定义则检测了能否实现这个期望：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">Then</span> <span class="sr">/^he should see an error message$/</span> <span class="k">do</span>
-  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
+  <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1511,9 +1511,9 @@
 </div>
 <p>我们可以在 <a href="chapter5.html#section-5-3-4">5.3.4 节</a> 中定义 <code>full_title</code> 测试帮助方法的文件中定义这个匹配器，代码如下：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">RSpec</span><span class="o">::</span><span class="no">Matchers</span><span class="o">.</span><span class="n">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">RSpec</span><span class="o">::</span><span class="no">Matchers</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
   <span class="n">match</span> <span class="k">do</span> <span class="o">|</span><span class="n">page</span><span class="o">|</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text: </span><span class="n">message</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1521,8 +1521,8 @@
 <p>我们还可以为一些常用的操作定义帮助方法，例如：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">def</span> <span class="nf">valid_signin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-  <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
-  <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+  <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+  <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
   <span class="n">click_button</span> <span class="s2">"Sign in"</span>
 <span class="k">end</span>
 </pre></div>
@@ -1532,14 +1532,14 @@
 <div class="codeblock has-caption" id="codeblock-8-33"><p class="caption"><span>代码 8.33：</span>添加一个帮助函数和一个 RSpec 自定义匹配器</p><p class="file"><code>spec/support/utilities.rb</code></p><div class="highlight type-ruby"><pre><span class="kp">include</span> <span class="no">ApplicationHelper</span>
 
 <span class="k">def</span> <span class="nf">valid_signin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-  <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
-  <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">password</span>
+  <span class="n">fill_in</span> <span class="s2">"Email"</span><span class="p">,</span>    <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+  <span class="n">fill_in</span> <span class="s2">"Password"</span><span class="p">,</span> <span class="ss">with: </span><span class="n">user</span><span class="p">.</span><span class="nf">password</span>
   <span class="n">click_button</span> <span class="s2">"Sign in"</span>
 <span class="k">end</span>
 
-<span class="no">RSpec</span><span class="o">::</span><span class="no">Matchers</span><span class="o">.</span><span class="n">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
+<span class="no">RSpec</span><span class="o">::</span><span class="no">Matchers</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:have_error_message</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
   <span class="n">match</span> <span class="k">do</span> <span class="o">|</span><span class="n">page</span><span class="o">|</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text</span><span class="p">:</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-error'</span><span class="p">,</span> <span class="ss">text: </span><span class="n">message</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1552,7 +1552,7 @@
 <p>和</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
-  <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">before</span> <span class="p">{</span> <span class="n">valid_signin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -1568,17 +1568,17 @@
 
 <p>在继续阅读之前，先把本章的改动合并到主分支吧：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Finish sign in"</span>
-<span class="nv">$ </span>git checkout master
-<span class="nv">$ </span>git merge sign-in-out
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Finish sign in"</span>
+<span class="gp">$ </span>git checkout master
+<span class="gp">$ </span>git merge sign-in-out
 </pre></div>
 </div>
 <p>然后再推送到 GitHub 和 Heroku “生产环境”服务器：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git push
-<span class="nv">$ </span>git push heroku
-<span class="nv">$ </span>heroku run rake db:migrate
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git push
+<span class="gp">$ </span>git push heroku
+<span class="gp">$ </span>heroku run rake db:migrate
 </pre></div>
 </div>
 <h2 id='section-8-5'><span>8.5</span> 练习</h2>

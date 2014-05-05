@@ -72,9 +72,9 @@
 
 <p>在这一节我们要规划一下这个演示程序。和 <a href="chapter1.html#section-1-2-3">1.2.3 节</a>类似，我们先使用 <code>rails</code> 命令生成程序的骨架。</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span><span class="nb">cd</span> ~/rails_projects
-<span class="nv">$ </span>rails new demo_app
-<span class="nv">$ </span><span class="nb">cd </span>demo_app
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span><span class="nb">cd</span> ~/rails_projects
+<span class="gp">$ </span>rails new demo_app
+<span class="gp">$ </span><span class="nb">cd </span>demo_app
 </pre></div>
 </div>
 <p>然后我们用一个文本编辑器修改 <code>Gemfile</code>，写入代码 2.1 所示的代码。</p>
@@ -108,9 +108,9 @@
 
 <p>和 <a href="chapter1.html#section-1-4-1">1.4.1 节</a>一样，在本地安装 gem 时指定 <code>--without production</code> 选项不安装生产环境所需的 gem：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle install --without production
-<span class="nv">$ </span>bundle update
-<span class="nv">$ </span>bundle install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle install --without production
+<span class="gp">$ </span>bundle update
+<span class="gp">$ </span>bundle install
 </pre></div>
 </div>
 <p>（再次提醒，如果 Bundler 提示一个和 <code>readline</code> 有关的错误，请在 <code>Gemfile</code> 中加入 <code>gem rb-readline</code>。）</p>
@@ -120,15 +120,15 @@
 </div>
 <p>最后我们还要把演示程序纳入版本控制。提醒一下，<code>rails</code> 命令会生成一个默认的 <code>.gitignore</code> 文件，不过对于你所使用的系统而言代码 1.7 中的代码似乎更有用。然后初始化一个 Git 仓库，做第一次提交：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git init
-<span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Initial commit"</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git init
+<span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Initial commit"</span>
 </pre></div>
 </div>
 <p>你可以重新创建一个仓库然后将代码推送到 GitHub：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git remote add origin https://github.com/&lt;username&gt;/demo_app.git
-<span class="nv">$ </span>git push -u origin master
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git remote add origin https://github.com/&lt;username&gt;/demo_app.git
+<span class="gp">$ </span>git push -u origin master
 </pre></div>
 </div>
 <p>（和第一章中的程序一样，注意不要使用 GitHub 自动生成的 <code>README</code> 文件初始化仓库。）</p>
@@ -162,7 +162,7 @@
 
 <p>将 <code>scaffold</code> 传递给 <code>rails generate</code> 就可以使用 Rails 的脚手架功能了。传给 <code>scaffold</code> 的参数是资源名的单数形式（本例中就是 <code>User</code>），后面可以再跟着指定数据模型的字段：<sup class="footnote" id="fnref-2-2"><a href="#fn-2-2" rel="footnote">2</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate scaffold User name:string email:string
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate scaffold User name:string email:string
       invoke  active_record
       create    db/migrate/20130305221714_create_users.rb
       create    app/models/user.rb
@@ -203,8 +203,8 @@
 
 <p>接下来我们要用 Rake（参见<a href="chapter2.html#aside-2-1">旁注 2.1</a>）来迁移（migrate）数据库：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="o">==</span>  CreateUsers: <span class="nv">migrating</span> <span class="o">====================================================</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<span class="o">==</span>  CreateUsers: migrating <span class="o">====================================================</span>
 -- create_table<span class="o">(</span>:users<span class="o">)</span>
    -&gt; 0.0017s
 <span class="o">==</span>  CreateUsers: migrated <span class="o">(</span>0.0018s<span class="o">)</span> <span class="o">===========================================</span>
@@ -214,7 +214,7 @@
 
 <p>然后我们可以使用 <code>rails s</code>（<code>rails server</code> 的缩略形式）来启动本地服务器：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails s
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails s
 </pre></div>
 </div>
 <p>现在演示程序应该已经可以通过 <a href="http://localhost:3000/">http://localhost:3000/</a> 查看了。</p>
@@ -224,19 +224,19 @@
 
   <p>在 Unix 中，在将源码编译成可执行程序的过程中，<a href="http://en.wikipedia.org/wiki/Make_(software)">make</a> 组件起了很重要的作用。很多程序员的身体甚至已经对下面的代码产生了条件反射</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>./configure <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> sudo make install
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>./configure <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> sudo make install
 </pre></div>
 </div>
   <p>这行代码在 Unix 中（包括 Linux 和 Mac OS X）会对代码进行编译。</p>
 
   <p>Rake 就是 Ruby 版的 make，用 Ruby 编写的类 make 程序。Rails 灵活的运用了 Rake 的功能，特别是提供了一些用来开发基于数据库的 Web 程序所需的任务。<code>rake db:migrate</code> 是最常用的了，还有很多其他的命令，你可以运行 <code>rake -T db</code> 来查看所有和数据库有关的任务：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake -T db
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake -T db
 </pre></div>
 </div>
   <p>如果要查看所有的 Rake 任务，运行</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake -T
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake -T
 </pre></div>
 </div>
   <p>任务列表看起来有点让人摸不着头脑，不过现在无需担心，你不需要知道所有的（或大多数）命令。学完本教程后你会知道所有重要的命令。</p>
@@ -302,7 +302,7 @@
   <li>控制器将生成的 HTML 发送回浏览器。<sup class="footnote" id="fnref-2-3"><a href="#fn-2-3" rel="footnote">3</a></sup></li>
 </ol><p>首先我们要从浏览器中发起一个请求，你可以直接在浏览器地址栏中敲入地址，也可以点击页面中的链接。（图 2.11 中的第 1 步）接着请求到达 Rails 路由（第 2 步），根据 URL 将其分发到适当的控制器动作（而且还会考量请求的类型，<a href="chapter3.html#aside-3-2">旁注 3.2</a> 中会介绍）。将 Users 资源中相关的 URL 映射到控制器动作的代码如代码 2.2 所示。这些代码会按照表格 2.1 中的对应关系做映射。（<code>:users</code> 是一个 Symbol，<a href="chapter4.html#section-4-3-3">4.3.3 节</a>会介绍）</p>
 
-<div class="codeblock has-caption" id="codeblock-2-2"><p class="caption"><span>代码 2.2：</span>Rails 的路由设置，包含一条 Users 资源的规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">DemoApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-2-2"><p class="caption"><span>代码 2.2：</span>Rails 的路由设置，包含一条 Users 资源的规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">DemoApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -428,7 +428,7 @@
 <span class="o">.</span>
 <span class="o">.</span>
   <span class="k">def</span> <span class="nf">index</span>
-    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">all</span>
   <span class="k">end</span>
   <span class="o">.</span>
   <span class="o">.</span>
@@ -444,32 +444,32 @@
 </div>
 <p>一旦定义了 <code>@users</code> 变量，控制器就会调用视图代码（第 6 步），其代码如代码 2.6 所示。以 <code>@</code> 开头的变量是“实例变量（instance variable）”，在视图中自动可用。在本例中，<code>index.html.erb</code> 视图的代码会遍历 <code>@users</code>，为每个用户生成一行 HTML。（记住，你现在可能读不懂这些代码，这里只是让你看一下这些代码是什么样子。）</p>
 
-<div class="codeblock has-caption" id="codeblock-2-6"><p class="caption"><span>代码 2.6：</span>用户索引页面的视图代码</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="x">&lt;h1&gt;Listing users&lt;/h1&gt;</span>
+<div class="codeblock has-caption" id="codeblock-2-6"><p class="caption"><span>代码 2.6：</span>用户索引页面的视图代码</p><p class="file"><code>app/views/users/index.html.erb</code></p><div class="highlight type-erb"><pre><span class="nt">&lt;h1&gt;</span>Listing users<span class="nt">&lt;/h1&gt;</span>
 
-<span class="x">&lt;table&gt;</span>
-<span class="x">  &lt;tr&gt;</span>
-<span class="x">    &lt;th&gt;Name&lt;/th&gt;</span>
-<span class="x">    &lt;th&gt;Email&lt;/th&gt;</span>
-<span class="x">    &lt;th&gt;&lt;/th&gt;</span>
-<span class="x">    &lt;th&gt;&lt;/th&gt;</span>
-<span class="x">    &lt;th&gt;&lt;/th&gt;</span>
-<span class="x">  &lt;/tr&gt;</span>
+<span class="nt">&lt;table&gt;</span>
+  <span class="nt">&lt;tr&gt;</span>
+    <span class="nt">&lt;th&gt;</span>Name<span class="nt">&lt;/th&gt;</span>
+    <span class="nt">&lt;th&gt;</span>Email<span class="nt">&lt;/th&gt;</span>
+    <span class="nt">&lt;th&gt;&lt;/th&gt;</span>
+    <span class="nt">&lt;th&gt;&lt;/th&gt;</span>
+    <span class="nt">&lt;th&gt;&lt;/th&gt;</span>
+  <span class="nt">&lt;/tr&gt;</span>
 
-<span class="cp">&lt;%</span> <span class="vi">@users</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">  &lt;tr&gt;</span>
-<span class="x">    &lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
-<span class="x">    &lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
-<span class="x">    &lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Show'</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
-<span class="x">    &lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Edit'</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
-<span class="x">    &lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Destroy'</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span><span class="p">,</span>
-                                     <span class="ss">data</span><span class="p">:</span> <span class="p">{</span> <span class="ss">confirm</span><span class="p">:</span> <span class="s1">'Are you sure?'</span> <span class="p">}</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
-<span class="x">  &lt;/tr&gt;</span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">&lt;/table&gt;</span>
+<span class="cp">&lt;%</span> <span class="vi">@users</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;tr&gt;</span>
+    <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">user</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Show'</span><span class="p">,</span> <span class="n">user</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Edit'</span><span class="p">,</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Destroy'</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span><span class="p">,</span>
+                                     <span class="ss">data: </span><span class="p">{</span> <span class="ss">confirm: </span><span class="s1">'Are you sure?'</span> <span class="p">}</span> <span class="cp">%&gt;</span><span class="nt">&lt;/td&gt;</span>
+  <span class="nt">&lt;/tr&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
 
-<span class="x">&lt;br /&gt;</span>
+<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
 
-<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'New User'</span><span class="p">,</span> <span class="n">new_user_path</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'New User'</span><span class="p">,</span> <span class="n">new_user_path</span> <span class="cp">%&gt;</span>
 </pre></div>
 </div>
 <p>视图会将代码转换成 HTML（第 7 步），然后控制器将其返回浏览器显示出来（第 8 步）。</p>
@@ -494,7 +494,7 @@
 
 <p>和 Users 资源一样，我们使用 <code>rails generate scaffold</code> 命令生成 Microposts 资源的代码，实现图 2.3 中所示的数据模型：<sup class="footnote" id="fnref-2-5"><a href="#fn-2-5" rel="footnote">5</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails generate scaffold Micropost content:string user_id:integer
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails generate scaffold Micropost content:string user_id:integer
       invoke  active_record
       create    db/migrate/20130307005528_create_microposts.rb
       create    app/models/micropost.rb
@@ -533,8 +533,8 @@
 </div>
 <p>然后要更新数据库，使用最新的数据模型，我们要执行类似 <a href="chapter2.html#section-2-2">2.2 节</a>中用到的迁移命令：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake db:migrate
-<span class="o">==</span>  CreateMicroposts: <span class="nv">migrating</span> <span class="o">===============================================</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>bundle <span class="nb">exec </span>rake db:migrate
+<span class="o">==</span>  CreateMicroposts: migrating <span class="o">===============================================</span>
 -- create_table<span class="o">(</span>:microposts<span class="o">)</span>
    -&gt; 0.0023s
 <span class="o">==</span>  CreateMicroposts: migrated <span class="o">(</span>0.0026s<span class="o">)</span> <span class="o">======================================</span>
@@ -577,7 +577,7 @@
       <td><code>destroy</code></td>
       <td>删除 ID 为 1 的微博</td>
     </tr></tbody></table></div>
-<div class="codeblock has-caption" id="codeblock-2-7"><p class="caption"><span>代码 2.7：</span>Rails 的路由配置，有一条针对 Microposts 资源的新规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">DemoApp</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-2-7"><p class="caption"><span>代码 2.7：</span>Rails 的路由配置，有一条针对 Microposts 资源的新规则</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">DemoApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">resources</span> <span class="ss">:microposts</span>
   <span class="n">resources</span> <span class="ss">:users</span>
   <span class="o">.</span>
@@ -652,7 +652,7 @@
   <img src="figures/demo_micropost_index_rails_3.png" alt="demo micropost index rails3" /><p class="caption"><span>图 2.13：</span>微博索引页面（<a href="http://localhost:3000/microposts">/microposts</a>）</p>
 </div>
 <div class="codeblock has-caption" id="codeblock-2-9"><p class="caption"><span>代码 2.9：</span>现在微博的长度最长为 140 个字符</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">140</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -673,7 +673,7 @@
 </div>
 <div class="codeblock has-caption" id="codeblock-2-11"><p class="caption"><span>代码 2.11：</span>一篇微博只属于一个用户</p><p class="file"><code>app/models/micropost.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">Micropost</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
-  <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">length</span><span class="p">:</span> <span class="p">{</span> <span class="ss">maximum</span><span class="p">:</span> <span class="mi">140</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">140</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -684,16 +684,16 @@
 </div>
 <p>在<a href="chapter10.html">第 10 章</a>和<a href="chapter11.html">第 11 章</a>中，我们将使用用户和微博之间的关联来显示某一个用户的所有微博，并且生成一个和 Twitter 类似的动态列表。我们可以使用控制台（console）来检查一下用户与微博之间关联的实现，控制台是和 Rails 应用程序交互很有用的工具。在命令行中执行 <code>rails console</code> 来启动控制台，然后使用 <code>User.first</code> 从数据库中读取第一个用户（并将读取的数据赋值给 <code>first_user</code> 变量）：<sup class="footnote" id="fnref-2-7"><a href="#fn-2-7" rel="footnote">7</a></sup></p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>rails console
-&gt;&gt; <span class="nv">first_user</span> <span class="o">=</span> User.first
-<span class="o">=</span>&gt; <span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "michael@example.org",</span>
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>rails console
+<span class="gp">&gt;&gt; </span>first_user <span class="o">=</span> User.first
+<span class="gp">=&gt; </span><span class="c">#&lt;User id: 1, name: "Michael Hartl", email: "michael@example.org",</span>
 created_at: <span class="s2">"2013-03-06 02:01:31"</span>, updated_at: <span class="s2">"2013-03-06 02:01:31"</span>&gt;
-&gt;&gt; first_user.microposts
-<span class="o">=</span>&gt; <span class="o">[</span><span class="c">#&lt;Micropost id: 1, content: "First micropost!", user_id: 1, created_at:</span>
+<span class="gp">&gt;&gt; </span>first_user.microposts
+<span class="gp">=&gt; </span><span class="o">[</span><span class="c">#&lt;Micropost id: 1, content: "First micropost!", user_id: 1, created_at:</span>
 <span class="s2">"2013-03-06 02:37:37"</span>, updated_at: <span class="s2">"2013-03-06 02:37:37"</span>&gt;, <span class="c">#&lt;Micropost id: 2,</span>
 content: <span class="s2">"Second micropost"</span>, user_id: 1, created_at: <span class="s2">"2013-03-06 02:38:54"</span>,
-updated_at: <span class="s2">"2013-03-06 02:38:54"</span>&gt;<span class="o">]</span>
-&gt;&gt; <span class="nb">exit</span>
+updated_at: <span class="s2">"2013-03-06 02:38:54"</span>&gt;]
+<span class="gp">&gt;&gt; </span><span class="nb">exit</span>
 </pre></div>
 </div>
 <p>（上面代码中我包含了最后一行用来演示如何退出控制台，在大多数系统中也可以使用 Ctrl-d 组合键。）然后使用 <code>first_user.microposts</code> 获取用户的微博：Active Record 会自动返回 <code>user_id</code> 和 <code>first_user</code> 的 id 相同的（<code>1</code>）所有微博。我们将在<a href="chapter10.html">第 10 章</a>和<a href="chapter11.html">第 11 章</a>更详细的学习 Active Record 中这种关联的实现。</p>
@@ -755,25 +755,25 @@ updated_at: <span class="s2">"2013-03-06 02:38:54"</span>&gt;<span class="o">]</
 
 <p>完成 Microposts 资源之后，是时候将代码推送到 GitHub 的仓库中了：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Finish demo app"</span>
-<span class="nv">$ </span>git push
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Finish demo app"</span>
+<span class="gp">$ </span>git push
 </pre></div>
 </div>
 <p>通常情况下，你应该经常做一些很小的提交，不过对于本章来说最后做一次大的提交也可以。</p>
 
 <p>然后，你也可以按照 <a href="chapter1.html#section-1-4">1.4 节</a>中介绍的方法将演示程序部署到 Heroku：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku create
-<span class="nv">$ </span>rake assets:precompile
-<span class="nv">$ </span>git add .
-<span class="nv">$ </span>git commit -m <span class="s2">"Add precompiled assets for Heroku"</span>
-<span class="nv">$ </span>git push heroku master
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku create
+<span class="gp">$ </span>rake assets:precompile
+<span class="gp">$ </span>git add .
+<span class="gp">$ </span>git commit -m <span class="s2">"Add precompiled assets for Heroku"</span>
+<span class="gp">$ </span>git push heroku master
 </pre></div>
 </div>
 <p>最后，迁移生产环境中的数据库：</p>
 
-<div class="codeblock"><div class="highlight type-sh"><pre><span class="nv">$ </span>heroku run rake db:migrate
+<div class="codeblock"><div class="highlight type-shell"><pre><span class="gp">$ </span>heroku run rake db:migrate
 </pre></div>
 </div>
 <p>上面的代码会用 User 和 Micropost 数据模型更新 Heroku 上的数据库。</p>
