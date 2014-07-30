@@ -5,7 +5,7 @@
 	<title>第 1 章 从零到部署</title>
     <meta name="author" content="Andor Chen" />
     <link rel="stylesheet" href="/assets/styles/style.css" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.staticfile.org/jquery/1.8.2/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/global.js"></script>
 </head>
 
@@ -92,7 +92,7 @@
   	<div class="main">
   		<p>欢迎学习《Ruby on Rails 教程》。本书的目标是成为对“如果想学习使用 Ruby on Rails 进行 Web 开发，我应该从哪儿开始？”这一问题的最好答案。学习完本书的内容之后，你将具备使用 Rails 进行开发和部署 Web 程序的技能。同时你还能够通过一些进阶的书籍、博客和视频教程等活跃的 Rails 教学体系继续深造。本书基于 Rails 4，这里的知识代表着 Web 开发的发展方向。（《Ruby on Rails 教程》的最新版本可以从<a href="http://railstutorial.org/">本书的网站</a>上获取。）</p>
 
-<p>（你现在看到的是针对 Rails 4 的版本，所有内容都和 Rails 4 兼容，但这并不是一个新版本，因为 Rails 4 的变化还没大到新出一版。作为一本入门书，本书和之前针对 Rails 3.2 的版本差别很小。小变化虽多（详见<a href="chapter1.html#aside-1-1">旁注 1.1</a>），但主要的变化是一个称为“健壮参数”的新安全技术，会在 <a href="chapter7.html#section-7-3-2">7.3.2 节</a>中介绍。只要 Rails 的变化足大，我就会新出一版，介绍 Turbolinks 和俄罗斯套娃缓存等技术，还会介绍 RSpec 的新用法，例如“功能测试”。）</p>
+<p>（你现在看到的是针对 Rails 4 的版本，所有内容都和 Rails 4 兼容，但这并不是一个新版本，因为 Rails 4 的变化还没大到新出一版。作为一本入门书，本书和之前针对 Rails 3.2 的版本差别很小。小变化虽多（详见<a href="chapter1.html#aside-1-1">旁注 1.1</a>），但主要的变化是一个称为“健壮参数”的新安全技术，会在 <a href="chapter7.html#section-7-3-2">7.3.2 节</a>中介绍。只要 Rails 的变化足够大，我就会新出一版，介绍 Turbolinks 和俄罗斯套娃缓存等技术，还会介绍 RSpec 的新用法，例如“功能测试”。）</p>
 
           <div class="aside box" id="aside-1-1">
   <h4><span>旁注 1.1：</span>与第二版的差异</h4>
@@ -135,7 +135,7 @@
 
 <p>自 2004 年出现以来，Rails 迅速成为动态 Web 程序开发领域功能最强大、最受欢迎的框架之一。从初创的项目到很多的大公司都在使用 Rails：<a href="http://37signals.com/">37signals</a>，<a href="http://github.com/">Github</a>，<a href="http://shopify.com/">Shopify</a>，<a href="http://scribd.com/">Scribd</a>，<a href="http://twitter.com/">Twitter</a>，<a href="http://disney.com">Disney</a>，<a href="http://hulu.com/">Hulu</a> 和 <a href="http://yellowpages.com/">Yellow Pages</a> 等，<a href="http://rubyonrails.org/applications">这个列表</a>还很长。有很多 Web 开发工作室也在使用 Rails，比如 <a href="http://entp.com/">ENTP</a>，<a href="http://thoughtbot.com/">thoughtbot</a>，<a href="http://pivotallabs.com/">Pivotal Labs</a> 和 <a href="http://hashrocket.com/">Hashrocket</a>，以及无数的独立顾问，培训人员和项目承包商。</p>
 
-<p>是什么使得 Rails 如此成功呢？首先，Ruby on Rails 是完全开源的，基于 <a href="http://www.opensource.org/licenses/mit-license.php">MIT 协议</a>发布，可以免费下载、使用。Rails 的成功有很大一部分是得益于它优雅而紧凑的设计。研习 Ruby 语言的高可扩展性后，Rails 开发了一套用于开发 Web 程序的“<a href="http://en.wikipedia.org/wiki/Domain_Specific_Language">领域专属语言</a>”（Domain-speific Language, DSL）。所以 Web 编程中像生成 HTML、创建数据模型、URL 路由等任务在 Rails 中都很容易实现，最终得到的程序代码很简洁而且可读性较高。</p>
+<p>是什么使得 Rails 如此成功呢？首先，Ruby on Rails 是完全开源的，基于 <a href="http://www.opensource.org/licenses/mit-license.php">MIT 协议</a>发布，可以免费下载、使用。Rails 的成功有很大一部分是得益于它优雅而紧凑的设计。研习 Ruby 语言的高可扩展性后，Rails 开发了一套用于开发 Web 程序的“<a href="http://en.wikipedia.org/wiki/Domain_Specific_Language">领域专属语言</a>”（Domain-specific Language, DSL）。所以 Web 编程中像生成 HTML、创建数据模型、URL 路由等任务在 Rails 中都很容易实现，最终得到的程序代码很简洁而且可读性较高。</p>
 
 <p>Rails 还会快速跟进 Web 领域最新的技术和框架架构技术。例如，Rails 是最早实现 REST 这个 Web 程序架构体系的框架之一（这一体系将贯穿本书）。当其他的框架开发出成功的新技术后，Rails 的创建者 DHH 及其核心开发团队会毫不犹豫的将其吸纳进来。或许最典型的例子就是 Rails 和 Merb （和 Rails 类似的 Ruby Web 框架）两个项目的合并，这样一来 Rails 就继承了 Merb 的模块化设计、稳定的 API，性能也得到了提升。</p>
 
@@ -1219,13 +1219,13 @@ jhyicevg.herokuapp.com
 
 <div class="footnotes">
   <ol><li id="fn-1-1">
-      <p>URI 是统一资源标识符（Uniform Resources Identifier）的简称，较少使用的 URL 是统一资源定位符（Uniform Resource Locator）的简称。在实际使用中，URL 一般和浏览器地址栏中的内容一样。<a href="#fnref-1-1" rel="reference">↩</a></p>
+      <p>URI 是统一资源标识符（Uniform Resource Identifier）的简称，较少使用的 URL 是统一资源定位符（Uniform Resource Locator）的简称。在实际使用中，URL 一般和浏览器地址栏中的内容一样。<a href="#fnref-1-1" rel="reference">↩</a></p>
     </li>
     <li id="fn-1-t1">
-      <p>译者注：指 Twiiter<a href="#fnref-1-t1" rel="reference">↩</a></p>
+      <p>译者注：指 Twitter。<a href="#fnref-1-t1" rel="reference">↩</a></p>
     </li>
     <li id="fn-1-t2">
-      <p>译者注：Ruby 中文社区也有一些质量比较高的资源，如 <a href="http://railscasts-china.com">RailsCasts China</a>，<a href="http://happycasts.net/">Happycasts</a> 等<a href="#fnref-1-t2" rel="reference">↩</a></p>
+      <p>译者注：Ruby 中文社区也有一些质量比较高的资源，如 <a href="http://railscasts-china.com">RailsCasts China</a>，<a href="http://happycasts.net/">Happycasts</a> 等。<a href="#fnref-1-t2" rel="reference">↩</a></p>
     </li>
     <li id="fn-1-2">
       <p>阅读本书时你会发现内部章节之间的链接很有用，你可以查看引用的内容然后快速的回到之前的位置。在浏览器中阅读时这种操作很简单，直接点击浏览器的后退按钮就可以了，不过 Adobe Reader 和 OS X 的预览程序也为 PDF 提供了这种功能。在 Reader 中，在文档中点击鼠标右键，然后选择“上一个视图”就可以返回了。在预览程序中要使用“浏览（Go）”菜单：浏览-&gt;返回（Back）。<a href="#fnref-1-2" rel="reference">↩</a></p>
@@ -1276,7 +1276,7 @@ jhyicevg.herokuapp.com
       <p>Heroku 可以正常运行任意一个使用 <a href="http://rack.rubyforge.org/">Rack 中间件</a>的 Ruby Web 程序，Rack 为 Web 框架和 Web 服务器之间提供了标准接口。Ruby 社区很严格的承袭了这一标准，很多框架都是这样做的，例如 <a href="http://www.sinatrarb.com/">Sinatra</a>、<a href="http://ramaze.net/">Ramaze</a>、<a href="http://camping.rubyforge.org/files/README.html">Camping</a> 和 Rails，这也就意味着 Heroku 基本上支持所有的 Ruby Web 应用程序。<a href="#fnref-1-13" rel="reference">↩</a></p>
     </li>
     <li id="fn-1-t4">
-      <p>译者注：英文版原书的网站托管于 Heroku，本中文版在 Github（<a href="http://railstutorial-china.org">http://railstutorial-china.org</a>）上<a href="#fnref-1-t4" rel="reference">↩</a></p>
+      <p>译者注：英文版原书的网站托管于 Heroku，本中文版在 Github（<a href="http://railstutorial-china.org">http://railstutorial-china.org</a>）上。<a href="#fnref-1-t4" rel="reference">↩</a></p>
     </li>
   </ol></div>
   	</div>
