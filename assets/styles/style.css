@@ -576,7 +576,6 @@ a {
     background: rgba(255,255,255,.7);
     border-bottom: 3px solid #666;
     margin: 30px 0;
-    overflow: hidden;
 
     -moz-border-radius-bottomright: 3px;
     -webkit-border-bottom-right-radius: 3px;
@@ -668,6 +667,89 @@ a.btn:hover, a.btn:active {
 .menu ol {
   list-style-type: none;
   padding-left: 0;
+}
+
+/* Also By */
+
+.also-by {
+  background: #eee;
+}
+.also-by-item {
+  padding: 20px 20px 20px 170px;
+}
+
+.also-by-item img {
+  border: 1px solid #ccc;
+  float: left;
+  margin-left: -150px;
+}
+
+.also-by-item h3 {
+  margin: 0;
+}
+
+/* Dropdown menu */
+.dropdown {
+  position: relative;
+}
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  vertical-align: middle;
+  border-top: 4px solid;
+  border-right: 4px solid rgba(0, 0, 0, 0);
+  border-left: 4px solid rgba(0, 0, 0, 0);
+}
+.open .caret {
+  border-top: none;
+  border-bottom: 4px solid;
+}
+.open>a, .open> a.btn:hover, .open>a.btn:focus {
+  background-image: -webkit-linear-gradient(top, #EDBF13, #F4CF2D);
+  background: -moz-linear-gradient(top, #EDBF13 0%, #F4CF2D 100%);
+  outline: none;
+}
+.open>.dropdown-menu {
+  display: block;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #FFF;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #CCC;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+.dropdown-menu>li>a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+  color: #262626;
+  text-decoration: none;
+  background-color: #F5F5F5;
 }
 
 /* TOC */
@@ -808,27 +890,6 @@ a.btn:hover, a.btn:active {
 .main .tabular tr.bottom_bar {
   border-bottom: 1px solid black;
 }
-
-/* Also By */
-
-.also-by {
-  background: #eee;
-}
-.also-by-item {
-  padding: 20px 20px 20px 170px;
-  overflow: hidden;
-}
-
-.also-by-item img {
-  border: 1px solid #ccc;
-  float: left;
-  margin-left: -150px;
-}
-
-.also-by-item h3 {
-  margin: 0;
-}
-
 
 /* Aside */
 
