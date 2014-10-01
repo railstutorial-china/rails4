@@ -204,10 +204,10 @@
       <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'| Home'</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>试试看你能否猜到为什么我们添加了一个新测试而不是直接修改之前的测试。（提示：答案在 <a href="chapter3.html#section-3-3-1">3.3.1 节</a>中。）</p>
@@ -255,10 +255,10 @@ Loading development environment
 
 <div class="codeblock"><div class="highlight type-ruby"><pre>  <span class="c1"># Returns the full title on a per-page basis.</span>
   <span class="k">def</span> <span class="nf">full_title</span><span class="p">(</span><span class="n">page_title</span><span class="p">)</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-  <span class="k">end</span>
+    <span class="p">.</span>
+    <span class="nf">.</span>
+    <span class="p">.</span>
+  <span class="nf">end</span>
 </pre></div>
 </div>
 <p>第一行就是注释，说明了后面方法的作用。</p>
@@ -815,7 +815,7 @@ NoMethodError: undefined method `reverse'</span> <span class="k">for</span> :foo
 </div>
 <p>第二个命令把 hashrocket 形式的键值对变成了键后跟着一个冒号然后再跟着一个值的形式：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"michael@example.com"</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="p">{</span> <span class="ss">name: </span><span class="s2">"Michael Hartl"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"michael@example.com"</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>这种结构更好的沿袭了其他语言（例如 JavaScript）中 Hash 的表现方式，在 Rails 社区中也越来越受欢迎。这两种方式现在都在使用，所以你要能识别它们。</p>
@@ -1006,7 +1006,8 @@ stylesheet_link_tag "application", media: "all",
 <p>这个继承关系如图 4.1 所示。我们可以看到，<code>String</code> 的父类是 <code>Object</code>，<code>Object</code> 的父类是 <code>BasicObject</code>，但是 <code>BasicObject</code> 就没有父类了。这样的关系对每个 Ruby 对象都是适用的：只要在类的继承关系上往上多走几层就会发现 Ruby 中的每个类最终都是继承自 <code>BasicObject</code>，而其本身没有父类。这就是“Ruby 中一切皆对象”技术层面的意义。</p>
 
 <div class="figure" id="figure-4-1">
-  <img src="figures/string_inheritance_ruby_1_9.png" alt="string inheritance ruby19" /><p class="caption"><span>图 4.1：</span><code>String</code> 类的继承关系</p>
+  <img src="figures/string_inheritance_ruby_1_9.png" alt="string inheritance ruby19" />
+  <p class="caption"><span>图 4.1：</span><code>String</code> 类的继承关系</p>
 </div>
 <p>要更深入的理解类，最好的方法就是自己动手编写。我们来创建一个名为 <code>Word</code> 的类，包含一个名为 <code>palindrome?</code> 方法，如果单词顺读和反读时都一样则返回 <code>true</code>：</p>
 
@@ -1062,7 +1063,8 @@ stylesheet_link_tag "application", media: "all",
 <p>继承关系如图 4.2 所示。</p>
 
 <div class="figure" id="figure-4-2">
-  <img src="figures/word_inheritance_ruby_1_9.png" alt="word inheritance ruby19" /><p class="caption"><span>图 4.2：</span>代码 4.8 中定义的 <code>Word</code> 类（非内置类）的继承关系</p>
+  <img src="figures/word_inheritance_ruby_1_9.png" alt="word inheritance ruby19" />
+  <p class="caption"><span>图 4.2：</span>代码 4.8 中定义的 <code>Word</code> 类（非内置类）的继承关系</p>
 </div>
 <p>在代码 4.8 中，注意，要检查单词和单词的反转是否相同，要在 <code>Word</code> 类中引用这个单词，在 Ruby 中我们使用 <code>self</code> 进行引用：在 <code>Word</code> 类中，<code>self</code> 代表的就是对象本身。所以我们可以使用</p>
 
@@ -1167,14 +1169,15 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 <p>到目前为止，我们都是在控制台中定义类的，这样很快捷，但也有点不爽。现在我们要在应用程序的根目录创建一个名为 <code>example_user.rb</code> 的文件，写入代码 4.9 中的内容。</p>
 
 <div class="figure" id="figure-4-3">
-  <img src="figures/static_pages_controller_inheritance.png" alt="static pages controller inheritance" /><p class="caption"><span>图 4.3：</span>StaticPages 控制器的继承关系</p>
+  <img src="figures/static_pages_controller_inheritance.png" alt="static pages controller inheritance" />
+  <p class="caption"><span>图 4.3：</span>StaticPages 控制器的继承关系</p>
 </div>
 <div class="codeblock has-caption" id="codeblock-4-9"><p class="caption"><span>代码 4.9：</span><code>User</code> 类的代码</p><p class="file"><code>example_user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span>
   <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
 
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{})</span>
-    <span class="vi">@name</span>  <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
-    <span class="vi">@email</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+    <span class="vi">@name</span>  <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="ss">:name</span><span class="p">]</span>
+    <span class="vi">@email</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="ss">:email</span><span class="p">]</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">formatted_email</span>
@@ -1193,8 +1196,8 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 <p>第一个方法，<code>initialize</code>，在 Ruby 中有特殊意义：当我们执行 <code>User.new</code> 时会调用该方法。这个 <code>initialize</code> 方法可以接受一个参数，<code>attributes</code>：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{})</span>
-    <span class="vi">@name</span>  <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
-    <span class="vi">@email</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+    <span class="vi">@name</span>  <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="ss">:name</span><span class="p">]</span>
+    <span class="vi">@email</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="ss">:email</span><span class="p">]</span>
   <span class="k">end</span>
 </pre></div>
 </div>
@@ -1261,7 +1264,8 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 <h2 id='section-4-6'><span>4.6</span> 练习</h2>
 
 
-<ol><li>
+<ol>
+  <li>
     <p>将下面代码 4.10 中的问号换成合适的方法，结合<code>split</code>、<code>shuffle</code> 和 <code>join</code> 实现一个函数，把一个给定字符串中的字符顺序打乱。</p>
   </li>
   <li>
@@ -1276,7 +1280,9 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
   <li>
     <p><strong>（选做）</strong>跟着 <a href="http://rubykoans.com/">Ruby Koans</a> 学习 Ruby 入门知识。</p>
   </li>
-</ol><div class="codeblock has-caption" id="codeblock-4-10"><p class="caption"><span>代码 4.10：</span>打乱字符串函数的骨架</p><div class="highlight type-ruby"><pre><span class="o">&gt;&gt;</span> <span class="k">def</span> <span class="nf">string_shuffle</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</ol>
+
+<div class="codeblock has-caption" id="codeblock-4-10"><p class="caption"><span>代码 4.10：</span>打乱字符串函数的骨架</p><div class="highlight type-ruby"><pre><span class="o">&gt;&gt;</span> <span class="k">def</span> <span class="nf">string_shuffle</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="o">&gt;&gt;</span>   <span class="n">s</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="sc">?.</span><span class="p">?</span>
 <span class="o">&gt;&gt;</span> <span class="k">end</span>
 <span class="o">=&gt;</span> <span class="kp">nil</span>
@@ -1293,7 +1299,8 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 </pre></div>
 </div>
 <div class="footnotes">
-  <ol><li id="fn-4-1">
+  <ol>
+    <li id="fn-4-1">
       <p>如果帮助函数是针对某个特定控制器的，你应该把它放进该控制器相应的帮助文件中。例如，为 StaticPages 控制器创建的帮助函数一般放在 <code>app/helper/static_pages_helper.rb</code> 中。在这个例子中，我们会把 <code>full_title</code> 这个帮助函数用在网站内所有的网页中，针对这种情况 Rails 提供了一个特别的文件：<code>app/helper/application_helper.rb</code>。<a href="#fnref-4-1" rel="reference">↩</a></p>
     </li>
     <li id="fn-4-2">
@@ -1332,7 +1339,9 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
     <li id="fn-4-15">
       <p>你没必要知道继承关系中的每个类。我也不知道它们都是干什么的，而我从 2005 年就开始使用 Ruby on Rails 进行开发了。这可能意味着了以下两个问题中的一个，第一，我是个废柴，第二，你不需要知道所有的内在知识也能成为熟练的 Rails 开发者。我们当然都希望是第二点。<a href="#fnref-4-15" rel="reference">↩</a></p>
     </li>
-  </ol></div>
+  </ol>
+</div>
+
   	</div>
 </div>
 
@@ -1340,10 +1349,10 @@ NoMethodError: undefined method <span class="sb">`</span>palindrome?<span class=
 				
 				<div class="navigation">
 					
-						<a class="prev_page" href="/chapter3.html">&laquo; 第 3 章基本静态的页面</a>
+						<a class="prev_page" href="chapter3.html">&laquo; 第 3 章基本静态的页面</a>
 					
 					
-						<a class="next_page" href="/chapter5.html">第 5 章完善布局 &raquo;</a>
+						<a class="next_page" href="chapter5.html">第 5 章完善布局 &raquo;</a>
 					
 				</div>
 				

@@ -91,12 +91,12 @@
 
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.4'</span>
 
-<span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'sqlite3'</span><span class="p">,</span> <span class="s1">'1.3.8'</span>
   <span class="n">gem</span> <span class="s1">'rspec-rails'</span><span class="p">,</span> <span class="s1">'2.13.1'</span>
 <span class="k">end</span>
 
-<span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="nb">test</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'selenium-webdriver'</span><span class="p">,</span> <span class="s1">'2.35.1'</span>
   <span class="n">gem</span> <span class="s1">'capybara'</span><span class="p">,</span> <span class="s1">'2.1.0'</span>
 <span class="k">end</span>
@@ -108,18 +108,18 @@
 <span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span> <span class="s1">'1.1.1'</span>
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span> <span class="s1">'1.0.2'</span>
 
-<span class="n">group</span> <span class="ss">:doc</span> <span class="k">do</span>
-  <span class="n">gem</span> <span class="s1">'sdoc'</span><span class="p">,</span> <span class="s1">'0.3.20'</span><span class="p">,</span> <span class="nb">require</span><span class="p">:</span> <span class="kp">false</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">doc</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s1">'sdoc'</span><span class="p">,</span> <span class="s1">'0.3.20'</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span>
 <span class="k">end</span>
 
-<span class="n">group</span> <span class="ss">:production</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">production</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span> <span class="s1">'0.15.1'</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>上面的代码将 <code>rspec-rails</code> 放在了开发组中，这样我们就可以使用 RSpec 相关的生成器了，同样我们还把它放到了测试组中，这样才能在测试时使用。我们没必要单独的安装 RSpec，因为它是 rspec-rails 的依赖件（dependency），会被自动安装。我们还加入了 <a href="https://github.com/jnicklas/capybara">Capybara</a>，这个 gem 允许我们使用类似英语中的句法编写模拟与应用程序交互的代码，还有 Capybara 的一个依赖库 <a href="http://docs.seleniumhq.org/projects/webdriver/">Selenium</a>。<sup class="footnote" id="fnref-3-1"><a href="#fn-3-1" rel="footnote">1</a></sup> 和<a href="chapter2.html">第 2 章</a>一样，我们还要把 PostgreSQL 所需的 gem 加入生产组，这样才能部署到 Heroku：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">group</span> <span class="ss">:production</span> <span class="k">do</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">group</span> <span class="p">:</span><span class="n">production</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span> <span class="s1">'0.15.1'</span>
 <span class="k">end</span>
 </pre></div>
@@ -343,17 +343,18 @@ by [Michael Hartl](http://michaelhartl.com/).
 <p>代码 3.4 中生成 StaticPages 控制器的命令会自动更新路由文件（route），叫做 <code>config/routes.rb</code>，Rails 会通过这个文件寻找 URL 和网页之间的对应关系。这是我们第一次讲到 <code>config</code> 目录，所以让我们看一下该目录的结构吧（如图 3.1）。<code>config</code> 目录如其名字所示，是存储 Rails 应用程序中的设置文件的。</p>
 
 <div class="figure" id="figure-3-1">
-  <img src="figures/config_directory_rails_4.png" alt="config directory rails 4" /><p class="caption"><span>图 3.1：</span>示例程序的 <code>config</code> 文件夹</p>
+  <img src="figures/config_directory_rails_4.png" alt="config directory rails 4" />
+  <p class="caption"><span>图 3.1：</span>示例程序的 <code>config</code> 文件夹</p>
 </div>
 <p>因为我们生成了 <code>home</code> 和 <code>help</code> 动作，路由文件中已经为它们生成了配置，如代码 3.5。</p>
 
 <div class="codeblock has-caption" id="codeblock-3-5"><p class="caption"><span>代码 3.5：</span>StaticPages 控制器中 <code>home</code> 和 <code>help</code> 动作的路由配置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>如下的规则</p>
@@ -375,7 +376,8 @@ by [Michael Hartl](http://michaelhartl.com/).
 
 
 <div class="figure" id="figure-3-2">
-  <img src="figures/raw_home_view_31.png" alt="raw home view 31" /><p class="caption"><span>图 3.2：</span>简陋的“首页”视图（<a href="http://localhost:3000/static_pages/home">/static_pages/home</a>）</p>
+  <img src="figures/raw_home_view_31.png" alt="raw home view 31" />
+  <p class="caption"><span>图 3.2：</span>简陋的“首页”视图（<a href="http://localhost:3000/static_pages/home">/static_pages/home</a>）</p>
 </div>
 <p>要想弄明白这个页面是怎么来的，让我们在浏览器中看一下 StaticPages 控制器文件吧，你应该会看到类似代码 3.6 的内容。你可能已经注意到了，不像第 2 章中的 Users 和 Microposts 控制器，StaticPages 控制器没有使用标准的 REST 动作。这对静态页面来说是很常见的，REST 架构并不能解决所有的问题。</p>
 
@@ -489,19 +491,20 @@ by [Michael Hartl](http://michaelhartl.com/).
 <p>使用了 <code>page</code> 变量（同样由 Capybara 提供）来测试页面中是否包含了正确的内容。</p>
 
 <div class="figure" id="figure-3-3">
-  <img src="figures/red_failing_spec_4_0.png" alt="red failing spec 40" /><p class="caption"><span>图 3.3：</span>红色（失败）的测试</p>
+  <img src="figures/red_failing_spec_4_0.png" alt="red failing spec 40" />
+  <p class="caption"><span>图 3.3：</span>红色（失败）的测试</p>
 </div>
 <p>若要测试正确运行，我们要在 <code>spec_helper.rb</code> 中加入一行代码，如代码 3.10 所示。（在本书后续的草稿中，我计划不再使用这行代码，启用<a href="https://www.relishapp.com/rspec/rspec-rails/docs/feature-specs/feature-spec">功能测试</a>中的新技术。）</p>
 
 <div class="codeblock has-caption" id="codeblock-3-10"><p class="caption"><span>代码 3.10：</span>把 Capybara DSL 加入 RSpec 帮助文件</p><p class="file"><code>spec/spec_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="c1"># This file is copied to spec/ when you run 'rails generate rspec:install'</span>
-<span class="o">.</span>
-<span class="o">.</span>
+<span class="p">.</span>
+<span class="nf">.</span>
 <span class="o">.</span>
 <span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">config</span><span class="p">.</span><span class="nf">include</span> <span class="no">Capybara</span><span class="o">::</span><span class="no">DSL</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">config</span><span class="p">.</span><span class="nf">include</span> <span class="no">Capybara</span><span class="o">::</span><span class="no">DSL</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -559,7 +562,8 @@ by [Michael Hartl](http://michaelhartl.com/).
 </pre></div>
 </div>
 <div class="figure" id="figure-3-4">
-  <img src="figures/green_passing_spec_4_0.png" alt="green passing spec 40" /><p class="caption"><span>图 3.4：</span>绿色（通过）的测试</p>
+  <img src="figures/green_passing_spec_4_0.png" alt="green passing spec 40" />
+  <p class="caption"><span>图 3.4：</span>绿色（通过）的测试</p>
 </div>
 <p>然后运行测试：</p>
 
@@ -645,10 +649,10 @@ by [Michael Hartl](http://michaelhartl.com/).
   <span class="n">get</span> <span class="s2">"static_pages/home"</span>
   <span class="n">get</span> <span class="s2">"static_pages/help"</span>
   <span class="n">get</span> <span class="s2">"static_pages/about"</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>现在运行测试</p>
@@ -719,7 +723,8 @@ end
 <p>如果你跳过了 <a href="chapter3.html#section-3-2">3.2 节</a>中的 TDD 部分，在继续阅读之前请先按照代码 3.15、代码 3.16 和代码 3.17 创建“关于”页面。</p>
 
 <div class="figure" id="figure-3-5">
-  <img src="figures/about_us_2nd_edition.png" alt="about us 2nd edition" /><p class="caption"><span>图 3.5：</span>新添加的“关于”页面（<a href="http://localhost:3000/static_pages/about">/static_pages/about</a>）</p>
+  <img src="figures/about_us_2nd_edition.png" alt="about us 2nd edition" />
+  <p class="caption"><span>图 3.5：</span>新添加的“关于”页面（<a href="http://localhost:3000/static_pages/about">/static_pages/about</a>）</p>
 </div>
 <h3 id='section-3-3-1'><span>3.3.1</span> 测试标题的变化</h3>
 
@@ -758,25 +763,37 @@ end
 </div>
 <p>也会匹配完整形式的标题。</p>
 
-<div class="table has-caption" id="table-3-1">
-  <p class="caption"><span>表格 3.1：</span>示例程序中基本上是静态内容的页面</p>
-  <table><thead><tr><th>页面</th>
+<div class="table has-caption" id="table-3-1"><p class="caption"><span>表格 3.1：</span>示例程序中基本上是静态内容的页面</p><table>
+  <thead>
+    <tr>
+      <th>页面</th>
       <th>URL</th>
       <th>基本标题</th>
       <th>变动部分</th>
-    </tr></thead><tbody><tr><td>首页</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>首页</td>
       <td>/static_pages/home</td>
       <td><code>"Ruby on Rails Tutorial Sample App"</code></td>
       <td><code>"Home"</code></td>
-    </tr><tr><td>帮助</td>
+    </tr>
+    <tr>
+      <td>帮助</td>
       <td>/static_pages/help</td>
       <td><code>"Ruby on Rails Tutorial Sample App"</code></td>
       <td><code>"Help"</code></td>
-    </tr><tr><td>关于</td>
+    </tr>
+    <tr>
+      <td>关于</td>
       <td>/static_pages/about</td>
       <td><code>"Ruby on Rails Tutorial Sample App"</code></td>
       <td><code>"About"</code></td>
-    </tr></tbody></table></div>
+    </tr>
+  </tbody>
+</table>
+</div>
 <p>我们按照代码 3.18 的格式为三个静态页面都加上测试代码，结果参照代码 3.19。注意，测试中有很多重复，我们会在 <a href="chapter3.html#section-3-4">5.3.4 节</a>重构。</p>
 
 <div class="codeblock has-caption" id="codeblock-3-19"><p class="caption"><span>代码 3.19：</span>StaticPages 控制器的测试文件，包含标题测试</p><p class="file"><code>spec/requests/static_pages_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
@@ -913,10 +930,13 @@ end
 
 <p>本节到目前为止已经做了很多事情，我们通过 Rails 控制器和动作生成了三个可以通过句法验证的页面，不过这些页面都是纯静态的 HTML，没有体现出 Rails 的强大所在。而且，它们的代码充斥着重复：</p>
 
-<ul><li>页面的标签几乎（但不完全）是一模一样的</li>
+<ul>
+  <li>页面的标签几乎（但不完全）是一模一样的</li>
   <li>每个标题中都有“Ruby on Rails Tutorial Sample App”</li>
   <li>HTML 结构在每个页面都重复的出现了</li>
-</ul><p>代码重复的问题违反了很重要的“不要自我重复”（Don’t Repeat Yourself, DRY）原则，本小节和下一小节将按照 DRY 原则去掉重复的代码。</p>
+</ul>
+
+<p>代码重复的问题违反了很重要的“不要自我重复”（Don’t Repeat Yourself, DRY）原则，本小节和下一小节将按照 DRY 原则去掉重复的代码。</p>
 
 <p>不过我们去除重复的第一步却是要增加一些代码让页面的标题看起来是一样的。这样我们就可以更容易的去掉重复的代码了。</p>
 
@@ -1124,7 +1144,8 @@ end
 <h2 id='section-3-5'><span>3.5</span> 练习</h2>
 
 
-<ol><li>
+<ol>
+  <li>
     <p>为示例程序制作一个“联系”页面。你可以参照代码 3.19，编写一个测试用例检测页面的标题是否为 “Ruby on Rails Tutorial Sample App | Contact”，确定 /static_pages/contact 对应的页面是否存在。将代码 3.30 的内容写入“联系”页面，让测试可以通过。（这个练习会在 <a href="chapter5.html#section-5-3">5.3 节</a>中解决。）</p>
   </li>
   <li>
@@ -1133,7 +1154,9 @@ end
   <li>
     <p>（附加题）Heroku 网站中一篇<a href="http://devcenter.heroku.com/articles/how-do-i-use-sqlite3-for-development">介绍如何在开发环境中使用 sqlite3 的文章</a>提到，最好在开发环境、测试环境和生产环境中使用相同类型的数据库。按照 Heroku 网站上介绍<a href="https://devcenter.heroku.com/articles/heroku-postgresql#local-setup">如何在本地环境中安装 PostgreSQL 的文章</a>内容，在你的电脑上安装 PostgreSQL 数据库。修改 <code>Gemfile</code>，删掉 <code>sqlite3</code>，换上 <code>pg</code>，如代码 3.32 所示。你还要知道如何修改 <code>config/database.yml</code> 文件，以及如何在本地运行 PostgreSQL 数据库。（注意，基于安全考虑，应该把 <code>database.yml</code> 加入 <code>.gitignore</code>，如代码 1.7 所示。）这个练习的目标是使用 PostgreSQL 数据库创建并设置开发环境和测试环境中用到的数据库。我特别推荐使用 <a href="http://inductionapp.com/">Induction</a> 连接并查看本地 PostgreSQL 数据库。<strong>注意：</strong>你会发现本题还是有点难度的，我只推荐高级用户做这一题。如果你在某个地方卡住了，不要坚持不放。前面我已经说过了，本教程开发的示例程序完全兼容 SQLite 和 PostgreSQL。</p>
   </li>
-</ol><div class="codeblock has-caption" id="codeblock-3-30"><p class="caption"><span>代码 3.30：</span>“联系”页面的内容</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span>
+</ol>
+
+<div class="codeblock has-caption" id="codeblock-3-30"><p class="caption"><span>代码 3.30：</span>“联系”页面的内容</p><p class="file"><code>app/views/static_pages/contact.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s1">'Contact'</span><span class="p">)</span> <span class="cp">%&gt;</span>
 <span class="nt">&lt;h1&gt;</span>Contact<span class="nt">&lt;/h1&gt;</span>
 <span class="nt">&lt;p&gt;</span>
   Contact Ruby on Rails Tutorial about the sample app at the
@@ -1207,11 +1230,11 @@ end
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.4'</span>
 <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span> <span class="s1">'0.15.1'</span>
 
-<span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'rspec-rails'</span><span class="p">,</span> <span class="s1">'2.13.1'</span>
 <span class="k">end</span>
 
-<span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="nb">test</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'selenium-webdriver'</span><span class="p">,</span> <span class="s1">'2.35.1'</span>
   <span class="n">gem</span> <span class="s1">'capybara'</span><span class="p">,</span> <span class="s1">'2.1.0'</span>
 <span class="k">end</span>
@@ -1223,8 +1246,8 @@ end
 <span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span> <span class="s1">'1.1.1'</span>
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span> <span class="s1">'1.0.2'</span>
 
-<span class="n">group</span> <span class="ss">:doc</span> <span class="k">do</span>
-  <span class="n">gem</span> <span class="s1">'sdoc'</span><span class="p">,</span> <span class="s1">'0.3.20'</span><span class="p">,</span> <span class="nb">require</span><span class="p">:</span> <span class="kp">false</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">doc</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s1">'sdoc'</span><span class="p">,</span> <span class="s1">'0.3.20'</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1334,13 +1357,13 @@ bundler_stubs/
 
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.4'</span>
 
-<span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'sqlite3'</span><span class="p">,</span> <span class="s1">'1.3.8'</span>
   <span class="n">gem</span> <span class="s1">'rspec-rails'</span><span class="p">,</span> <span class="s1">'2.13.1'</span>
   <span class="n">gem</span> <span class="s1">'guard-rspec'</span><span class="p">,</span> <span class="s1">'2.5.0'</span>
 <span class="k">end</span>
 
-<span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="nb">test</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'selenium-webdriver'</span><span class="p">,</span> <span class="s1">'2.35.1'</span>
   <span class="n">gem</span> <span class="s1">'capybara'</span><span class="p">,</span> <span class="s1">'2.1.0'</span>
 
@@ -1363,11 +1386,11 @@ bundler_stubs/
 <span class="n">gem</span> <span class="s1">'turbolinks'</span><span class="p">,</span> <span class="s1">'1.1.1'</span>
 <span class="n">gem</span> <span class="s1">'jbuilder'</span><span class="p">,</span> <span class="s1">'1.0.2'</span>
 
-<span class="n">group</span> <span class="ss">:doc</span> <span class="k">do</span>
-  <span class="n">gem</span> <span class="s1">'sdoc'</span><span class="p">,</span> <span class="s1">'0.3.20'</span><span class="p">,</span> <span class="nb">require</span><span class="p">:</span> <span class="kp">false</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">doc</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s1">'sdoc'</span><span class="p">,</span> <span class="s1">'0.3.20'</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span>
 <span class="k">end</span>
 
-<span class="n">group</span> <span class="ss">:production</span> <span class="k">do</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">production</span> <span class="k">do</span>
   <span class="n">gem</span> <span class="s1">'pg'</span><span class="p">,</span> <span class="s1">'0.15.1'</span>
 <span class="k">end</span>
 </pre></div>
@@ -1391,29 +1414,29 @@ rspec guard added to Guardfile, feel free to edit it
 <div class="codeblock has-caption" id="codeblock-3-35"><p class="caption"><span>代码 3.35：</span>加入默认 <code>Guardfile</code> 的代码，注意顶部的 <code>require</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'active_support/inflector'</span>
 
 <span class="n">guard</span> <span class="s1">'rspec'</span><span class="p">,</span> <span class="ss">all_after_pass: </span><span class="kp">false</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">watch</span><span class="p">(</span><span class="s1">'config/routes.rb'</span><span class="p">)</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">watch</span><span class="p">(</span><span class="s1">'config/routes.rb'</span><span class="p">)</span>
   <span class="c1"># Custom Rails Tutorial specs</span>
   <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/controllers/(.+)_(controller)</span><span class="se">\.</span><span class="sr">rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span>
-    <span class="o">[</span><span class="s2">"spec/routing/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_routing_spec.rb"</span><span class="p">,</span>
-     <span class="s2">"spec/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span><span class="si">}</span><span class="s2">s/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb"</span><span class="p">,</span>
-     <span class="s2">"spec/acceptance/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb"</span><span class="p">,</span>
-     <span class="p">(</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">][</span><span class="sr">/_pages/</span><span class="o">]</span> <span class="p">?</span> <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb"</span> <span class="p">:</span>
-                       <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">.</span><span class="nf">singularize</span><span class="si">}</span><span class="s2">_pages_spec.rb"</span><span class="p">)</span><span class="o">]</span>
+    <span class="p">[</span><span class="s2">"spec/routing/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_routing_spec.rb"</span><span class="p">,</span>
+     <span class="s2">"spec/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">s/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">_spec.rb"</span><span class="p">,</span>
+     <span class="s2">"spec/acceptance/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_spec.rb"</span><span class="p">,</span>
+     <span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sr">/_pages/</span><span class="p">]</span> <span class="p">?</span> <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_spec.rb"</span> <span class="p">:</span>
+                       <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nf">singularize</span><span class="si">}</span><span class="s2">_pages_spec.rb"</span><span class="p">)]</span>
   <span class="k">end</span>
   <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/views/(.+)/}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span>
-    <span class="p">(</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">][</span><span class="sr">/_pages/</span><span class="o">]</span> <span class="p">?</span> <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb"</span> <span class="p">:</span>
-                      <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">.</span><span class="nf">singularize</span><span class="si">}</span><span class="s2">_pages_spec.rb"</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sr">/_pages/</span><span class="p">]</span> <span class="p">?</span> <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_spec.rb"</span> <span class="p">:</span>
+                      <span class="s2">"spec/requests/</span><span class="si">#{</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nf">singularize</span><span class="si">}</span><span class="s2">_pages_spec.rb"</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/controllers/sessions_controller</span><span class="se">\.</span><span class="sr">rb$}</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span>
     <span class="s2">"spec/requests/authentication_pages_spec.rb"</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>下面这行</p>
@@ -1447,16 +1470,16 @@ rspec guard added to Guardfile, feel free to edit it
 
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.4'</span>
 
-<span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">gem</span> <span class="s1">'spork-rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
+<span class="n">group</span> <span class="p">:</span><span class="n">development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">gem</span> <span class="s1">'spork-rails'</span><span class="p">,</span> <span class="s1">'4.0.0'</span>
   <span class="n">gem</span> <span class="s1">'guard-spork'</span><span class="p">,</span> <span class="s1">'1.5.0'</span>
   <span class="n">gem</span> <span class="s1">'childprocess'</span><span class="p">,</span> <span class="s1">'0.3.6'</span>
 <span class="k">end</span>
-<span class="o">.</span>
-<span class="o">.</span>
+<span class="p">.</span>
+<span class="nf">.</span>
 <span class="o">.</span>
 </pre></div>
 </div>
@@ -1476,14 +1499,14 @@ rspec guard added to Guardfile, feel free to edit it
 <span class="nb">require</span> <span class="s1">'spork'</span>
 
 <span class="no">Spork</span><span class="p">.</span><span class="nf">prefork</span> <span class="k">do</span>
-  <span class="no">ENV</span><span class="o">[</span><span class="s2">"RAILS_ENV"</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">'test'</span>
+  <span class="no">ENV</span><span class="p">[</span><span class="s2">"RAILS_ENV"</span><span class="p">]</span> <span class="o">||=</span> <span class="s1">'test'</span>
   <span class="nb">require</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s2">"../../config/environment"</span><span class="p">,</span> <span class="kp">__FILE__</span><span class="p">)</span>
   <span class="nb">require</span> <span class="s1">'rspec/rails'</span>
   <span class="nb">require</span> <span class="s1">'rspec/autorun'</span>
 
   <span class="c1"># Requires supporting ruby files with custom matchers and macros, etc,</span>
   <span class="c1"># in spec/support/ and its subdirectories.</span>
-  <span class="no">Dir</span><span class="o">[</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"spec/support/**/*.rb"</span><span class="p">)</span><span class="o">]</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="nb">require</span> <span class="n">f</span><span class="p">}</span>
+  <span class="no">Dir</span><span class="p">[</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"spec/support/**/*.rb"</span><span class="p">)].</span><span class="nf">each</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="nb">require</span> <span class="n">f</span><span class="p">}</span>
 
   <span class="c1"># Checks for pending migrations before tests are run.</span>
   <span class="c1"># If you are not using ActiveRecord, you can remove this line.</span>
@@ -1600,10 +1623,10 @@ Spork is ready and listening on 8989!
 <span class="k">end</span>
 
 <span class="n">guard</span> <span class="s1">'rspec'</span><span class="p">,</span> <span class="ss">all_after_pass: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">cli: </span><span class="s1">'--drb'</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>注意我们修改了 <code>guard</code> 的参数，包含了 <code>cli: '--drb'</code>，这可以确保 Guard 是在 Spork 服务器的命令行界面（Command-line Interface, cli）中运行的。我们还加入了监视 <code>features/support/</code> 目录的命令，这个目录会从<a href="chapter5.html">第 5 章</a>开始监视。</p>
@@ -1630,22 +1653,29 @@ Spork is ready and listening on 8989!
 
 <p>重启 Sublime Text，RubyTest 包提供了如下的命令：</p>
 
-<ul><li><strong>Command-Shift-R</strong>：运行单一的测试（如果在 <code>it</code> 块中运行），或者一组测试（如果在 <code>describe</code> 块中运行）</li>
+<ul>
+  <li><strong>Command-Shift-R</strong>：运行单一的测试（如果在 <code>it</code> 块中运行），或者一组测试（如果在 <code>describe</code> 块中运行）</li>
   <li><strong>Command-Shift-E</strong>：运行上一次运行的测试</li>
   <li><strong>Command-Shift-T</strong>：运行当前文件中的所有测试</li>
-</ul><p>因为即使是一个小型项目的测试也可能会花费很多时间，所以可以单独的运行一个测试（或一小组测试）就可以节省很多的时间。即便是单一的测试也要预先加载 Rails 环境，所以这些命令最好是在 Spork 中运行：运行单一的测试减少了运行整个测试文件的时间，再运行 Spork 还可以减少启动测试环境的时间。下面是我推荐的操作顺序：</p>
+</ul>
 
-<ol><li>在一个命令行窗口中启动 Spork；</li>
+<p>因为即使是一个小型项目的测试也可能会花费很多时间，所以可以单独的运行一个测试（或一小组测试）就可以节省很多的时间。即便是单一的测试也要预先加载 Rails 环境，所以这些命令最好是在 Spork 中运行：运行单一的测试减少了运行整个测试文件的时间，再运行 Spork 还可以减少启动测试环境的时间。下面是我推荐的操作顺序：</p>
+
+<ol>
+  <li>在一个命令行窗口中启动 Spork；</li>
   <li>编写一个测试或一小组测试；</li>
   <li>执行 Command-Shift-R 命令，查看测试或测试组是否为红色；</li>
   <li>编写相应的程序代码；</li>
   <li>执行 Command-Shift-E 再次运行刚才的测试，查看测试是否变成绿色了；</li>
   <li>如果需要，重复第 2-5 步；</li>
   <li>完成一个任务后（在提交之前），在命令行中运行 <code>rspec spec/</code> 确保全部的测试仍是绿色的。</li>
-</ol><p>即使你可以在 Sublime Text 中运行测试，有时我还是会选择使用 Guard。以上就是我要介绍的我经常使用的 TDD 技术。</p>
+</ol>
+
+<p>即使你可以在 Sublime Text 中运行测试，有时我还是会选择使用 Guard。以上就是我要介绍的我经常使用的 TDD 技术。</p>
 
 <div class="footnotes">
-  <ol><li id="fn-3-1">
+  <ol>
+    <li id="fn-3-1">
       <p>Webrat 的继任者，Capybara 是以世界上<a href="http://en.wikipedia.org/wiki/Capybara">最大的啮齿类动物</a>命名的。<a href="#fnref-3-1" rel="reference">↩</a></p>
     </li>
     <li id="fn-3-2">
@@ -1681,7 +1711,9 @@ Spork is ready and listening on 8989!
     <li id="fn-3-t1">
       <p>译者注：若Spork在Ubuntu下无法运行，请参照<a href="https://gist.github.com/zunda/5328483">这个 gist</a> 修改相应文件的权限。<a href="#fnref-3-t1" rel="reference">↩</a></p>
     </li>
-  </ol></div>
+  </ol>
+</div>
+
   	</div>
 </div>
 
@@ -1689,10 +1721,10 @@ Spork is ready and listening on 8989!
 				
 				<div class="navigation">
 					
-						<a class="prev_page" href="/chapter2.html">&laquo; 第 2 章演示程序</a>
+						<a class="prev_page" href="chapter2.html">&laquo; 第 2 章演示程序</a>
 					
 					
-						<a class="next_page" href="/chapter4.html">第 4 章Rails 背后的 Ruby &raquo;</a>
+						<a class="next_page" href="chapter4.html">第 4 章Rails 背后的 Ruby &raquo;</a>
 					
 				</div>
 				

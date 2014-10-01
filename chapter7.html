@@ -118,7 +118,8 @@
 </pre></div>
 </div>
 <div class="figure" id="figure-7-1">
-  <img src="figures/profile_mockup_profile_name_bootstrap.png" alt="profile mockup profile name bootstrap" /><p class="caption"><span>图 7.1：</span>本节要实现的用户资料页面构思图</p>
+  <img src="figures/profile_mockup_profile_name_bootstrap.png" alt="profile mockup profile name bootstrap" />
+  <p class="caption"><span>图 7.1：</span>本节要实现的用户资料页面构思图</p>
 </div>
 <p>我们要在<a href="chapter5.html">第 5 章</a>中创建的自定义样式表文件中加入一些样式规则（参见代码 7.2），美化一下这些调试信息。</p>
 
@@ -173,7 +174,8 @@
 <p>在 <a href="chapter7.html#section-7-2-2">7.2.2 节</a>中还会再次用到这个 mixin。美化后的调试信息如图 7.3 所示。</p>
 
 <div class="figure" id="figure-7-2">
-  <img src="figures/profile_mockup_bootstrap.png" alt="profile mockup bootstrap" /><p class="caption"><span>图 7.2：</span>最终实现的用户资料页面构思图</p>
+  <img src="figures/profile_mockup_bootstrap.png" alt="profile mockup bootstrap" />
+  <p class="caption"><span>图 7.2：</span>最终实现的用户资料页面构思图</p>
 </div>
 <p>图 7.3 中显示的调试信息给出了当前页面的一些信息：</p>
 
@@ -190,7 +192,8 @@
 </pre></div>
 </div>
 <div class="figure" id="figure-7-3">
-  <img src="figures/home_page_with_debug_4_0.png" alt="home page with debug 40" /><p class="caption"><span>图 7.3：</span>显示有调试信息的示例程序首页（<a href="http://localhost:3000/">/</a>）</p>
+  <img src="figures/home_page_with_debug_4_0.png" alt="home page with debug 40" />
+  <p class="caption"><span>图 7.3：</span>显示有调试信息的示例程序首页（<a href="http://localhost:3000/">/</a>）</p>
 </div>
 <p>“开发环境”是 Rails 定义的三个环境之一（详细介绍参见<a href="chapter7.html#aside-7-1">旁注 7.1</a>）<sup class="footnote" id="fnref-7-4"><a href="#fn-7-4" rel="footnote">4</a></sup>，只有在“开发环境”中 <code>Rails.env.development?</code> 才会返回 <code>true</code>，所以下面的 ERb 代码</p>
 
@@ -262,23 +265,24 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <p>在 <a href="chapter2.html#section-2-2-1">2.2.1 节</a>中曾经见过，id 为 1 的用户对应的地址是 /users/1，现在访问这个地址的话会显示错误提示信息（如图 7.4）。</p>
 
 <div class="figure" id="figure-7-4">
-  <img src="figures/profile_routing_error.png" alt="profile routing error" /><p class="caption"><span>图 7.4：</span>/users/1 地址显示的错误</p>
+  <img src="figures/profile_routing_error.png" alt="profile routing error" />
+  <p class="caption"><span>图 7.4：</span>/users/1 地址显示的错误</p>
 </div>
 <p>我们只需在路由文件 <code>config/routes.rb</code> 中添加如下的一行代码就可以正常访问 REST 架构对应的 URL 地址了：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">resources</span> <span class="ss">:users</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">resources</span> <span class="p">:</span><span class="n">users</span>
 </pre></div>
 </div>
 <p>修改后的路由文件如代码 7.3 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-7-3"><p class="caption"><span>代码 7.3：</span>在路由文件中添加 Users 资源设置</p><p class="file"><code>config/routes.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
-  <span class="n">resources</span> <span class="ss">:users</span>
+  <span class="n">resources</span> <span class="p">:</span><span class="n">users</span>
   <span class="n">root</span> <span class="ss">to: </span><span class="s1">'static_pages#home'</span>
   <span class="n">match</span> <span class="s1">'/signup'</span><span class="p">,</span>  <span class="ss">to: </span><span class="s1">'users#new'</span><span class="p">,</span>            <span class="ss">via: </span><span class="s1">'get'</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>你可能发现了，我们把下面这行在代码 5.33 中出现的代码删掉了：</p>
@@ -288,55 +292,76 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 </div>
 <p>这是因为 <code>resources :users</code> 不仅使 /users/1 地址可以访问了，而且还为示例程序的 Users 资源提供了符合 REST 架构的一系列动作<sup class="footnote" id="fnref-7-5"><a href="#fn-7-5" rel="footnote">5</a></sup>，以及用来获取相应 URL 地址的具名路由（named route，参见 <a href="chapter5.html#section-5-3-3">5.3.3 节</a>）。最终得到的 URI、动作和具名路由的对应关系如<a href="chapter7.html#table-7-1">表格 7.1</a> 所示（可以和<a href="chapter2.html#table-2-2">表格 2.2</a> 对比一下）。接下来的三章会介绍 <code>show</code> 之外的所有动作，并不断完善，把 Users 打造成完全符合 REST 架构的资源。</p>
 
-<div class="table has-caption" id="table-7-1">
-  <p class="caption"><span>表格 7.1：</span>Users 资源对应的路由</p>
-  <table><thead><tr><th>HTTP 请求</th>
+<div class="table has-caption" id="table-7-1"><p class="caption"><span>表格 7.1：</span>Users 资源对应的路由</p><table>
+  <thead>
+    <tr>
+      <th>HTTP 请求</th>
       <th>URL</th>
       <th>动作</th>
       <th>具名路由</th>
       <th>作用</th>
-    </tr></thead><tbody><tr><td><code>GET</code></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>GET</code></td>
       <td>/users</td>
       <td><code>index</code></td>
       <td><code>users_path</code></td>
       <td>显示所有用户的页面</td>
-    </tr><tr><td><code>GET</code></td>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
       <td>/users/1</td>
       <td><code>show</code></td>
       <td><code>user_path(user)</code></td>
       <td>显示某个用户的页面</td>
-    </tr><tr><td><code>GET</code></td>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
       <td>/users/new</td>
       <td><code>new</code></td>
       <td><code>new_user_path</code></td>
       <td>创建（注册）新用户的页面</td>
-    </tr><tr><td><code>POST</code></td>
+    </tr>
+    <tr>
+      <td><code>POST</code></td>
       <td>/users</td>
       <td><code>create</code></td>
       <td><code>users_path</code></td>
       <td>创建新用户</td>
-    </tr><tr><td><code>GET</code></td>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
       <td>/users/1/edit</td>
       <td><code>edit</code></td>
       <td><code>edit_user_path(user)</code></td>
       <td>编辑 id 为 1 的用户页面</td>
-    </tr><tr><td><code>PATCH</code></td>
+    </tr>
+    <tr>
+      <td><code>PATCH</code></td>
       <td>/users/1</td>
       <td><code>update</code></td>
       <td><code>user_path(user)</code></td>
       <td>更新用户信息</td>
-    </tr><tr><td><code>DELETE</code></td>
+    </tr>
+    <tr>
+      <td><code>DELETE</code></td>
       <td>/users/1</td>
       <td><code>destroy</code></td>
       <td><code>user_path(user)</code></td>
       <td>删除用户</td>
-    </tr></tbody></table></div>
+    </tr>
+  </tbody>
+</table>
+</div>
 <p>添加代码 7.3 之后，路由就生效了，但是页面还不存在（如图 7.5）。下面我们就来为页面添加一些内容，<a href="chapter7.html#section-7-1-4">7.1.4 节</a>还会添加更多的内容。</p>
 
 <p>用户资料页面的视图存放在应用程序特定的目录中，即 <code>app/views/users/show.html.erb</code>。这个视图和自动生成的 <code>new.html.erb</code>（参见代码 5.29）不同，现在不存在，要手动创建。新建 <code>show</code> 视图后请写入代码 7.4 中的代码。</p>
 
 <div class="figure" id="figure-7-5">
-  <img src="figures/user_show_unknown_action_31.png" alt="user show unknown action 31" /><p class="caption"><span>图 7.5：</span>/users/1 地址生效了，但是页面不存在</p>
+  <img src="figures/user_show_unknown_action_31.png" alt="user show unknown action 31" />
+  <p class="caption"><span>图 7.5：</span>/users/1 地址生效了，但是页面不存在</p>
 </div>
 <div class="codeblock has-caption" id="codeblock-7-4"><p class="caption"><span>代码 7.4：</span>用户资料页面的临时视图</p><p class="file"><code>app/views/users/show.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span>, <span class="cp">&lt;%=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span> <span class="cp">%&gt;</span>
 </pre></div>
@@ -348,7 +373,7 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <div class="codeblock has-caption" id="codeblock-7-5"><p class="caption"><span>代码 7.5：</span>含有 <code>show</code> 动作的 Users 控制器</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
   <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">new</span>
@@ -369,7 +394,8 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <p>所以，代码 7.5 中的 <code>User.find(params[:id])</code> 才会取回 id 为 1 的用户记录。</p>
 
 <div class="figure" id="figure-7-6">
-  <img src="figures/user_show_bootstrap.png" alt="user show bootstrap" /><p class="caption"><span>图 7.6：</span>设置 Users 资源后的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
+  <img src="figures/user_show_bootstrap.png" alt="user show bootstrap" />
+  <p class="caption"><span>图 7.6：</span>设置 Users 资源后的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
 </div>
 <h3 id='section-7-1-3'><span>7.1.3</span> 使用预构件测试用户资料页面</h3>
 
@@ -413,17 +439,17 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <p>和其他的 gem 一样，我们要在 Bundler 的 <code>Gemfile</code> 中加入如代码 7.7 所示的代码来安装 Factory Girl。（因为只有测试时才会用到 Factory Girl，所以把它归入测试组中。）</p>
 
 <div class="codeblock has-caption" id="codeblock-7-7"><p class="caption"><span>代码 7.7：</span>把 Factory Girl 加入 <code>Gemfile</code></p><div class="highlight type-ruby"><pre><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">gem</span> <span class="s1">'factory_girl_rails'</span><span class="p">,</span> <span class="s1">'4.2.1'</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">group</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">gem</span> <span class="s1">'factory_girl_rails'</span><span class="p">,</span> <span class="s1">'4.2.1'</span>
 <span class="k">end</span>
-<span class="o">.</span>
-<span class="o">.</span>
+<span class="p">.</span>
+<span class="nf">.</span>
 <span class="o">.</span>
 </pre></div>
 </div>
@@ -435,7 +461,7 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <p>Factory Girl 生成的预构件都保存在 <code>spec/factories.rb</code> 中，RSpec 会自动加载这个文件。用户相关的预构件如代码 7.8 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-7-8"><p class="caption"><span>代码 7.8：</span>模拟 User 模型对象的预构件</p><p class="file"><code>spec/factories.rb</code></p><div class="highlight type-ruby"><pre><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">define</span> <span class="k">do</span>
-  <span class="n">factory</span> <span class="ss">:user</span> <span class="k">do</span>
+  <span class="n">factory</span> <span class="p">:</span><span class="n">user</span> <span class="k">do</span>
     <span class="nb">name</span>     <span class="s2">"Michael Hartl"</span>
     <span class="n">email</span>    <span class="s2">"michael@example.com"</span>
     <span class="n">password</span> <span class="s2">"foobar"</span>
@@ -495,8 +521,8 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <p>使用 Factory Girl 后，明显可以察觉测试变慢了，这不是 Factory Girl 导致的，而是有意为之，并不是 bug。变慢的原因在于 <a href="chapter6.html#section-6-3-1">6.3.1 节</a>中用来加密密码的 BCrypt，其加密算法设计如此，因为慢速加密的密码很难破解。慢速加密的过程会延长测试的运行时间，不过我们可以做个简单的设置改变这种情况。<code>bcrypt-ruby</code> 使用耗时因子（cost factor）设定加密过程的耗时，耗时因子的默认值倾向于安全性而不是速度，在生产环境这种设置很好，但测试时的关注点却有所不同：测试追求的是速度，而不用在意测试数据库中用户的密码强度。我们可以在“测试环境”配置文件 <code>config/environments/test.rb</code> 中加入一行代码来解决速度慢的问题：把耗时因子的默认值修改为最小值，提升加密的速度，如代码 7.11 所示。即使测试量很少，修改设置之后速度的提升也是很明显的，所以我建议每个读者都在 <code>test.rb</code> 文件中加入代码 7.11 的内容。</p>
 
 <div class="codeblock has-caption" id="codeblock-7-11"><p class="caption"><span>代码 7.11：</span>为测试环境重新设置 BCrypt 耗时因子</p><p class="file"><code>config/environments/test.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
   <span class="o">.</span>
   <span class="c1"># Speed up tests by lowering bcrypt's cost function.</span>
   <span class="no">ActiveModel</span><span class="o">::</span><span class="no">SecurePassword</span><span class="p">.</span><span class="nf">min_cost</span> <span class="o">=</span> <span class="kp">true</span>
@@ -541,7 +567,7 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
   <span class="k">def</span> <span class="nf">gravatar_for</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
     <span class="n">gravatar_id</span> <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">::</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">.</span><span class="nf">downcase</span><span class="p">)</span>
     <span class="n">gravatar_url</span> <span class="o">=</span> <span class="s2">"https://secure.gravatar.com/avatar/</span><span class="si">#{</span><span class="n">gravatar_id</span><span class="si">}</span><span class="s2">"</span>
-    <span class="n">image_tag</span><span class="p">(</span><span class="n">gravatar_url</span><span class="p">,</span> <span class="ss">alt: </span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"gravatar"</span><span class="p">)</span>
+    <span class="n">image_tag</span><span class="p">(</span><span class="n">gravatar_url</span><span class="p">,</span> <span class="ss">alt: </span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"gravatar"</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -569,7 +595,8 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 <p>我们还要添加一个侧边栏，才能完整的实现图 7.1 中的构思。我们要使用 <code>aside</code> 标签定义侧边栏，<code>aside</code> 中的内容一般是对主体内容的补充，不过也可以自成一体。我们要把 <code>aside</code> 标签的 class 设为 <code>row span4</code>，这也是 Bootstrap 会用到的。在用户资料页面中添加侧边栏用到的代码如代码 7.14 所示。</p>
 
 <div class="figure" id="figure-7-7">
-  <img src="figures/profile_with_gravatar_bootstrap_4_0.png" alt="profile with gravatar bootstrap 40" /><p class="caption"><span>图 7.7：</span>显示默认 Gravatar 头像的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
+  <img src="figures/profile_with_gravatar_bootstrap_4_0.png" alt="profile with gravatar bootstrap 40" />
+  <p class="caption"><span>图 7.7：</span>显示默认 Gravatar 头像的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
 </div>
 <div class="codeblock has-caption" id="codeblock-7-14"><p class="caption"><span>代码 7.14：</span>为用户资料页面添加侧边栏</p><p class="file"><code>app/views/users/show.html.erb</code></p><div class="highlight type-erb"><pre><span class="cp">&lt;%</span> <span class="n">provide</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="cp">%&gt;</span>
 <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
@@ -637,7 +664,8 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 </pre></div>
 </div>
 <div class="figure" id="figure-7-8">
-  <img src="figures/profile_custom_gravatar_bootstrap_4_0.png" alt="profile custom gravatar bootstrap 40" /><p class="caption"><span>图 7.8：</span>显示用户真实头像的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
+  <img src="figures/profile_custom_gravatar_bootstrap_4_0.png" alt="profile custom gravatar bootstrap 40" />
+  <p class="caption"><span>图 7.8：</span>显示用户真实头像的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
 </div>
 <p>在某些系统中还要重启 Web 服务器，还原数据库的操作才能生效。<sup class="footnote" id="fnref-7-8"><a href="#fn-7-8" rel="footnote">8</a></sup></p>
 
@@ -650,10 +678,10 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">visit</span> <span class="n">signup_path</span>
 <span class="n">fill_in</span> <span class="s2">"Name"</span><span class="p">,</span> <span class="ss">with: </span><span class="s2">"Example User"</span>
-<span class="o">.</span>
-<span class="o">.</span>
-<span class="o">.</span>
-<span class="n">click_button</span> <span class="s2">"Create my account"</span>
+<span class="p">.</span>
+<span class="nf">.</span>
+<span class="p">.</span>
+<span class="nf">click_button</span> <span class="s2">"Create my account"</span>
 </pre></div>
 </div>
 <p>现在我们要分别提交不合法的和合法的注册数据，验证注册功能是否可以正常使用。我们要用到的测试相对高级一些，所以会慢慢分析。如果你想查看最终的测试代码（以及测试文件的位置），可以直接跳到代码 7.16。先来测试没有正确填写信息的注册表单，我们访问“注册”页面，什么也不填，直接点击注册按钮（调用 <code>click_button</code> 方法），这个操作模拟的就是提交不合法数据的情况：</p>
@@ -663,7 +691,8 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 </pre></div>
 </div>
 <div class="figure" id="figure-7-9">
-  <img src="figures/user_show_sidebar_css_bootstrap.png" alt="user show sidebar css bootstrap" /><p class="caption"><span>图 7.9：</span>添加侧边栏并定义了样式之后的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
+  <img src="figures/user_show_sidebar_css_bootstrap.png" alt="user show sidebar css bootstrap" />
+  <p class="caption"><span>图 7.9：</span>添加侧边栏并定义了样式之后的用户资料页面 <a href="http://localhost:3000/users/1">/users/1</a></p>
 </div>
 <p>上面的代码，等同于手动访问注册页面，然后提交空白的不合法注册信息。相对的，我们要调用 <code>fill_in</code> 方法填写合法信息，以此来模拟提交合法数据的情况：</p>
 
@@ -683,7 +712,8 @@ Ruby console <span class="k">for </span>yourapp.herokuapp.com
 </pre></div>
 </div>
 <div class="figure" id="figure-7-10">
-  <img src="figures/new_signup_page_bootstrap.png" alt="new signup page bootstrap" /><p class="caption"><span>图 7.10：</span>“注册”页面现在的样子 <a href="http://localhost:3000/signup">/signup</a></p>
+  <img src="figures/new_signup_page_bootstrap.png" alt="new signup page bootstrap" />
+  <p class="caption"><span>图 7.10：</span>“注册”页面现在的样子 <a href="http://localhost:3000/signup">/signup</a></p>
 </div>
 <p>现在 <code>User.count</code> 的返回值是 0，因为本节开头我们还原了数据库。提交不合法数据时，我们希望用户的数量是不变的；提交合法数据时，我们希望用户的数量增加 1 个。在 RSpec 中，上面的设想要结合 <code>expect</code> 和 <code>to</code>，或者和 <code>not_to</code> 方法来表述。我们先从不合法的数据开始，因为这种情况比较简单。我们先访问“注册”页面，然后点击提交按钮，希望用户的数量不变：</p>
 
@@ -709,7 +739,8 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>的结果。</p>
 
 <div class="figure" id="figure-7-11">
-  <img src="figures/signup_mockup_bootstrap.png" alt="signup mockup bootstrap" /><p class="caption"><span>图 7.11：</span>“注册”页面的构思图</p>
+  <img src="figures/signup_mockup_bootstrap.png" alt="signup mockup bootstrap" />
+  <p class="caption"><span>图 7.11：</span>“注册”页面的构思图</p>
 </div>
 <p>本例，我们用 <code>not_to</code> 方法表示不愿看到用户数量发生变化。把点击按钮的代码放入块中，相当于把</p>
 
@@ -745,10 +776,10 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <span class="n">describe</span> <span class="s2">"User pages"</span> <span class="k">do</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="n">page</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"signup"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"signup"</span> <span class="k">do</span>
 
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">signup_path</span> <span class="p">}</span>
 
@@ -807,7 +838,7 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
       <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="s2">"Confirmation"</span> <span class="cp">%&gt;</span>
       <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">password_field</span> <span class="ss">:password_confirmation</span> <span class="cp">%&gt;</span>
 
-      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Create my account"</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="s2">"Create my account"</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-large btn-primary"</span> <span class="cp">%&gt;</span>
     <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
   <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
@@ -838,10 +869,10 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>要使这个测试通过，同时也让页面可以正常显示，我们要在 <code>new.html.erb</code> 视图对应的 <code>new</code> 动作中定义 <code>@user</code> 变量。<code>form_for</code> 方法的参数需要一个 User 对象，而且我们要创建新用户，所以我们可以使用 <code>User.new</code> 方法，如代码 7.18 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-7-18"><p class="caption"><span>代码 7.18：</span>在 <code>new</code> 动作中定义 <code>@user</code> 变量</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="k">def</span> <span class="nf">new</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">def</span> <span class="kp">new</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -900,7 +931,8 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 </pre></div>
 </div>
 <div class="figure" id="figure-7-12">
-  <img src="figures/signup_form_bootstrap.png" alt="signup form bootstrap" /><p class="caption"><span>图 7.12：</span>注册用户的表单 <a href="http://localhost:3000/signup">/signup</a></p>
+  <img src="figures/signup_form_bootstrap.png" alt="signup form bootstrap" />
+  <p class="caption"><span>图 7.12：</span>注册用户的表单 <a href="http://localhost:3000/signup">/signup</a></p>
 </div>
 <p>（上面的代码省略了“鉴别权标（authenticity token）”相关的 HTML。Rails 使用鉴别权标来防止跨站请求伪造（cross-site request forgery, CSRF）攻击。如果你对鉴别权标感兴趣，可以阅读一下 Stack Overflow 网站中的《<a href="http://stackoverflow.com/questions/941594/understand-rails-authenticity-token">Understand Rails Authenticity Token!</a>》一文，这篇文章介绍了鉴别权标的工作原理及重要意义。）</p>
 
@@ -917,7 +949,8 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 </pre></div>
 </div>
 <div class="figure" id="figure-7-13">
-  <img src="figures/filled_in_form_bootstrap.png" alt="filled in form bootstrap" /><p class="caption"><span>图 7.13：</span>填写了文本字段和密码字段的表单</p>
+  <img src="figures/filled_in_form_bootstrap.png" alt="filled in form bootstrap" />
+  <p class="caption"><span>图 7.13：</span>填写了文本字段和密码字段的表单</p>
 </div>
 <p>下面的 ERb 代码</p>
 
@@ -943,7 +976,8 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 </pre></div>
 </div>
 <div class="figure" id="figure-7-14">
-  <img src="figures/signup_failure_mockup_bootstrap.png" alt="signup failure mockup bootstrap" /><p class="caption"><span>图 7.14：</span>注册失败后的页面构思图</p>
+  <img src="figures/signup_failure_mockup_bootstrap.png" alt="signup failure mockup bootstrap" />
+  <p class="caption"><span>图 7.14：</span>注册失败后的页面构思图</p>
 </div>
 <p>Rails 会以 <code>name</code> 属性的值为键，用户输入的内容为值，构成一个名为 <code>params</code> 的 Hash，用来创建用户。另外一个重要的标签是 <code>form</code>。我们使用 <code>@user</code> 对象来创建 <code>form</code>元素，因为每个 Ruby 对象都知道它所属的类（参见 <a href="chapter4.html#section-4-4-1">4.4.1 节</a>），所以 Rails 知道 <code>@user</code> 所属的类是 <code>User</code>；而且，<code>@user</code> 代表的是新创建的用户，Rails 知道要使用 <code>POST</code> 请求方法，这正是创建新对象所需的 HTTP 请求（参见<a href="chapter3.html#aside-3-3">旁注 3.3</a>）：</p>
 
@@ -970,11 +1004,11 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>添加代码 7.21 之后，代码 7.16 中对不合法数据的测试就可以通过了。代码 7.21 中再次调用了 <code>render</code> 方法，第一使用时是为了插入局部视图（参见<a href="chapter5.html#section-5-1-3">5.1.3 节</a>），不过如你所见，在控制器的动作中也可以使用这个方法。同时，我们也借此代码介绍了 <code>if-else</code> 分支结构的用法：根据 <code>@user.save</code> 的返回值，分别处理用户存储成功和失败这两种情况（存储成功时返回值为 <code>true</code>，失败时返回值为 <code>false</code>）。</p>
 
 <div class="codeblock has-caption" id="codeblock-7-21"><p class="caption"><span>代码 7.21：</span>处理存储失败的 <code>create</code> 动作（还不能处理存储成功的情况）</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span><span class="p">)</span>    <span class="c1"># Not the final implementation!</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">def</span> <span class="n">create</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user</span><span class="p">])</span>    <span class="c1"># Not the final implementation!</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
       <span class="c1"># Handle a successful save.</span>
     <span class="k">else</span>
@@ -989,7 +1023,8 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>我们要实际的操作一下，提交一些不合法的注册数据，这样才能更好的理解代码 7.21 的作用，结果如图 7.15 所示，底部完整的调试信息如图 7.16 所示。</p>
 
 <div class="figure" id="figure-7-15">
-  <img src="figures/signup_failure_rails_4.png" alt="signup failure rails 4" /><p class="caption"><span>图 7.15：</span>注册失败</p>
+  <img src="figures/signup_failure_rails_4.png" alt="signup failure rails 4" />
+  <p class="caption"><span>图 7.15：</span>注册失败</p>
 </div>
 <p>下面我们来分析一下调试信息中请求参数 Hash 的 <code>user</code> 部分（如图 7.16），以便对 Rails 处理表单的过程有个更清晰地认识：</p>
 
@@ -1006,24 +1041,25 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 </pre></div>
 </div>
 <div class="figure" id="figure-7-16">
-  <img src="figures/signup_failure_rails_4_debug.png" alt="signup failure rails4 debug" /><p class="caption"><span>图 7.16：</span>注册失败时的调试信息</p>
+  <img src="figures/signup_failure_rails_4_debug.png" alt="signup failure rails4 debug" />
+  <p class="caption"><span>图 7.16：</span>注册失败时的调试信息</p>
 </div>
 <p>该字段 <code>name</code> 属性的值是 <code>user[email]</code>，它代表的就是 <code>user</code> Hash 的 <code>email</code> 元素。</p>
 
 <p>虽然调试信息中的键是字符串形式，不过却以 Symbol 形式传递给 Users 控制器。<code>params[:user]</code> 这个嵌套的 Hash，实际上就是 <code>User.new</code> 方法创建用户所需的参数值。（我们在 <a href="chapter4.html#section-4-4-5">4.4.5 节</a>中介绍过 <code>User.new</code> 的用法，代码 7.21 再次用到了这个方法。）也就是说，如下的代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>基本上等同于</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Foo Bar"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"foo@invalid"</span><span class="p">,</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Foo Bar"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"foo@invalid"</span><span class="p">,</span>
                  <span class="ss">password: </span><span class="s2">"foo"</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">"bar"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>在 Rails 之前的版本中，使用</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span><span class="p">)</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>就行了，但默认情况下这种用法并不安全，需要采用谨慎的处理过程避免恶意用户篡改程序的数据库。在 Rails 4.0 中，这行代码会抛出异常（如图 7.15 和图 7.16 所示），这样就安全了。保险起见，我们可以看一下测试是否是失败的：</p>
@@ -1037,7 +1073,7 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 
 <p>我们在 <a href="chapter4.html#section-4-4-5">4.4.5 节</a>中提到过 mass assignment，使用一个 Hash 初始化 Ruby 变量，例如下面这行代码</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span><span class="p">)</span>    <span class="c1"># Not the final implementation!</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user</span><span class="p">])</span>    <span class="c1"># Not the final implementation!</span>
 </pre></div>
 </div>
 <p>上面这行代码中的注释来自代码 7.21，说明这不是最终的实现方式。因为初始化整个 <code>params</code> Hash 是十分危险的，一旦初始化就会把用户提交的所有数据传递给 <code>User.new</code> 方法。假设除了前述的属性，User 模型还包含 <code>admin</code> 属性，用来标识网站的管理员。（我们会在 <a href="chapter9.html#section-9-4-1">9.4.1 节</a>加入这个属性。）要把这个属性设为 <code>true</code>，就要在 <code>params[:user]</code> 中包含 <code>admin='1'</code>，这个过程可以轻易的使用 <code>curl</code> 这种命令行 HTTP 客户端实现。结果是，把整个 <code>params</code> 传递给 <code>User.new</code> 网站的任一用户都可以在请求中包含 <code>admin='1'</code> 来获取管理员权限。</p>
@@ -1054,10 +1090,10 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>为了使用方便，可以定义一个名为 <code>user_params</code> 的辅助方法，返回所需的 Hash。这个方法只会在 Users 控制器内部使用，不需要暴露给用户，所以我们可以使用 Ruby 中的 <code>private</code> 方法把这个方法设为私有作用域，如代码 7.22 所示。（我们会在 <a href="chapter8.html#section-8-2-1">8.2.1 节</a>中更详细的介绍 <code>private</code>。）</p>
 
 <div class="codeblock has-caption" id="codeblock-7-22"><p class="caption"><span>代码 7.22：</span>在 <code>create</code> 动作中使用健壮参数</p><p class="file"><code>app/controller/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="k">def</span> <span class="nf">create</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">def</span> <span class="n">create</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
       <span class="c1"># Handle a successful save.</span>
@@ -1145,7 +1181,8 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>第一次使用 <code>empty?</code> 方法是在 <a href="chapter4.html#section-4-2-3">4.2.3 节</a>，用在字符串上；从上面的代码可以看出，<code>empty?</code> 也可用在 Rails 错误信息对象上，如果对象为空就返回 <code>true</code>，否则返回 <code>false</code>。<code>any?</code> 方法就是取反 <code>empty?</code> 的返回值，如果对象中有内容就返回 <code>true</code>，没内容则返回 <code>false</code>。（顺便说一下，<code>count</code>、<code>empty?</code> 和 <code>any?</code> 都可以用在 Ruby 数组上，在 <a href="chapter10.html#section-10-2">10.2 节</a>中会好好地介绍这三个方法。）</p>
 
 <div class="figure" id="figure-7-17">
-  <img src="figures/signup_error_messages_bootstrap.png" alt="signup error messages bootstrap" /><p class="caption"><span>图 7.17：</span>注册失败时显示的错误提示信息</p>
+  <img src="figures/signup_error_messages_bootstrap.png" alt="signup error messages bootstrap" />
+  <p class="caption"><span>图 7.17：</span>注册失败时显示的错误提示信息</p>
 </div>
 <p>还有一个比较新的方法是 <code>pluralize</code>，在控制台中默认不可用，不过我们可以引入 <code>ActionView::Helpers::TextHelper</code> 模块加载这个方法：<sup class="footnote" id="fnref-7-9"><a href="#fn-7-9" rel="footnote">9</a></sup></p>
 
@@ -1200,7 +1237,8 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 </pre></div>
 </div>
 <div class="figure" id="figure-7-18">
-  <img src="figures/blank_signup_password_digest_bootstrap_4_0.png" alt="blank signup password digest bootstrap 40" /><p class="caption"><span>图 7.18：</span>访问“注册”页面后直接点击“Create my account”按钮的效果</p>
+  <img src="figures/blank_signup_password_digest_bootstrap_4_0.png" alt="blank signup password digest bootstrap 40" />
+  <p class="caption"><span>图 7.18：</span>访问“注册”页面后直接点击“Create my account”按钮的效果</p>
 </div>
 <h2 id='section-7-4'><span>7.4</span> 注册成功</h2>
 
@@ -1219,13 +1257,14 @@ expect <span class="o">{</span> click_button <span class="s2">"Create my account
 <p>测试之所以会失败，是因为 Rails 处理动作的默认方式是渲染视图，可是 <code>create</code> 动作还没有（也不应该有）对应的视图。相反的，我们要转向其他的页面，最合理的转向页面是刚创建用户的资料页面。检测是否转向正确页面的测试会留作练习（参见 <a href="chapter7.html#section-7-6">7.6 节</a>），<code>create</code> 动作的代码如代码 7.26 所示。</p>
 
 <div class="figure" id="figure-7-19">
-  <img src="figures/signup_success_mockup_bootstrap.png" alt="signup success mockup bootstrap" /><p class="caption"><span>图 7.19：</span>注册成功后显示的页面构思图</p>
+  <img src="figures/signup_success_mockup_bootstrap.png" alt="signup success mockup bootstrap" />
+  <p class="caption"><span>图 7.19：</span>注册成功后显示的页面构思图</p>
 </div>
 <div class="codeblock has-caption" id="codeblock-7-26"><p class="caption"><span>代码 7.26：</span><code>create</code> 动作的代码，处理了保存和转向操作</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="k">def</span> <span class="nf">create</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">def</span> <span class="n">create</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
       <span class="n">redirect_to</span> <span class="vi">@user</span>
@@ -1309,13 +1348,13 @@ It failed.
 <p>检测页面中是否显示了正确的 Flash 消息的测试留作练习（参见 <a href="chapter7.html#section-7-6">7.6 节</a>）。在 <code>create</code> 动作中给 <code>flash[:success]</code> 赋值一个欢迎信息后（如代码 7.28 所示），这个测试就可以通过了。</p>
 
 <div class="codeblock has-caption" id="codeblock-7-28"><p class="caption"><span>代码 7.28：</span>注册成功后显示 Flash 信息</p><p class="file"><code>app/controllers/users_controller.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="k">def</span> <span class="nf">create</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">def</span> <span class="n">create</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">save</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:success</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"Welcome to the Sample App!"</span>
+      <span class="n">flash</span><span class="p">[</span><span class="ss">:success</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Welcome to the Sample App!"</span>
       <span class="n">redirect_to</span> <span class="vi">@user</span>
     <span class="k">else</span>
       <span class="n">render</span> <span class="s1">'new'</span>
@@ -1359,25 +1398,27 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
 </pre></div>
 </div>
 <div class="figure" id="figure-7-20">
-  <img src="figures/signup_flash_bootstrap.png" alt="signup flash bootstrap" /><p class="caption"><span>图 7.20：</span>注册成功后显示的页面，页面中有一个 Flash 消息</p>
+  <img src="figures/signup_flash_bootstrap.png" alt="signup flash bootstrap" />
+  <p class="caption"><span>图 7.20：</span>注册成功后显示的页面，页面中有一个 Flash 消息</p>
 </div>
 <p>然后我们要设置一下，强制在生产环境中使用 SSL，这里我们要编辑的文件是 <code>config/environments/production.rb</code>，添加的设置如代码 7.29 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-7-29"><p class="caption"><span>代码 7.29：</span>设置程序在生产环境中开启 SSL</p><p class="file"><code>config/environments/production.rb</code></p><div class="highlight type-ruby"><pre><span class="no">SampleApp</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
   <span class="o">.</span>
   <span class="c1"># Force all access to the app over SSL, use Strict-Transport-Security,</span>
   <span class="c1"># and use secure cookies.</span>
   <span class="n">config</span><span class="p">.</span><span class="nf">force_ssl</span> <span class="o">=</span> <span class="kp">true</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <div class="figure" id="figure-7-21">
-  <img src="figures/signup_flash_reloaded_bootstrap.png" alt="signup flash reloaded bootstrap" /><p class="caption"><span>图 7.21：</span>刷新页面后 Flash 消息就不见了</p>
+  <img src="figures/signup_flash_reloaded_bootstrap.png" alt="signup flash reloaded bootstrap" />
+  <p class="caption"><span>图 7.21：</span>刷新页面后 Flash 消息就不见了</p>
 </div>
 <p>我们要把这次修改提交到 Git 仓库中，然后再推送到 Heroku，所做的设置才能生效：</p>
 
@@ -1404,7 +1445,8 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
 <p>现在你可以打开注册页面注册一个新用户了。如果遇到问题，运行 <code>heroku logs</code>，尝试使用 Heroku 的日志文件排错。</p>
 
 <div class="figure" id="figure-7-22">
-  <img src="figures/signup_in_production_bootstrap.png" alt="signup in production bootstrap" /><p class="caption"><span>图 7.22：</span>线上正常运作的注册页面</p>
+  <img src="figures/signup_in_production_bootstrap.png" alt="signup in production bootstrap" />
+  <p class="caption"><span>图 7.22：</span>线上正常运作的注册页面</p>
 </div>
 <h2 id='section-7-5'><span>7.5</span> 小结</h2>
 
@@ -1414,7 +1456,8 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
 <h2 id='section-7-6'><span>7.6</span> 练习</h2>
 
 
-<ol><li>
+<ol>
+  <li>
     <p>以代码 7.30 为蓝本，验证一下在 <a href="chapter7.html#section-7-1-4">7.1.4 节</a>中定义的 <code>gravatar_for</code> 帮助方法是否可以接受名为 <code>size</code> 的可选参数，允许在视图中使用类似 <code>gravatar_for user, size: 40</code> 这样的形式。</p>
   </li>
   <li>
@@ -1426,58 +1469,60 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
   <li>
     <p>我们前面说过，代码 7.27 中 Flash 消息相关的代码有点乱，我们要换用代码 7.33 中的代码，运行测试看一下使用 <code>content_tag</code> 帮助方法之后效果是否一样。</p>
   </li>
-</ol><div class="codeblock has-caption" id="codeblock-7-30"><p class="caption"><span>代码 7.30：</span>重新定义 <code>gravatar_for</code> 方法，允许接受可选的 <code>size</code> 参数</p><p class="file"><code>app/helpers/users_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">UsersHelper</span>
+</ol>
+
+<div class="codeblock has-caption" id="codeblock-7-30"><p class="caption"><span>代码 7.30：</span>重新定义 <code>gravatar_for</code> 方法，允许接受可选的 <code>size</code> 参数</p><p class="file"><code>app/helpers/users_helper.rb</code></p><div class="highlight type-ruby"><pre><span class="k">module</span> <span class="nn">UsersHelper</span>
 
   <span class="c1"># Returns the Gravatar (http://gravatar.com/) for the given user.</span>
   <span class="k">def</span> <span class="nf">gravatar_for</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">size: </span><span class="mi">50</span> <span class="p">})</span>
     <span class="n">gravatar_id</span> <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">::</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">.</span><span class="nf">downcase</span><span class="p">)</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">options</span><span class="o">[</span><span class="ss">:size</span><span class="o">]</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="ss">:size</span><span class="p">]</span>
     <span class="n">gravatar_url</span> <span class="o">=</span> <span class="s2">"https://secure.gravatar.com/avatar/</span><span class="si">#{</span><span class="n">gravatar_id</span><span class="si">}</span><span class="s2">.png?s=</span><span class="si">#{</span><span class="n">size</span><span class="si">}</span><span class="s2">"</span>
-    <span class="n">image_tag</span><span class="p">(</span><span class="n">gravatar_url</span><span class="p">,</span> <span class="ss">alt: </span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"gravatar"</span><span class="p">)</span>
+    <span class="n">image_tag</span><span class="p">(</span><span class="n">gravatar_url</span><span class="p">,</span> <span class="ss">alt: </span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"gravatar"</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-7-31"><p class="caption"><span>代码 7.31：</span>错误提示信息测试的参考</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre>  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"signup page"</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-7-31"><p class="caption"><span>代码 7.31：</span>错误提示信息测试的参考</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre>  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"signup page"</span> <span class="k">do</span>
 
     <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="n">signup_path</span> <span class="p">}</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="n">describe</span> <span class="s2">"with invalid information"</span> <span class="k">do</span>
-      <span class="o">.</span>
-      <span class="o">.</span>
-      <span class="o">.</span>
-      <span class="n">describe</span> <span class="s2">"after submission"</span> <span class="k">do</span>
+    <span class="p">.</span>
+    <span class="nf">.</span>
+    <span class="p">.</span>
+    <span class="nf">describe</span> <span class="s2">"with invalid information"</span> <span class="k">do</span>
+      <span class="p">.</span>
+      <span class="nf">.</span>
+      <span class="p">.</span>
+      <span class="nf">describe</span> <span class="s2">"after submission"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">click_button</span> <span class="n">submit</span> <span class="p">}</span>
 
         <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="s1">'Sign up'</span><span class="p">)</span> <span class="p">}</span>
         <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'error'</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
-      <span class="o">.</span>
-      <span class="o">.</span>
+      <span class="p">.</span>
+      <span class="nf">.</span>
       <span class="o">.</span>
 </pre></div>
 </div>
-<div class="codeblock has-caption" id="codeblock-7-32"><p class="caption"><span>代码 7.32：</span>对 <code>create</code> 动作中保存用户操作的测试</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre>    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="n">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
-      <span class="o">.</span>
-      <span class="o">.</span>
-      <span class="o">.</span>
-      <span class="n">describe</span> <span class="s2">"after saving the user"</span> <span class="k">do</span>
+<div class="codeblock has-caption" id="codeblock-7-32"><p class="caption"><span>代码 7.32：</span>对 <code>create</code> 动作中保存用户操作的测试</p><p class="file"><code>spec/requests/user_pages_spec.rb</code></p><div class="highlight type-ruby"><pre>    <span class="p">.</span>
+    <span class="nf">.</span>
+    <span class="p">.</span>
+    <span class="nf">describe</span> <span class="s2">"with valid information"</span> <span class="k">do</span>
+      <span class="p">.</span>
+      <span class="nf">.</span>
+      <span class="p">.</span>
+      <span class="nf">describe</span> <span class="s2">"after saving the user"</span> <span class="k">do</span>
         <span class="n">before</span> <span class="p">{</span> <span class="n">click_button</span> <span class="n">submit</span> <span class="p">}</span>
         <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">email: </span><span class="s1">'user@example.com'</span><span class="p">)</span> <span class="p">}</span>
 
         <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_title</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">name</span><span class="p">)</span> <span class="p">}</span>
         <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="s1">'div.alert.alert-success'</span><span class="p">,</span> <span class="ss">text: </span><span class="s1">'Welcome'</span><span class="p">)</span> <span class="p">}</span>
       <span class="k">end</span>
-      <span class="o">.</span>
-      <span class="o">.</span>
+      <span class="p">.</span>
+      <span class="nf">.</span>
       <span class="o">.</span>
 </pre></div>
 </div>
@@ -1487,7 +1532,7 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
   .
   .
   <span class="cp">&lt;%</span> <span class="n">flash</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">|</span> <span class="cp">%&gt;</span>
-    <span class="cp">&lt;%=</span> <span class="n">content_tag</span><span class="p">(</span><span class="ss">:div</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="k">class</span><span class="p">:</span> <span class="s2">"alert alert-</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">content_tag</span><span class="p">(</span><span class="ss">:div</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"alert alert-</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="cp">%&gt;</span>
   <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
   .
   .
@@ -1496,7 +1541,8 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
 </pre></div>
 </div>
 <div class="footnotes">
-  <ol><li id="fn-7-1">
+  <ol>
+    <li id="fn-7-1">
       <p><a href="http://gomockingbird.com/">Mockingbird</a> 不支持插入额外的图片，图 7.1 中的图片是我使用 <a href="http://www.adobe.com/products/fireworks/">Adobe Fireworks</a> 加上的。<a href="#fnref-7-1" rel="reference">↩</a></p>
     </li>
     <li id="fn-7-2">
@@ -1529,7 +1575,9 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
     <li id="fn-7-11">
       <p>严格来说，SSL 现在的称呼是 TLS（Transport Layer Security，安全传输层协议），不过人们已经习惯了 SSL 这个名字。<a href="#fnref-7-11" rel="reference">↩</a></p>
     </li>
-  </ol></div>
+  </ol>
+</div>
+
   	</div>
 </div>
 
@@ -1537,10 +1585,10 @@ password_digest: <span class="s2">"</span><span class="nv">$2a$10$A58</span><spa
 				
 				<div class="navigation">
 					
-						<a class="prev_page" href="/chapter6.html">&laquo; 第 6 章用户模型</a>
+						<a class="prev_page" href="chapter6.html">&laquo; 第 6 章用户模型</a>
 					
 					
-						<a class="next_page" href="/chapter8.html">第 8 章登录和退出 &raquo;</a>
+						<a class="next_page" href="chapter8.html">第 8 章登录和退出 &raquo;</a>
 					
 				</div>
 				

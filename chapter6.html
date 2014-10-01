@@ -108,7 +108,8 @@
 <p>接下来的三章最终是要实现网站的“注册”页面（构思图如图 6.1 所示），在此之前我们要解决用户的存储问题，因为现在还没有地方存储用户信息。所以，实现用户注册功能的第一步是，创建一个数据结构，获取并存储用户的信息。</p>
 
 <div class="figure" id="figure-6-1">
-  <img src="figures/signup_mockup_bootstrap.png" alt="signup mockup bootstrap" /><p class="caption"><span>图 6.1：</span>用户注册页面的构思图</p>
+  <img src="figures/signup_mockup_bootstrap.png" alt="signup mockup bootstrap" />
+  <p class="caption"><span>图 6.1：</span>用户注册页面的构思图</p>
 </div>
 <p>在 Rails 中，数据模型的默认数据结构叫做模型（model，MVC 中的 M，参见<a href="chapter1.html#section-1-2-6">1.2.6 节</a>）。Rails 为解决数据持久化提供的默认解决方案是，使用数据库存储需要长期使用的数据。和数据库交互默认的代码库是 Active Record<sup class="footnote" id="fnref-6-1"><a href="#fn-6-1" rel="footnote">1</a></sup>。Active Record 提供了一系列的方法，可直接用于创建、保存、查询数据对象，而无需使用关系数据库所用的结构化查询语言（structured query language， SQL）<sup class="footnote" id="fnref-6-2"><a href="#fn-6-2" rel="footnote">2</a></sup>。Rails 还支持数据库迁移（migration）功能，允许我们使用纯 Ruby 代码定义数据结构，而不用学习数据定义语言（data definition language, DDL）。Active Record 把你和数据库层完全隔开了。本教程开发的应用程序在本地使用的是 SQLite 数据库，部署后使用 PostgreSQL 数据库（由 Heroku 提供，参见 <a href="chapter1.html#section-1-4">1.4 节</a>）。这就引入了一个更深层次的话题，那就是在不同的环境中，即便使用的是不同类型的数据库，我们也无需关心 Rails 是如何存储数据的。</p>
 
@@ -121,10 +122,10 @@
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span>
   <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>在 Rails 中不用这样定义属性。如前面提到的，Rails 默认使用关系型数据库存储数据，数据库中的表（table）是由记录行（row）组成的，每行中都有相应的数据属性列（column）。例如，要存储用户的名字和 Email 地址，我们要创建 <code>users</code> 表，表中包含 <code>name</code> 列和 <code>email</code> 列（每一行代表一个用户）。这样命名列，Active Record 就能找到用户对象的属性了。</p>
@@ -150,7 +151,7 @@
 
 <div class="codeblock has-caption" id="codeblock-6-2"><p class="caption"><span>代码 6.2：</span>User 模型的迁移文件（创建 <code>users</code> 表）</p><p class="file"><code>db/migrate/[timestamp]_create_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+    <span class="n">create_table</span> <span class="p">:</span><span class="n">users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:name</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:email</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span>
@@ -162,7 +163,8 @@
 <p>注意一下迁移文件名的前面有个时间戳（timestamp），这是该文件被创建时的时间。早期迁移文件名的前缀是个递增的数字，在协作团队中如果多个编程人员生成了相同序号的迁移文件就可能会发生冲突。除非两个迁移文件在同一秒钟生成这种小概率事件发生了，否则使用时间戳基本可以避免冲突的发生。迁移文件的代码中有一个名为 <code>change</code> 的方法，这个方法定义要对数据库做什么操作。代码 6.2 中，<code>change</code> 方法使用 Rails 提供的 <code>create_table</code> 方法在数据库中新建一个表，用来存储用户数据。<code>create_table</code> 后跟着一个块，指定了一个块参数 <code>t</code>（代表这个表对象）。在块中，<code>create_table</code> 方法通过 <code>t</code> 对象创建了 <code>name</code> 和 <code>email</code> 两个列，均为 <code>string</code> 类型。<sup class="footnote" id="fnref-6-4"><a href="#fn-6-4" rel="footnote">4</a></sup>这里使用的表名是复数形式（<code>users</code>），不过模型名是单数形式（User），这是 Rails 在用词上的一个约定，即模型表现的是单个用户的特性，而数据库表却存储了很多用户。块中最后一行 <code>t.timestamps</code> 是个特殊的方法，它会自动创建两个列，<code>created_at</code> 和 <code>updated_at</code>，这两个列分别记录创建用户的时间戳和更新用户数据的时间戳。（<a href="chapter6.html#section-6-1-3">6.1.3 节</a>会介绍使用这两个列的例子。）这个迁移文件表示的完整数据模型如图 6.2 所示。</p>
 
 <div class="figure" id="figure-6-2">
-  <img src="figures/user_model_initial.png" alt="user model initial" /><p class="caption"><span>图 6.2：</span>代码 6.2 生成的用户数据模型</p>
+  <img src="figures/user_model_initial.png" alt="user model initial" />
+  <p class="caption"><span>图 6.2：</span>代码 6.2 生成的用户数据模型</p>
 </div>
 <p>我们可以使用如下的 <code>rake</code> 命令（参见<a href="chapter2.html#aside-2-1">旁注 2.1</a>）来执行这个迁移（也叫“向上迁移”）：</p>
 
@@ -172,7 +174,8 @@
 <p>（你可能还记得，我们在 <a href="chapter2.html#section-2-2">2.2 节</a>中使用过这个命令。）第一次运行 <code>db:migrate</code> 命令时会新建 <code>db/development.sqlite3</code>，这是 SQLite<sup class="footnote" id="fnref-6-5"><a href="#fn-6-5" rel="footnote">5</a></sup>数据库文件。若要查看数据库结构，可以使用 SQLite 数据库浏览器打开 <code>db/development.sqlite3</code> 文件（如图 6.3 所示）。和图 6.2 中的模型对比之后，你会发现 <code>id</code> 列在迁移文件中没有定义。在 <a href="chapter2.html#section-2-2">2.2 节</a> 中介绍过，Rails 把这个列作为行的唯一标识符。</p>
 
 <div class="figure" id="figure-6-3">
-  <img src="figures/sqlite_database_browser.png" alt="sqlite database browser" /><p class="caption"><span>图 6.3：</span>用 SQLite 数据库浏览器查看刚创建的 users 表</p>
+  <img src="figures/sqlite_database_browser.png" alt="sqlite database browser" />
+  <p class="caption"><span>图 6.3：</span>用 SQLite 数据库浏览器查看刚创建的 users 表</p>
 </div>
 <p>大多数迁移，包括本教程中的所有迁移，都是可逆的，也就是说可以通过一个简单的 Rake 命令“向下迁移”，撤销之前的迁移操作，这个命令是 <code>db:rollback</code>：</p>
 
@@ -437,7 +440,7 @@ Pending:
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
-  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span> <span class="p">}</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
 
@@ -503,7 +506,7 @@ Pending:
 <p>验证 <code>name</code> 属性是否存在的方法是使用 <code>validates</code> 方法，传入 <code>presence: true</code> 参数，如代码 6.6 所示。参数 <code>presence: true</code> 是只有一个元素的可选 Hash 参数。我们在 <a href="chapter4.html#section-4-3-4">4.3.4 节</a>中介绍过，如果方法的最后一个参数是 Hash 的话，可以省略 Hash 的花括号。（如 <a href="chapter5.html#section-5-1-1">5.1.1 节</a>中提到的，这样的可选 Hash 在 Rails 中很普遍。）</p>
 
 <div class="codeblock has-caption" id="codeblock-6-6"><p class="caption"><span>代码 6.6：</span>验证 <code>name</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="nb">name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -546,7 +549,7 @@ Pending:
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -616,12 +619,12 @@ Pending:
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"when email is not present"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"when email is not present"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="s2">" "</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
@@ -631,8 +634,8 @@ Pending:
 <p>验证的实现几乎也一样，如代码 6.10 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-10"><p class="caption"><span>代码 6.10：</span>验证 <code>name</code> 和 <code>email</code> 属性的存在性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="nb">name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -649,12 +652,12 @@ Pending:
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"when name is too long"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"when name is too long"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">51</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
   <span class="k">end</span>
@@ -671,8 +674,8 @@ Pending:
 <p>代码 6.11 中的测试应该会失败。为了让测试通过，我们要知道怎么使用限制长度的参数 <code>:length</code>，以及限制上限的 <code>:maximum</code> 参数。验证相关的代码如代码 6.12 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-12"><p class="caption"><span>代码 6.12：</span>为 <code>name</code> 属性添加长度验证</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="nb">name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -704,12 +707,12 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"when email format is invalid"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"when email format is invalid"</span> <span class="k">do</span>
     <span class="n">it</span> <span class="s2">"should be invalid"</span> <span class="k">do</span>
       <span class="n">addresses</span> <span class="o">=</span> <span class="sx">%w[user@foo,com user_at_foo.org example.user@foo.
                      foo@bar_baz.com foo@bar+baz.com]</span>
@@ -737,51 +740,80 @@ first.last@foo.jp
 <p>在应用程序中，我们会使用正则表达式定义要验证的 Email 格式，然后通过 <code>validates</code> 方法的 <code>:format</code> 参数指定合法的格式（参见代码 6.14）。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-14"><p class="caption"><span>代码 6.14：</span>使用正则表达式验证 Email 格式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="nb">name</span><span class="p">,</span>  <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">format: </span><span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p>我们把这个正则表达式定义为常量 <code>VALID_EMAIL_REGEX</code>，Ruby 中的常量都是以大写字母开头的。</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
-<span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
+<span class="n">validates</span> <span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">format: </span><span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>使用上面的代码可以确保只有匹配这个正则表达式的 Email 地址才是合法的。（因为 <code>VALID_EMAIL_REGEX</code> 以大写字母开头，是个常量，所以其值是不能改变的。）</p>
 
 <p>那么，这个正则表达式是怎么编写出来的呢？正则表达式中的文本匹配模式是由简练的语言编写的（很多人会觉得很难读懂），学习如何编写正则表达式是一门艺术，为了便于理解，我会把 <code>VALID_EMAIL_REGEX</code> 拆分成几块来讲解（如<a href="chapter6.html#table-6-1">表格 6.1</a>所示）。<sup class="footnote" id="fnref-6-10"><a href="#fn-6-10" rel="footnote">11</a></sup>要想认真学习正则表达式，我推荐使用 Rubular 正则表达式编辑器（如图 6.4），这个工具在学习的过程中是必备的。<sup class="footnote" id="fnref-6-11"><a href="#fn-6-11" rel="footnote">12</a></sup>Rubular 网站的界面很友好，便于编写所需的正则表达式，网站中还有一个便捷的快速语法参考。我建议你使用 Rubular 来理解<a href="chapter6.html#table-6-1">表格 6.1</a>中的正则表达式片段。读的再多也不比不上在 Rubular 中实操几次。（注意：如果你在 Rubular 中输入代码 6.14 中用到的正则表达式，要把 <code>\A</code> 和 <code>\z</code> 去掉。）</p>
 
-<div class="table has-caption" id="table-6-1">
-  <p class="caption"><span>表格 6.1：</span>拆分代码 6.14 中匹配 Email 地址的正则表达式</p>
-  <table><thead><tr><th>表达式</th>
+<div class="table has-caption" id="table-6-1"><p class="caption"><span>表格 6.1：</span>拆分代码 6.14 中匹配 Email 地址的正则表达式</p><table>
+  <thead>
+    <tr>
+      <th>表达式</th>
       <th>含义</th>
-    </tr></thead><tbody><tr><td><code>/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</code></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</code></td>
       <td>完整的正则表达式</td>
-    </tr><tr><td><code>/</code></td>
+    </tr>
+    <tr>
+      <td><code>/</code></td>
       <td>正则表达式开始</td>
-    </tr><tr><td><code>\A</code></td>
+    </tr>
+    <tr>
+      <td><code>\A</code></td>
       <td>匹配字符串的开头</td>
-    </tr><tr><td><code>[\w+\-.]+</code></td>
+    </tr>
+    <tr>
+      <td><code>[\w+\-.]+</code></td>
       <td>一个或多个字母、加号、连字符、或点号</td>
-    </tr><tr><td><code>@</code></td>
+    </tr>
+    <tr>
+      <td><code>@</code></td>
       <td>匹配 @ 符号</td>
-    </tr><tr><td><code>[a-z\d\-.]+</code></td>
+    </tr>
+    <tr>
+      <td><code>[a-z\d\-.]+</code></td>
       <td>一个或多个小写字母、数字、连字符或点号</td>
-    </tr><tr><td><code>\.</code></td>
+    </tr>
+    <tr>
+      <td><code>\.</code></td>
       <td>匹配点号</td>
-    </tr><tr><td><code>[a-z]+</code></td>
+    </tr>
+    <tr>
+      <td><code>[a-z]+</code></td>
       <td>一个或多个小写字母</td>
-    </tr><tr><td><code>\z</code></td>
+    </tr>
+    <tr>
+      <td><code>\z</code></td>
       <td>匹配字符串结尾</td>
-    </tr><tr><td><code>/</code></td>
+    </tr>
+    <tr>
+      <td><code>/</code></td>
       <td>结束正则表达式</td>
-    </tr><tr><td><code>i</code></td>
+    </tr>
+    <tr>
+      <td><code>i</code></td>
       <td>不区分大小写</td>
-    </tr></tbody></table></div>
+    </tr>
+  </tbody>
+</table>
+</div>
 <div class="figure" id="figure-6-4">
-  <img src="figures/rubular.png" alt="rubular" /><p class="caption"><span>图 6.4：</span>强大的 Rubular 正则表达式编辑器</p>
+  <img src="figures/rubular.png" alt="rubular" />
+  <p class="caption"><span>图 6.4：</span>强大的 Rubular 正则表达式编辑器</p>
 </div>
 <p>顺便说一下，在官方标准中确实有一个正则表达式可以匹配所有的合法 Email 地址，但没必要使用这么复杂的正则表达式，代码 6.14 中使用的正则表达式就很好，甚至可能比官方的更好。<sup class="footnote" id="fnref-6-12"><a href="#fn-6-12" rel="footnote">13</a></sup>不过，上面的正则表达式有一个缺陷，能匹配 <code>foo@bar..com</code> 这种有连续点号的地址。修正这个瑕疵的方法会留作练习，参见 <a href="chapter6.html#section-6-5">6.5 节</a>。</p>
 
@@ -799,12 +831,12 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"when email address is already taken"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"when email address is already taken"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
       <span class="n">user_with_same_email</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">dup</span>
       <span class="n">user_with_same_email</span><span class="p">.</span><span class="nf">save</span>
@@ -820,10 +852,10 @@ first.last@foo.jp
 <p>代码 6.16 中的代码可以让代码 6.15 中的测试通过。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-16"><p class="caption"><span>代码 6.16：</span>验证 Email 地址的唯一性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span> <span class="ss">uniqueness: </span><span class="kp">true</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">format: </span><span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span> <span class="ss">uniqueness: </span><span class="kp">true</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -834,12 +866,12 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"when email address is already taken"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"when email address is already taken"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
       <span class="n">user_with_same_email</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">dup</span>
       <span class="n">user_with_same_email</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">email</span><span class="p">.</span><span class="nf">upcase</span>
@@ -866,11 +898,11 @@ first.last@foo.jp
 <p>现在 <code>user_with_same_email.valid?</code> 的返回值是 <code>true</code>，因为唯一性验证还是区分大小写的。我们希望得到的结果是 <code>false</code>。幸好 <code>uniqueness</code> 可以指定 <code>:case_sensitive</code> 选项，正好可以解决这个问题，如代码 6.18 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-18"><p class="caption"><span>代码 6.18：</span>验证 Email 地址的唯一性，不区分大小写</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span>
-                    <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span>
+                    <span class="ss">format: </span><span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
                     <span class="ss">uniqueness: </span><span class="p">{</span> <span class="ss">case_sensitive: </span><span class="kp">false</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
@@ -884,11 +916,14 @@ first.last@foo.jp
 
 <p>不会吧，哪里出了问题呢？下面我来解释一下。</p>
 
-<ol><li>Alice 用 alice@wonderland.com 注册；</li>
+<ol>
+  <li>Alice 用 alice@wonderland.com 注册；</li>
   <li>Alice 不小心按了两次提交按钮，连续发送了两次请求；</li>
   <li>然后就会发生下面的事情：请求 1 在内存中新建了一个用户对象，通过验证；请求 2 也一样。请求 1 创建的用户存入了数据库，请求 2 创建的用户也存入了数据库。</li>
   <li>结果是，尽管有唯一性验证，数据库中还是有两条用户记录的 Email 地址是一样的。</li>
-</ol><p>相信我，上面这种难以置信的过程是可能会发生的，只要有一定的访问量，在任何 Rails 网站中都可能发生。幸好解决的办法很容易实现，只需在数据库层也加上唯一性限制。我们要做的是在数据库中为 <code>email</code> 列建立索引，然后为索引加上唯一性限制。</p>
+</ol>
+
+<p>相信我，上面这种难以置信的过程是可能会发生的，只要有一定的访问量，在任何 Rails 网站中都可能发生。幸好解决的办法很容易实现，只需在数据库层也加上唯一性限制。我们要做的是在数据库中为 <code>email</code> 列建立索引，然后为索引加上唯一性限制。</p>
 
 <p>为 <code>email</code> 列建立索引就要改变数据库模型，在 Rails 中可以通过迁移实现（参见 <a href="chapter6.html#section-6-1-1">6.1.1 节</a>）。在 <a href="chapter6.html#section-6-1-1">6.1.1 节</a> 中我们看到，生成 User 模型时会自动创建一个迁移文件（参见代码 6.2），现在我们是要改变已经存在的模型结构，那么使用 <code>migration</code> 命令直接创建迁移文件就可以了：</p>
 
@@ -899,7 +934,7 @@ first.last@foo.jp
 
 <div class="codeblock has-caption" id="codeblock-6-19"><p class="caption"><span>代码 6.19：</span>确保 Email 唯一性的迁移文件</p><p class="file"><code>db/migrate/[timestamp]_add_index_to_users_email.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddIndexToUsersEmail</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">add_index</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
+    <span class="n">add_index</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -913,17 +948,17 @@ first.last@foo.jp
 </div>
 <p>（如果失败的话，就退出所有打开的控制台沙盒会话，这些会话可能会锁定数据库，拒绝进行迁移操作。）如果你想看一下操作执行后的效果，请打开 <code>db/schema.rb</code> 文件，会发现多了一行：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">add_index</span> <span class="s2">"users"</span><span class="p">,</span> <span class="o">[</span><span class="s2">"email"</span><span class="o">]</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"index_users_on_email"</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">add_index</span> <span class="s2">"users"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"email"</span><span class="p">],</span> <span class="ss">name: </span><span class="s2">"index_users_on_email"</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
 </pre></div>
 </div>
 <p>为了保证 Email 地址的唯一性，还要做些修改：存入数据库之前把 Email 地址转换成全小写字母的形式，因为不是所有数据库适配器的索引都是区分大小写的。<sup class="footnote" id="fnref-6-16"><a href="#fn-6-16" rel="footnote">17</a></sup> 为此，我们要使用回调函数（callback），在 Active Record 对象生命周期的特定时刻调用（参阅 Rails API 中关于回调函数的文档）。本例中，我们要使用的回调函数是 <code>before_save</code>，在用户存入数据库之前强行把 Email 地址转换成全小写字母形式，如代码 6.20 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-20"><p class="caption"><span>代码 6.20：</span>把 Email 地址转换成全小写形式，确保唯一性</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>在代码 6.20 中，<code>before_save</code> 后跟有一个块，块中的代码调用了字符串的 <code>downcase</code> 方法，把用户的 Email 地址转换成小写字母形式。这些代码有些深度，此时你只需相信这些代码可以达到目的就行了。如果你有所怀疑，可以把代码 6.16 中的唯一性验证代码注释掉，创建几个 Email 地址一样的用户，看一下存储时得到的错误信息。（<a href="chapter8.html#section-8-2-1">8.2.1 节</a> 还会用到这个技巧，到时会使用推荐的“方法引用”约定。）编写针对代码 6.20 的测试会留作练习，参见 <a href="chapter6.html#section-6-5">6.5 节</a>。</p>
@@ -954,7 +989,8 @@ first.last@foo.jp
 <p>我们先要对 User 数据结构做些改动，向 <code>users</code> 表中加入 <code>password_digest</code> 列（如图 6.5 所示）。digest 这个词是加密哈希函数中的一个术语。之所以要使用 <code>password_digest</code> 命名这个列，是因为 <a href="chapter6.html#section-6-3-4">6.3.4 节</a>实现的功能会用到这个列。适当的加密后，即便攻击者设法获取了数据库拷贝也无法黑掉网站。</p>
 
 <div class="figure" id="figure-6-5">
-  <img src="figures/user_model_password_digest.png" alt="user model password digest" /><p class="caption"><span>图 6.5：</span>加入 <code>password_digest</code> 属性后的 User 模型</p>
+  <img src="figures/user_model_password_digest.png" alt="user model password digest" />
+  <p class="caption"><span>图 6.5：</span>加入 <code>password_digest</code> 属性后的 User 模型</p>
 </div>
 <p>我们要使用目前最先进的哈希函数 bcrypt 对密码进行不可逆的加密，得到密码的哈希值。如果要在程序中使用 bcrypt，需要把 <code>bcrypt-ruby</code> 这个 gem 加入 <code>Gemfile</code>，如代码 6.21 所示。</p>
 
@@ -964,8 +1000,8 @@ first.last@foo.jp
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.0.4'</span>
 <span class="n">gem</span> <span class="s1">'bootstrap-sass'</span><span class="p">,</span> <span class="s1">'2.3.2.0'</span>
 <span class="n">gem</span> <span class="s1">'bcrypt-ruby'</span><span class="p">,</span> <span class="s1">'3.1.7'</span>
-<span class="o">.</span>
-<span class="o">.</span>
+<span class="p">.</span>
+<span class="nf">.</span>
 <span class="o">.</span>
 </pre></div>
 </div>
@@ -981,7 +1017,7 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
@@ -989,10 +1025,10 @@ first.last@foo.jp
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:password_digest</span><span class="p">)</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>为了让测试通过，首先要生成一个合适的迁移文件，添加 <code>password_digest</code> 列：</p>
@@ -1004,7 +1040,7 @@ first.last@foo.jp
 
 <div class="codeblock has-caption" id="codeblock-6-23"><p class="caption"><span>代码 6.23：</span>向 <code>users</code> 表中添加 <code>password_digest</code> 列的迁移</p><p class="file"><code>db/migrate/[ts]_add_password_digest_to_users.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">AddPasswordDigestToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:password_digest</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">add_column</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:password_digest</span><span class="p">,</span> <span class="ss">:string</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1030,7 +1066,7 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span>
                      <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
                      <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span>
                      <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
@@ -1044,16 +1080,16 @@ first.last@foo.jp
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:password</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:password_confirmation</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_valid</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <p>注意，我们在 <code>User.new</code> 的初始化参数 Hash 中加入了 <code>password</code> 和 <code>password_confirmation</code>：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">before</span> <span class="k">do</span>
-  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span>
+  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span>
                    <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
                    <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span>
                    <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
@@ -1064,7 +1100,7 @@ first.last@foo.jp
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">describe</span> <span class="s2">"when password is not present"</span> <span class="k">do</span>
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
                      <span class="ss">password: </span><span class="s2">" "</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">" "</span><span class="p">)</span>
   <span class="k">end</span>
   <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
@@ -1088,7 +1124,7 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
                      <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
   <span class="k">end</span>
 
@@ -1101,12 +1137,12 @@ first.last@foo.jp
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:password_confirmation</span><span class="p">)</span> <span class="p">}</span>
 
   <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_valid</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"when password is not present"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"when password is not present"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="k">do</span>
-      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
                        <span class="ss">password: </span><span class="s2">" "</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">" "</span><span class="p">)</span>
     <span class="k">end</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_valid</span> <span class="p">}</span>
@@ -1122,18 +1158,18 @@ first.last@foo.jp
 <p>我们只需添加一行代码就可以让代码 6.25 中的测试通过，如代码 6.26 所示。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-26"><p class="caption"><span>代码 6.26：</span>让密码测试通过</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">has_secure_password</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">has_secure_password</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 <p><code>has_secure_password</code> 这一行代码是很强大的，可以让所有针对密码的测试都通过，而且作用还不知如此。但是，这行代码的作用太过强大，甚至后面的测试未遇红就变绿了，所以在继续之前，我建议把这行注释掉（如代码 6.27 所示）。</p>
 
 <div class="codeblock has-caption" id="codeblock-6-27"><p class="caption"><span>代码 6.27：</span>为了践行 TDD，注释掉 <code>has_secure_password</code></p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
   <span class="o">.</span>
   <span class="c1"># has_secure_password</span>
 <span class="k">end</span>
@@ -1224,19 +1260,19 @@ first.last@foo.jp
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
 
   <span class="n">before</span> <span class="k">do</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Example User"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span>
                      <span class="ss">password: </span><span class="s2">"foobar"</span><span class="p">,</span> <span class="ss">password_confirmation: </span><span class="s2">"foobar"</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="n">subject</span> <span class="p">{</span> <span class="vi">@user</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:authenticate</span><span class="p">)</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"with a password that's too short"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_to</span><span class="p">(</span><span class="ss">:authenticate</span><span class="p">)</span> <span class="p">}</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"with a password that's too short"</span> <span class="k">do</span>
     <span class="n">before</span> <span class="p">{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password</span> <span class="o">=</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">password_confirmation</span> <span class="o">=</span> <span class="s2">"a"</span> <span class="o">*</span> <span class="mi">5</span> <span class="p">}</span>
     <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">be_invalid</span> <span class="p">}</span>
   <span class="k">end</span>
@@ -1268,7 +1304,7 @@ first.last@foo.jp
 
 <p>首先，我们要为密码添加一个长度验证，使用和代码 6.12 中用过的 <code>:maximum</code> 类似的 <code>:minimum</code>：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">minimum: </span><span class="mi">6</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates</span> <span class="p">:</span><span class="n">password</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">minimum: </span><span class="mi">6</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>（密码和密码确认的存在性验证都在 <code>has_secure_password</code> 方法中实现了。）</p>
@@ -1282,8 +1318,8 @@ first.last@foo.jp
 
 <p>（如果你觉得 <code>has_secure_password</code> 方法太过神奇，不妨阅读一下 <code>secure_password.rb</code> 文件中的代码，里面有很多注释，代码本身也不难理解。这段代码中有这么几行：</p>
 
-<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates_confirmation_of</span> <span class="ss">:password</span><span class="p">,</span>
-                          <span class="k">if</span><span class="p">:</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="p">.</span><span class="nf">password</span><span class="p">.</span><span class="nf">present?</span> <span class="p">}</span>
+<div class="codeblock"><div class="highlight type-ruby"><pre><span class="n">validates_confirmation_of</span> <span class="p">:</span><span class="n">password</span><span class="p">,</span>
+                          <span class="ss">if: </span><span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="p">.</span><span class="nf">password</span><span class="p">.</span><span class="nf">present?</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>这行代码会自动创建 <code>password_confirmation</code> 属性（<a href="http://api.rubyonrails.org/v4.0.0/classes/ActiveModel/Validations/HelperMethods.html#method-i-validates_confirmation_of">Rails API</a> 中有说明）。这段代码还有针对 <code>password_digest</code> 属性的数据验证。）</p>
@@ -1292,13 +1328,13 @@ first.last@foo.jp
 
 <div class="codeblock has-caption" id="codeblock-6-29"><p class="caption"><span>代码 6.29：</span>最终实现的安全的密码机制</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="nb">self</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase</span> <span class="p">}</span>
-  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="nb">name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">maximum: </span><span class="mi">50</span> <span class="p">}</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence:   </span><span class="kp">true</span><span class="p">,</span>
-                    <span class="nb">format</span><span class="p">:</span>     <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">presence:   </span><span class="kp">true</span><span class="p">,</span>
+                    <span class="ss">format:     </span><span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
                     <span class="ss">uniqueness: </span><span class="p">{</span> <span class="ss">case_sensitive: </span><span class="kp">false</span> <span class="p">}</span>
   <span class="n">has_secure_password</span>
-  <span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">minimum: </span><span class="mi">6</span> <span class="p">}</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="n">password</span><span class="p">,</span> <span class="ss">length: </span><span class="p">{</span> <span class="ss">minimum: </span><span class="mi">6</span> <span class="p">}</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1315,19 +1351,19 @@ first.last@foo.jp
 <p>请按照如下方式修改 <code>config/application.rb</code>：</p>
 
 <div class="codeblock"><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'../boot'</span><span class="p">,</span> <span class="kp">__FILE__</span><span class="p">)</span>
-<span class="o">.</span>
-<span class="o">.</span>
-<span class="o">.</span>
-<span class="k">module</span> <span class="nn">SampleApp</span>
+<span class="p">.</span>
+<span class="nf">.</span>
+<span class="p">.</span>
+<span class="nf">module</span> <span class="no">SampleApp</span>
   <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
+    <span class="p">.</span>
+    <span class="nf">.</span>
     <span class="o">.</span>
     <span class="no">I18n</span><span class="p">.</span><span class="nf">enforce_available_locales</span> <span class="o">=</span> <span class="kp">true</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-    <span class="o">.</span>
-  <span class="k">end</span>
+    <span class="p">.</span>
+    <span class="nf">.</span>
+    <span class="p">.</span>
+  <span class="nf">end</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1347,7 +1383,8 @@ first.last@foo.jp
 <p>在 SQLite 数据库浏览器中打开开发数据库（<code>db/development.sqlite3</code>），会发现上述命令执行后存入的记录（如图 6.6），各列对应了图 6.5 中数据模型相应的属性。</p>
 
 <div class="figure" id="figure-6-6">
-  <img src="figures/sqlite_user_row_with_password_4_0.png" alt="sqlite user row with password 40" /><p class="caption"><span>图 6.6：</span>SQLite 数据库（<code>db/development.sqlite3</code>）中的一条记录</p>
+  <img src="figures/sqlite_user_row_with_password_4_0.png" alt="sqlite user row with password 40" />
+  <p class="caption"><span>图 6.6：</span>SQLite 数据库（<code>db/development.sqlite3</code>）中的一条记录</p>
 </div>
 <p>再回到控制台中，读取 <code>password_digest</code> 属性的值，看一下代码 6.29 中 <code>has_secure_password</code> 方法的作用：</p>
 
@@ -1388,7 +1425,8 @@ first.last@foo.jp
 <h2 id='section-6-5'><span>6.5</span> 练习</h2>
 
 
-<ol><li>
+<ol>
+  <li>
     <p>为代码 6.20 中把 Email 地址转换成小写字母形式的功能编写一个测试，测试代码可以参考代码 6.30。这段测试使用 <code>reload</code> 方法从数据库中重新加载数据；使用 <code>eq</code> 方法测试相等。把代码 6.20 中的 <code>before_save</code> 一行注释掉，看一下代码 6.30 的测试是否可以通过。</p>
   </li>
   <li>
@@ -1406,13 +1444,15 @@ first.last@foo.jp
   <li>
     <p>花点时间熟悉一下 <a href="http://www.rubular.com/">Rubular</a>。</p>
   </li>
-</ol><div class="codeblock has-caption" id="codeblock-6-30"><p class="caption"><span>代码 6.30：</span>对代码 6.20 中 Email 变小写的测试</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+</ol>
+
+<div class="codeblock has-caption" id="codeblock-6-30"><p class="caption"><span>代码 6.30：</span>对代码 6.20 中 Email 变小写的测试</p><p class="file"><code>spec/models/user_spec.rb</code></p><div class="highlight type-ruby"><pre><span class="nb">require</span> <span class="s1">'spec_helper'</span>
 
 <span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="n">describe</span> <span class="s2">"email address with mixed case"</span> <span class="k">do</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">describe</span> <span class="s2">"email address with mixed case"</span> <span class="k">do</span>
     <span class="n">let</span><span class="p">(</span><span class="ss">:mixed_case_email</span><span class="p">)</span> <span class="p">{</span> <span class="s2">"Foo@ExAMPle.CoM"</span> <span class="p">}</span>
 
     <span class="n">it</span> <span class="s2">"should be saved as all lower-case"</span> <span class="k">do</span>
@@ -1421,36 +1461,37 @@ first.last@foo.jp
       <span class="n">expect</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">reload</span><span class="p">.</span><span class="nf">email</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="n">mixed_case_email</span><span class="p">.</span><span class="nf">downcase</span>
     <span class="k">end</span>
   <span class="k">end</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <div class="codeblock has-caption" id="codeblock-6-31"><p class="caption"><span>代码 6.31：</span><code>before_save</code> 回调函数的另一种写法</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_secure_password</span>
   <span class="n">before_save</span> <span class="p">{</span> <span class="n">email</span><span class="p">.</span><span class="nf">downcase!</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <div class="codeblock has-caption" id="codeblock-6-32"><p class="caption"><span>代码 6.32：</span>不允许 Email 地址中出现连续点号的正则表达式</p><p class="file"><code>app/models/user.rb</code></p><div class="highlight type-ruby"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
   <span class="o">.</span>
   <span class="no">VALID_EMAIL_REGEX</span> <span class="o">=</span> <span class="sr">/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i</span>
-  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
+  <span class="n">validates</span> <span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">format: </span><span class="p">{</span> <span class="ss">with: </span><span class="no">VALID_EMAIL_REGEX</span> <span class="p">},</span>
                     <span class="ss">uniqueness: </span><span class="p">{</span> <span class="ss">case_sensitive: </span><span class="kp">false</span> <span class="p">}</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-  <span class="o">.</span>
-<span class="k">end</span>
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+<span class="nf">end</span>
 </pre></div>
 </div>
 <div class="footnotes">
-  <ol><li id="fn-6-1">
+  <ol>
+    <li id="fn-6-1">
       <p>Active Record 这个名字来自“Active Record 模式”，出自 Martin Fowler 的《<a href="http://book.douban.com/subject/4826290/">企业应用架构模式</a>》一书。<a href="#fnref-6-1" rel="reference">↩</a></p>
     </li>
     <li id="fn-6-2">
@@ -1501,7 +1542,9 @@ first.last@foo.jp
     <li id="fn-6-16">
       <p>我在本地的 SQLite 以及 Heroku 的 PostgreSQL 中做过实验，证明这么做其实是必须的。<a href="#fnref-6-16" rel="reference">↩</a></p>
     </li>
-  </ol></div>
+  </ol>
+</div>
+
   	</div>
 </div>
 
@@ -1509,10 +1552,10 @@ first.last@foo.jp
 				
 				<div class="navigation">
 					
-						<a class="prev_page" href="/chapter5.html">&laquo; 第 5 章完善布局</a>
+						<a class="prev_page" href="chapter5.html">&laquo; 第 5 章完善布局</a>
 					
 					
-						<a class="next_page" href="/chapter7.html">第 7 章用户注册 &raquo;</a>
+						<a class="next_page" href="chapter7.html">第 7 章用户注册 &raquo;</a>
 					
 				</div>
 				
