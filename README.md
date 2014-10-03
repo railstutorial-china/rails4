@@ -1,26 +1,12 @@
 # 《Ruby on Rails Tutorial》中文版（涵盖 Rails 4）
 
+**注意**：这一版已经“冰封”，除了必要的错误修正之外，不再更新。目前正在翻译原书第三版。
+
+----------
+
 本 repo 是《Ruby on Rails Tutorial (2nd edition)》一书的中文译本，原作者是 Michael Hartl。这本书被公认为是 Rails 开发最好的入门教程之一，如果你对 Rails 开发感兴趣这本书一定不能错过。
 
-PDF、EPub 和 Mobi 电子书购买链接：<https://sellfy.com/p/qwyU/>
-
-英文原书的内容可以在 [mhartl/rails_tutorial_translation_2nd_ed](https://github.com/mhartl/rails_tutorial_translation_2nd_ed) 获取。
-
-## 翻译状态
-
-**全书译完！**
-
-- 第一章 已翻译
-- 第二章 已翻译
-- 第三章 已翻译
-- 第四章 已翻译
-- 第五章 已翻译
-- 第六章 已翻译
-- 第七章 已翻译
-- 第八章 已翻译
-- 第九章 已翻译
-- 第十章 已翻译
-- 第十一章 已翻译
+PDF、EPub 和 Mobi 电子书购买链接：<https://selfstore.io/products/2>
 
 ## 做贡献
 
